@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>智能排课V2.1 AI智能算法排课方案</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="formal-schedule.css">
+  <link rel="stylesheet" href="legacy-pages.css">
+  <link rel="stylesheet" href="strategy-layer.css">
+  <link rel="stylesheet" href="formal-layout-v7.css">
+</head>
+<body>
+  <div class="legacy-app">
+    <aside class="legacy-sidebar">
+      <div class="legacy-brand"><div class="legacy-mark">A</div><div><strong>VISION ACADEMY</strong><span>惟寻国际教育</span></div></div>
+      <nav class="legacy-nav"><div class="active">▣ 我的排课单</div><div>▤ 售前咨单</div><div>□ 班级管理</div><div>⌂ 教室资源</div><div>♙ 教师管理</div><div>▧ 课次明细</div></nav>
+    </aside>
+    <main class="legacy-main">
+      <header class="legacy-topbar"><h1>教务工作台</h1><div><span>通知 0</span><span class="legacy-avatar">李</span><span>李春玲</span><button>退出</button></div></header>
+      <section id="orderPage" class="legacy-detail">
+        <div class="legacy-page"><div class="legacy-crumb">排课单详情</div><div class="legacy-crumb"><span>‹ 返回</span><strong>1V1排课单</strong></div>
+          <div class="legacy-layout">
+            <section class="legacy-card"><div class="legacy-card-title">学员信息</div><div class="legacy-fields">
+              <div><label>班级名称</label><strong>托福听说读写组合排课-1v1</strong></div><div><label>班级编号</label><strong>TOEFL-20260901-001</strong></div><div><label>班课班主任</label><strong>无</strong></div><div><label>学生姓名</label><strong>托福组合排课测试学生</strong></div><div><label>性别</label><strong>男</strong></div><div><label>学生手机</label><strong>13899999993</strong></div><div><label>学生微信</label><strong>Z222222</strong></div><div><label>在读学校</label><strong>上海市建平中学</strong></div>
+            </div></section>
+            <section class="legacy-card"><div class="legacy-card-title"><span>排课单详情</span><em>处理中</em></div><div class="legacy-status-grid"><div><label>排课单状态</label><strong>处理中</strong></div><div><label>排课单属性</label><strong>新增排课单</strong></div><div><label>发起人</label><strong>李春玲</strong></div></div>
+              <div class="legacy-table-wrap"><table><thead><tr><th>课程项</th><th>班型</th><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>授课模式</th><th>校区</th><th>课时</th><th>历史授课老师</th><th>当前授课老师</th><th>老师时间是否已沟通</th><th>目前成绩</th><th>期望成绩</th><th>退排历史授课老师</th></tr></thead><tbody>
+                <tr><td>托福</td><td>1v1</td><td>写作</td><td>--</td><td>--</td><td>--</td><td>线下</td><td>雅仕校区</td><td>30</td><td>荷超(VA000144)<br>崔昕瑜(VA001736)<br>郑扬扬(VA000755)</td><td>郑扬扬(VA000755)</td><td>否</td><td>15</td><td>25</td><td>--</td></tr>
+                <tr><td>托福</td><td>1v1</td><td>听力</td><td>--</td><td>--</td><td>--</td><td>线下</td><td>雅仕校区</td><td>30</td><td>崔昕瑜(VA001736)<br>王紫(VA001968)<br>夏红微(VA002413)</td><td>王紫(VA001968)</td><td>否</td><td>15</td><td>25</td><td>--</td></tr>
+                <tr><td>托福</td><td>1v1</td><td>口语</td><td>--</td><td>--</td><td>--</td><td>线下</td><td>雅仕校区</td><td>30</td><td>王紫(VA001968)<br>姜雪竹(VA002901)</td><td>王紫(VA001968)</td><td>否</td><td>15</td><td>25</td><td>--</td></tr>
+                <tr><td>托福</td><td>1v1</td><td>阅读</td><td>--</td><td>--</td><td>--</td><td>线下</td><td>雅仕校区</td><td>30</td><td>崔昕瑜(VA001736)<br>杨红艳(VA001642)<br>姜雪竹(VA002901)</td><td>郑扬扬(VA000755)</td><td>否</td><td>15</td><td>225</td><td>--</td></tr>
+              </tbody></table></div>
+              <div class="legacy-detail-lines"><div><span>开课日期</span><strong>2026-09-01　结课日期：2026-12-30</strong></div><div><span>排课类型</span><strong>新增排课</strong></div><div><span>时间要求</span><strong>复杂组合排课</strong></div><div><span>目前校内进度/需要听的知识点</span><strong>托福听说读写同步提升</strong></div><div><span>预计/已报名考试时间</span><strong>待确认</strong></div><div><span>偏好上课风格</span><strong>无特殊要求</strong></div><div><span>性格偏好</span><strong>都可以</strong></div><div><span>排课要求</span><strong id="orderRequirementText"></strong></div></div>
+            </section>
+          </div>
+        </div>
+        <div class="legacy-fixed-actions"><div><strong>驳回排课单</strong><textarea placeholder="请输入驳回原因"></textarea><button class="reject-button">驳回</button></div><div><button class="legacy-primary" id="startScheduling">✦ 去排课</button><button>人工排课</button></div></div>
+      </section>
+      <section id="resultPage" class="formal-schedule-page" hidden></section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <section class="wizard" role="dialog" aria-modal="true" aria-labelledby="wizardTitle">
+      <header class="wizard-header"><div class="wizard-title"><span class="wizard-icon">✦</span><strong id="wizardTitle">补充排课要求</strong></div><button class="icon-button" id="closeWizard" aria-label="关闭">×</button></header>
+      <div class="wizard-body" id="wizardBody"></div>
+      <footer class="wizard-footer" id="wizardFooter"></footer>
+    </section>
+  </div>
+  <div class="loading-backdrop" id="loadingBackdrop" hidden><div class="loading-card"><span class="loading-orbit">✦</span><strong id="loadingTitle">正在处理</strong><p id="loadingDescription"></p><div class="loading-progress"><i></i></div></div></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
