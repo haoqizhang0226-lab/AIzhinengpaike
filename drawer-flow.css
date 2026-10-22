@@ -1,0 +1,158 @@
+/* The first three steps use the wide side drawer; the result detail keeps its modal. */
+body.flow-drawer-open { overflow: hidden; }
+#modalBackdrop.flow-drawer-backdrop {
+  align-items: stretch;
+  justify-content: flex-end;
+  padding: 0;
+  background: rgba(16, 30, 52, .48);
+}
+#modalBackdrop.flow-drawer-backdrop .wizard[data-step="1"],
+#modalBackdrop.flow-drawer-backdrop .wizard[data-step="2"],
+#modalBackdrop.flow-drawer-backdrop .wizard[data-step="3"] {
+  width: min(1120px, calc(100vw - 48px));
+  height: 100vh;
+  height: 100dvh;
+  max-height: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: -20px 0 55px rgba(18, 32, 57, .22);
+  animation: flow-drawer-enter .24s ease-out both;
+}
+@keyframes flow-drawer-enter {
+  from { transform: translateX(24px); opacity: .72; }
+  to { transform: translateX(0); opacity: 1; }
+}
+#modalBackdrop.flow-drawer-backdrop .wizard-header {
+  height: 76px;
+  padding: 0 25px;
+  background: #fff;
+}
+#modalBackdrop.flow-drawer-backdrop .wizard-body {
+  padding: 18px 25px 26px;
+  background: #f8fafd;
+  scrollbar-color: #cdd8e8 transparent;
+}
+#modalBackdrop.flow-drawer-backdrop .wizard-footer {
+  min-height: 70px;
+  padding: 12px 25px;
+  background: #fff;
+  box-shadow: 0 -5px 16px rgba(59, 85, 119, .05);
+}
+
+/* Loading is a view inside the drawer, never a full-screen overlay. */
+.wizard { position: relative; }
+#modalBackdrop.flow-drawer-backdrop #loadingBackdrop {
+  position: absolute;
+  inset: 76px 0 0;
+  z-index: 6;
+  padding: 24px;
+  background: linear-gradient(120deg, #f2fbff 0%, #f7f9ff 55%, #fff7ff 100%);
+}
+#modalBackdrop.flow-drawer-backdrop #loadingBackdrop .loading-card {
+  width: min(480px, 100%);
+  padding: 32px 34px;
+  border: 1px solid #dce7f5;
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(38, 70, 108, .10);
+}
+#modalBackdrop.flow-drawer-backdrop #loadingBackdrop .loading-card strong {
+  color: #263d5b;
+  font-size: 17px;
+}
+#modalBackdrop.flow-drawer-backdrop #loadingBackdrop .loading-card p {
+  color: #536d89;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.wizard[data-loading="true"] #closeWizard { opacity: .45; cursor: not-allowed; }
+
+/* Supplement step: one requirement card, then compact two-column teacher cards. */
+.supplement-panel {
+  margin-bottom: 12px;
+  overflow: hidden;
+  border: 1px solid #e1e8f2;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(43, 78, 127, .035);
+}
+.supplement-panel-header {
+  min-height: 48px;
+  padding: 14px 18px 11px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.supplement-panel-header h3 { margin: 0; color: #2b415f; font-size: 14px; }
+.supplement-panel-header span {
+  color: #8296b0;
+  background: #f3f6fb;
+  border-radius: 4px;
+  padding: 4px 7px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+.supplement-panel .order-date-controls { margin: 0; padding: 0 18px; }
+.supplement-order-text {
+  margin: 12px 18px 15px;
+  padding: 13px 15px;
+  border: 1px solid #d7eaf5;
+  border-radius: 6px;
+  background: linear-gradient(110deg, #f0f8ff, #f2fcf8);
+  color: #4e6680;
+  font-size: 12px;
+  line-height: 1.85;
+}
+.supplement-teacher-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px;
+  padding: 0 14px 14px;
+}
+.supplement-teacher-grid .course-mini {
+  min-width: 0;
+  padding: 11px 12px 9px;
+  border: 1px solid #e2e9f2;
+  border-radius: 6px;
+  background: #fff;
+}
+.supplement-teacher-grid .course-mini:nth-child(even) { background: #fff; }
+.supplement-teacher-grid .course-mini-head { gap: 5px; margin-bottom: 7px; }
+.supplement-teacher-grid .teacher-line { min-height: 24px; margin: 6px 0; gap: 6px; }
+.supplement-teacher-grid .teacher-line>span { width: 92px; font-size: 11px; }
+.supplement-teacher-grid .teacher-input { min-width: 155px; width: 165px; height: 29px; }
+.supplement-teacher-grid .teacher-line .btn { min-height: 29px; padding: 0 10px; }
+.supplement-teacher-grid .specified-teacher-control { display: flex; flex: 1; align-items: center; flex-wrap: wrap; gap: 6px; min-width: 0; }
+.supplement-teacher-grid .specified-teacher-tag { display: inline-flex; align-items: center; min-height: 29px; cursor: default; }
+.supplement-upload-panel .supplement-panel-content { padding: 0 18px 16px; }
+.supplement-upload-panel textarea {
+  width: 100%;
+  min-height: 80px;
+  resize: vertical;
+  padding: 10px 12px;
+  border: 1px solid #d9e2ee;
+  border-radius: 6px;
+  color: #40516a;
+  outline: none;
+}
+.supplement-upload-panel textarea:focus { border-color: #3985ee; box-shadow: 0 0 0 3px #2786ef13; }
+.supplement-upload-panel .supplement-upload-zone { min-height: 56px; margin-top: 10px; padding: 9px 12px; }
+.supplement-ai-error { margin-bottom: 12px; padding: 13px 16px; border-radius: 7px; }
+
+@media (max-width: 960px) {
+  #modalBackdrop.flow-drawer-backdrop .wizard[data-step="1"],
+  #modalBackdrop.flow-drawer-backdrop .wizard[data-step="2"],
+  #modalBackdrop.flow-drawer-backdrop .wizard[data-step="3"] { width: 100vw; }
+  .supplement-teacher-grid { grid-template-columns: 1fr; }
+  #modalBackdrop.flow-drawer-backdrop .candidate-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+  #modalBackdrop.flow-drawer-backdrop .wizard-header { height: 62px; padding: 0 15px; }
+  #modalBackdrop.flow-drawer-backdrop .wizard-body { padding: 14px 12px 22px; }
+  #modalBackdrop.flow-drawer-backdrop .wizard-footer { padding: 10px 12px; }
+  #modalBackdrop.flow-drawer-backdrop #loadingBackdrop { top: 62px; padding: 16px; }
+  #modalBackdrop.flow-drawer-backdrop #loadingBackdrop .loading-card { padding: 26px 22px; }
+  #modalBackdrop.flow-drawer-backdrop .candidate-grid { grid-template-columns: 1fr; }
+  .supplement-panel .order-date-controls { grid-template-columns: 1fr; }
+  .supplement-teacher-grid .teacher-line>span { width: 100%; }
+}

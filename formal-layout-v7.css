@@ -147,6 +147,13 @@ body.formal-page-active .legacy-topbar h1 { font-size: 16px; }
 .formal-version-list td small { display: inline-block; margin-left: 7px; color: #9a7180; }
 .formal-version-list td button { min-height: 26px; padding: 0 10px; border: 1px solid #8db9f3; border-radius: 3px; background: #fff; color: #2d75d8; }
 .formal-version-list td button:disabled { border-color: #e0e5eb; background: #f6f7f9; color: #b8c1cb; cursor: not-allowed; }
+.formal-result-preview-dialog { width: min(1600px,100%); }
+.formal-result-preview-dialog .formal-dialog-body { background: #f7f9fc; }
+.formal-preview-summary { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 20px; margin-bottom: 16px; color: #536981; }
+.formal-preview-summary strong { margin-left: auto; color: #24446c; }
+.formal-preview-calendar { min-width: 0; border: 1px solid #d6dfe9; background: #fff; }
+.formal-schedule-page .formal-result-preview-dialog .formal-calendar-scroll { height: 520px; min-height: 0; max-height: min(520px,60vh); overflow: auto; }
+.formal-preview-empty { padding: 42px 12px; text-align: center; color: #71839a; }
 .formal-strategy-dialog { width: min(1000px,100%); }
 .formal-strategy-dialog .formal-dialog-body { background: #f7faff; }
 .formal-strategy-section { margin-bottom: 14px; padding: 15px; border: 1px solid #e1e9f3; border-radius: 7px; background: #fff; }

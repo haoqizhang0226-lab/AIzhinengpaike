@@ -9,6 +9,10 @@
   <link rel="stylesheet" href="legacy-pages.css">
   <link rel="stylesheet" href="strategy-layer.css">
   <link rel="stylesheet" href="formal-layout-v7.css">
+  <link rel="stylesheet" href="end-mode-demo.css">
+  <link rel="stylesheet" href="formal-lesson-card.css">
+  <link rel="stylesheet" href="drawer-flow.css">
+  <link rel="stylesheet" href="readability.css">
 </head>
 <body>
   <div class="legacy-app">
@@ -45,10 +49,11 @@
     <section class="wizard" role="dialog" aria-modal="true" aria-labelledby="wizardTitle">
       <header class="wizard-header"><div class="wizard-title"><span class="wizard-icon">✦</span><strong id="wizardTitle">补充排课要求</strong></div><button class="icon-button" id="closeWizard" aria-label="关闭">×</button></header>
       <div class="wizard-body" id="wizardBody"></div>
+      <div class="loading-backdrop" id="loadingBackdrop" hidden><div class="loading-card" role="status" aria-live="polite"><span class="loading-orbit">✦</span><strong id="loadingTitle">正在处理</strong><p id="loadingDescription"></p><div class="loading-progress"><i></i></div></div></div>
       <footer class="wizard-footer" id="wizardFooter"></footer>
     </section>
   </div>
-  <div class="loading-backdrop" id="loadingBackdrop" hidden><div class="loading-card"><span class="loading-orbit">✦</span><strong id="loadingTitle">正在处理</strong><p id="loadingDescription"></p><div class="loading-progress"><i></i></div></div></div>
+  <div class="teacher-load-backdrop" id="teacherLoadBackdrop" hidden></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="app.js"></script>
 </body>
