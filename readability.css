@@ -136,6 +136,7 @@ textarea:focus-visible, summary:focus-visible {
 .candidate-metrics b { color: #254c79; font-size: 15px; }
 .candidate-metrics small { color: #526985; font-size: 12px; line-height: 1.45; }
 .candidate .btn { min-height: 38px; margin-top: 13px; }
+.candidate.specified-candidate .choose-teacher:disabled { opacity: 1; cursor: default; }
 .specified-card { padding: 17px; }
 .specified-card strong { color: #263d5b; font-size: 14px; }
 .specified-selected { font-size: 13px; }
