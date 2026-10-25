@@ -55,12 +55,25 @@
 .frequency-rule-inputs input { flex: 0 1 85px; min-width: 0; }
 .frequency-rule-inputs i,.frequency-rule-inputs em,.course-time-slot-row i { color: #7488a1; font-size: 12px; font-style: normal; }
 .time-rule-control { grid-column: 1 / -1; }
-.time-rule-control > select { max-width: 180px; }
+.course-lesson-info { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; padding: 12px; border: 1px solid #dce5ef; border-radius: 7px; background: #f8fbff; }
+.course-lesson-info label { color: #344e68; font-size: 12px; font-weight: 600; }
+.course-lesson-info input { width: 100%; margin-top: 6px; }
+.course-lesson-duration { display: flex; align-items: center; gap: 7px; }
+.course-lesson-duration input { min-width: 0; }
+.course-lesson-duration span { flex: none; color: #59708c; font-size: 12px; }
+.course-time-rule-view-list { display: grid; gap: 6px; margin-top: 7px; }
+.course-time-rule-view-row { display: flex; align-items: center; gap: 12px; min-height: 34px; padding: 6px 10px; border: 1px solid #dce5ef; border-radius: 5px; background: #fff; color: #344e68; font-size: 12px; }
+.course-time-rule-view-row strong { flex: 0 0 42px; color: #285176; }
 .course-time-slot-editor { margin-top: 8px; }
-.course-time-slot-list { display: grid; gap: 6px; }
-.course-time-slot-row { display: flex; align-items: flex-start; gap: 7px; }
+.course-time-slot-list { display: grid; gap: 8px; }
+.course-time-slot-row { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border: 1px solid #dce5ef; border-radius: 6px; background: #fff; }
+.course-time-slot-details { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.course-time-clock-inputs { display: flex; align-items: center; gap: 7px; }
+.course-time-slot-details[hidden],.course-time-clock-inputs[hidden],.course-time-slot-row .course-regular-time[hidden] { display: none; }
+.course-time-slot-row > select[data-time-rule-type] { flex: 0 0 112px; }
 .requirement-strategy-pair .rule-grid .course-time-slot-row select,
 .requirement-strategy-pair .rule-grid .course-time-slot-row input { width: 130px; margin-top: 0; }
+.requirement-strategy-pair .rule-grid .course-time-slot-row > select[data-time-rule-type] { width: 112px; }
 .weekday-picker { flex: 0 0 190px; min-width: 0; }
 .requirement-strategy-pair .weekday-picker > summary {
   display: flex;
@@ -84,9 +97,29 @@
 .requirement-strategy-pair .rule-grid .weekday-options input { width: 14px; height: 14px; margin: 0; padding: 0; accent-color: #347ff0; }
 .course-time-slot-row i { line-height: 33px; }
 .course-time-slot-row button,.course-add-time-slot { min-height: 30px; border: 1px solid #d6e4f5; border-radius: 5px; background: #fff; color: #2873c9; }
-.course-time-slot-row button { width: 30px; font-size: 18px; line-height: 1; }
+.course-time-slot-row button { flex: 0 0 30px; width: 30px; font-size: 18px; line-height: 1; }
 .course-add-time-slot { margin-top: 7px; padding: 0 10px; font-size: 11px; }
-.course-regular-time { margin-top: 8px; color: #4b6c91; font-size: 12px; }
+.course-regular-time { color: #4b6c91; font-size: 12px; }
+.strategy-limit-module { margin-top: 16px; padding: 13px 14px; border: 1px solid #e1e9f3; border-radius: 8px; background: #f9fbfe; }
+.strategy-limit-heading { margin-bottom: 11px; }
+.strategy-limit-heading strong { color: #285176; font-size: 13px; }
+.strategy-limit-empty { color: #8696a9; font-size: 12px; }
+.strategy-limit-edit-list,.strategy-limit-view-list { display: grid; gap: 8px; }
+.strategy-limit-edit-row,.unavailable-view-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; padding: 10px; border: 1px solid #e3eaf3; border-radius: 6px; background: #fff; }
+.unavailable-field { display: flex; flex: 1 1 122px; min-width: 0; flex-direction: column; gap: 6px; color: #4b6380; font-size: 12px; font-weight: 600; }
+.unavailable-field > span { color: #4b6380; font-size: 12px; font-weight: 600; }
+.unavailable-field > strong { display: flex; align-items: center; min-height: 34px; color: #293f5c; font-size: 12px; font-weight: 500; }
+.unavailable-mode-field { flex: 0 1 115px; }
+.strategy-limit-edit-row select,.strategy-limit-edit-row input[type="date"],.strategy-limit-edit-row input[type="time"] { min-width: 0; height: 34px; padding: 0 7px; border: 1px solid #d5e0ed; border-radius: 5px; background: #fff; color: #36516d; font-size: 12px; }
+.strategy-limit-edit-row .unavailable-field > input,.strategy-limit-edit-row .unavailable-field > select { width: 100%; }
+.strategy-limit-edit-row button { flex: 0 0 32px; width: 32px; height: 34px; border: 1px solid #e9c8c5; border-radius: 5px; background: #fff; color: #bc6360; font-size: 18px; }
+.strategy-limit-edit-row .unavailable-weekday-picker { position: relative; flex: none; width: 100%; }
+.strategy-limit-edit-row .weekday-options { position: absolute; top: 100%; left: 0; z-index: 10; width: 175px; }
+.strategy-limit-edit-row .weekday-options label { display: flex; align-items: center; gap: 5px; min-height: 27px; color: #4b607b; font-size: 12px; cursor: pointer; }
+.strategy-limit-edit-row .weekday-options input[type="checkbox"] { width: 14px; height: 14px; margin: 0; padding: 0; accent-color: #347ff0; }
+.unavailable-time-inputs { display: flex; align-items: flex-end; gap: 8px; flex: 2 1 220px; }
+.unavailable-time-inputs[hidden] { display: none; }
+.strategy-limit-add { margin-top: 8px; padding: 5px 9px; border: 1px solid #cfe0f5; border-radius: 5px; background: #f8fbff; color: #2a6db9; font-size: 12px; }
 .derived-strategy {
   margin: 0 12px 12px;
   border: 1px solid #e3eaf5;
@@ -161,7 +194,7 @@
 .teacher-course-plan { padding: 14px 18px; border-bottom: 1px solid #e4ebf3; background: #f8fbff; }
 .teacher-course-plan[hidden] { display: none; }
 .teacher-course-plan .teacher-plan-section:first-child { margin-top: 0; }
-.teacher-course-plan .result-period-table { min-width: 560px; }
+.teacher-course-plan .result-period-table { min-width: 690px; }
 .teacher-plan-heading { display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8fbff; font-size: 12px; }
 .teacher-plan-heading strong { color: #1a5eae; }
 .teacher-plan-heading span { color: #6c8199; }
@@ -205,6 +238,7 @@
   .completion-specific-fields { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
 @media (max-width: 560px) {
+  .course-lesson-info { grid-template-columns: 1fr; }
   .result-total { flex-wrap: wrap; }
   .global-policy-card .rule-grid { grid-template-columns: 1fr; }
   .requirement-strategy-pair .rule-grid { grid-template-columns: 1fr; }
@@ -212,4 +246,5 @@
   .completion-specific-fields { grid-template-columns: 1fr; }
   .frequency-rule-control { grid-column: 1; }
   .course-time-slot-row { flex-wrap: wrap; }
+  .course-time-slot-details { flex-wrap: wrap; }
 }

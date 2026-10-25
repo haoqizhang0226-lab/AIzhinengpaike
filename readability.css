@@ -35,12 +35,11 @@ textarea:focus-visible, summary:focus-visible {
 .supplement-panel-header { min-height: 52px; padding: 15px 18px 12px; }
 .supplement-panel-header h3 { color: #263e5e; font-size: 15px; }
 .supplement-panel-header span { color: #5d7591; font-size: 11px; }
-.supplement-panel .order-date-controls { gap: 12px; }
-.supplement-panel .order-date-controls select,
-.supplement-panel .order-date-item { min-height: 42px; height: 42px; color: #344e6a; font-size: 13px; }
-.supplement-panel .order-date-item input { color: #283f5e; font-size: 13px; }
-.supplement-panel .order-date-item.is-disabled,
-.supplement-panel .order-date-item.is-disabled input { color: #8795a7; }
+.supplement-panel .order-date-controls { gap: 10px; }
+.supplement-panel .order-control { min-height: 36px; height: 36px; }
+.supplement-panel .order-control input,
+.supplement-panel .order-control select { height: 34px; color: #283f5e; font-size: 13px; }
+.supplement-panel .order-control.is-disabled input { color: #9ba7b6; }
 .supplement-order-text { margin-top: 14px; padding: 15px 17px; color: #334d67; font-size: 13px; line-height: 1.9; }
 .supplement-teacher-grid { gap: 14px; }
 .supplement-teacher-grid .course-mini { padding: 14px; border-color: #d9e3ef; }
@@ -57,6 +56,21 @@ textarea:focus-visible, summary:focus-visible {
 .supplement-upload-zone small, .supplement-file-list span { color: #536d89; font-size: 11px; }
 .supplement-ai-error { color: #803b43; font-size: 13px; }
 .supplement-ai-error p { color: #71434a; font-size: 12px; }
+.schedule-timezone-context {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px 12px;
+  margin-bottom: 15px;
+  padding: 13px 17px;
+  border: 1px solid #d7e6f7;
+  border-radius: 7px;
+  background: #f3f8ff;
+  color: #344e6a;
+  font-size: 13px;
+}
+.schedule-timezone-context > span { font-weight: 600; }
+.schedule-timezone-context > strong { color: #245c9d; font-size: 13px; }
 
 /* Strategy confirmation and editing */
 .wizard[data-step="2"] .analysis-heading { font-size: 14px; }
@@ -154,7 +168,6 @@ textarea:focus-visible, summary:focus-visible {
 .wizard[data-step="4"] .result-requirement-head { padding: 14px; font-size: 13px; }
 .wizard[data-step="4"] .result-requirement-head span { color: #506984; }
 .wizard[data-step="4"] .result-rule-line span { color: #3f6081; font-size: 12px; }
-.wizard[data-step="4"] .result-capacity-context { color: #45627f; font-size: 13px; line-height: 1.65; }
 .wizard[data-step="4"] .result-period-table { font-size: 13px; }
 .wizard[data-step="4"] .result-period-table th,
 .wizard[data-step="4"] .result-period-table td { padding: 11px 12px; }
