@@ -4,6 +4,16 @@
   const defaultOrderDates={start:'2026-09-01',end:'2026-12-30'};
   const orderDates={...defaultOrderDates};
   const endRules=['按开结课日期排课','排完全部课程结束'];
+  const scheduleTimezoneOptions=[
+    ['Asia/Shanghai','中国 · 北京'],
+    ['Europe/London','英国 · 伦敦'],
+    ['America/New_York','美国 · 纽约'],
+    ['America/Los_Angeles','美国 · 洛杉矶'],
+    ['Australia/Sydney','澳大利亚 · 悉尼'],
+    ['Asia/Tokyo','日本 · 东京'],
+    ['Asia/Singapore','新加坡'],
+    ['Asia/Dubai','阿联酋 · 迪拜']
+  ];
   const orderText = '写作30课时：9月每周固定1节，固定周一18:30—20:30；10月、11月每周可排2—3节，优先周三、周四10:20—12:30；12月排完剩余课时。听力30课时：9月每周1—2节，优先周中08:20—12:20；10月每周1—2节，优先周三、周四10:30—12:30；12月排完剩余课时。口语30课时：9月每月3—4节，固定周二10:30—12:30；10月每月3—4节，优先周三、周四10:30—12:30；11月至12月每周1—2节，优先周六、周日08:20—10:20。阅读30课时：9月每两周1节，优先周二、周四14:30—16:30；10月、11月每月2—3节，优先周中14:30—16:30；12月排完剩余课时。10月1日至7日全天停排；10月8日至10日禁排早课（08:20—10:20）。';
   const courses = [
     { id:'writing', name:'托福-写作-线下', hours:30, mode:'线下', campus:'雅仕校区', tags:['严格严肃','循序善诱'], history:[['郑扬扬(VA000755)','当前'],['荷超(VA000144)','历史'],['崔昕瑜(VA001736)','历史']], ai:'9月每周固定1节，固定周一18:30—20:30。9月首周从周二开始，无周一固定时段，首周目标为0节；10—11月每周2—3节，优先周三、周四上午；12月排完剩余课节。', segments:[['2026-09-01','2026-09-30','每周固定1节','固定周一18:30—20:30'],['2026-10-08','2026-11-30','每周2—3节','优先周三、周四10:20—12:30'],['2026-12-01','2026-12-30','排完剩余课程','不限制']], funnel:[326,29,12,6,3], candidates:[
@@ -94,7 +104,7 @@
     catch { return false; }
   }
   const copyData=value=>JSON.parse(JSON.stringify(value));
-  const state = { step:1, supplement:'', files:[], aiAnalysisError:'', direct:{}, selected:{}, editingSpecifiedCourseId:null, teacherRequirements:Object.fromEntries(courses.map(course=>[course.id,defaultTeacherRequirement(course)])), editingTeacherRequirements:false, teacherRequirementDrafts:null, orderEndRule:endRules[0], editing:false, dirty:false, draft:null, aiSnapshot:null, coursePlans:null, expandedPlanCourseId:null, recommended:false, completed:false, resultLessons:[], versions:loadVersions(), activeVersionId:null, planMode:'智能排课', pendingPlanVersionId:null, currentPlanCreatedAt:null };
+  const state = { step:1, supplement:'', files:[], aiAnalysisError:'', direct:{}, selected:{}, editingSpecifiedCourseId:null, teacherRequirements:Object.fromEntries(courses.map(course=>[course.id,defaultTeacherRequirement(course)])), editingTeacherRequirements:false, teacherRequirementDrafts:null, orderEndRule:endRules[0], scheduleTimezone:'Asia/Shanghai', editing:false, dirty:false, draft:null, aiSnapshot:null, coursePlans:null, expandedPlanCourseId:null, recommended:false, completed:false, resultLessons:[], versions:loadVersions(), activeVersionId:null, planMode:'智能排课', pendingPlanVersionId:null, currentPlanCreatedAt:null };
   function initialCourseSegments(course) {
     return course.segments.map(s=>{
       const frequency=frequencySpec(s[2]);
@@ -126,6 +136,18 @@
   }
   const $ = selector => document.querySelector(selector);
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const scheduleTimezoneLabel = timezone => {
+    const option=scheduleTimezoneOptions.find(([id])=>id===timezone);
+    return option?`${option[1]}（${timezone}）`:timezone||'未选择';
+  };
+  function validScheduleTimezone(timezone) {
+    if(!timezone||!timezone.includes('/')||timezone.startsWith('Etc/')) return false;
+    try { new Intl.DateTimeFormat('zh-CN',{timeZone:timezone}); return true; }
+    catch { return false; }
+  }
+  function scheduleTimezoneContext() {
+    return `<div class="schedule-timezone-context"><span>上课时区</span><strong>${escapeHtml(scheduleTimezoneLabel(state.scheduleTimezone))}</strong></div>`;
+  }
   const displayDate = value => String(value ?? '').replaceAll('-','/');
   const plainName = name => String(name).replace(/\(.+\)/,'');
   const teacherRequirementFor=course=>state.teacherRequirements[course.id];
@@ -237,8 +259,17 @@
     return match||(/^[^()]+\([A-Za-z0-9]+\)$/.test(input)?input:null);
   }
   function renderSupplement() {
+    const knownTimezone=scheduleTimezoneOptions.some(([id])=>id===state.scheduleTimezone);
     $('#wizardBody').innerHTML=`${state.aiAnalysisError?`<section class="supplement-ai-error ai-analysis-error" role="alert"><strong>AI分析失败</strong><p>${escapeHtml(state.aiAnalysisError)}</p></section>`:''}
-      <section class="supplement-panel"><header class="supplement-panel-header"><h3>排课要求</h3><span>来自排课单</span></header><div class="order-date-controls"><select data-order-end-rule aria-label="排课要求">${endRules.map(rule=>`<option value="${rule}" ${state.orderEndRule===rule?'selected':''}>${rule}</option>`).join('')}</select><label class="order-date-item"><span>开课日期</span><input type="date" data-order-date="start" aria-label="开课日期" value="${escapeHtml(orderDates.start)}"></label><label class="order-date-item ${state.orderEndRule===endRules[1]?'is-disabled':''}"><span>结课日期</span><input type="date" data-order-date="end" aria-label="结课日期" value="${escapeHtml(orderDates.end)}" min="${escapeHtml(orderDates.start)}" ${state.orderEndRule===endRules[1]?'disabled':''}></label></div><p class="supplement-order-text">${escapeHtml(orderText)}</p></section>
+      <section class="supplement-panel"><header class="supplement-panel-header"><h3>排课要求</h3><span>来自排课单</span></header>
+        <div class="order-date-controls">
+          <label class="order-control"><span>排课要求</span><select data-order-end-rule aria-label="排课要求">${endRules.map(rule=>`<option value="${rule}" ${state.orderEndRule===rule?'selected':''}>${rule}</option>`).join('')}</select><i class="order-control-chevron" aria-hidden="true"></i></label>
+          <label class="order-control order-date-item"><span>开课日期</span><input type="date" data-order-date="start" aria-label="开课日期" value="${escapeHtml(orderDates.start)}"><i class="order-control-chevron" aria-hidden="true"></i></label>
+          <label class="order-control order-date-item ${state.orderEndRule===endRules[1]?'is-disabled':''}"><span>结课日期</span><input type="date" data-order-date="end" aria-label="结课日期" value="${escapeHtml(orderDates.end)}" min="${escapeHtml(orderDates.start)}" ${state.orderEndRule===endRules[1]?'disabled':''}><i class="order-control-chevron" aria-hidden="true"></i></label>
+          <label class="order-control"><span>上课时区</span><select id="scheduleTimezoneChoice" data-schedule-timezone-choice aria-label="上课时区">${scheduleTimezoneOptions.map(([id,label])=>`<option value="${id}" ${state.scheduleTimezone===id?'selected':''}>${escapeHtml(label)}</option>`).join('')}<option value="__custom__" ${knownTimezone?'':'selected'}>其他时区</option></select><i class="order-control-chevron" aria-hidden="true"></i></label>
+        </div>
+        ${knownTimezone?'':`<div class="order-timezone-custom"><label>其他上课时区<input type="text" data-schedule-timezone-input aria-label="其他上课时区" placeholder="例如 Europe/Paris" value="${escapeHtml(state.scheduleTimezone)}"></label></div>`}
+        <p class="supplement-order-text">${escapeHtml(orderText)}</p></section>
       <section class="supplement-panel"><header class="supplement-panel-header"><h3>指定授课老师</h3><span>已指定 ${Object.keys(state.direct).length}/${courses.length}</span></header><div class="supplement-teacher-grid">${courses.map(supplementTeacherCard).join('')}</div></section>
       <section class="supplement-panel supplement-upload-panel"><header class="supplement-panel-header"><h3>上传补充信息</h3></header><div class="supplement-panel-content"><textarea id="supplementInput" placeholder="可以输入文字，或上传文件补充排课要求">${escapeHtml(state.supplement)}</textarea><div class="supplement-upload-zone" id="supplementDropZone"><button type="button" class="btn btn-quiet" data-choose-supplement>＋ 上传补充信息</button><span>或将文件拖拽到此处</span><small>支持图片、PDF、Word 和 TXT；原型仅展示文件名</small><input id="fileInput" type="file" accept=".png,.jpg,.jpeg,.webp,.pdf,.doc,.docx,.txt" multiple hidden></div>${state.files.length?`<div class="supplement-file-list">${state.files.map((name,index)=>`<span>${escapeHtml(name)}<button type="button" data-remove-supplement-file="${index}" aria-label="删除${escapeHtml(name)}">×</button></span>`).join('')}</div>`:''}</div></section>`;
     $('#wizardFooter').innerHTML='<button class="btn" data-close>取消</button><button class="btn btn-primary" data-analyze>AI分析排课要求</button>';
@@ -654,7 +685,7 @@
   function renderAnalysis() {
     if(!state.draft) state.draft=initialDraft();
     if(!state.aiSnapshot) state.aiSnapshot={ global:'学生每周总课节上限和学生每日总课节上限均无特殊要求，多课程采用交叉排课。', courses:Object.fromEntries(courses.map(c=>[c.id,c.ai])) };
-    $('#wizardBody').innerHTML=`<section class="content-card analysis-section"><div class="content-card-header"><strong>全局排课策略</strong>${state.dirty?'<small>已修改 · 待校验</small>':''}</div><div class="content-card-inner"><div class="analysis-card"><div class="analysis-heading"><i>✦</i>排课要求AI分析结果</div><p>${escapeHtml(globalAnalysisSummary())}</p></div><details class="structure" ${state.editing?'open':''}><summary><span>排课策略</span></summary><div class="structure-body">${globalStructure()}</div></details></div></section>
+    $('#wizardBody').innerHTML=`${scheduleTimezoneContext()}<section class="content-card analysis-section"><div class="content-card-header"><strong>全局排课策略</strong>${state.dirty?'<small>已修改 · 待校验</small>':''}</div><div class="content-card-inner"><div class="analysis-card"><div class="analysis-heading"><i>✦</i>排课要求AI分析结果</div><p>${escapeHtml(globalAnalysisSummary())}</p></div><details class="structure" ${state.editing?'open':''}><summary><span>排课策略</span></summary><div class="structure-body">${globalStructure()}</div></details></div></section>
       ${courses.map(c=>`<section class="content-card analysis-section"><div class="content-card-header"><div class="course-analysis-title"><strong>${c.name}</strong><span class="meta-chip">${c.hours}课时</span><span class="meta-chip">2小时/节</span><span class="meta-chip">${c.hours/2}节</span><span class="meta-chip">${c.mode}</span><span class="meta-chip">${c.campus}</span></div></div><div class="content-card-inner"><div class="analysis-card"><div class="analysis-heading"><i>✦</i>排课要求AI分析结果</div><p>${escapeHtml(state.aiSnapshot.courses[c.id])}</p></div><details class="structure" ${state.editing?'open':''}><summary><span>排课策略</span></summary>${courseStructure(c)}</details></div></section>`).join('')}`;
     $('#wizardFooter').innerHTML=`<button class="btn" data-back-supplement>补充排课要求</button><button class="btn btn-quiet" data-toggle-edit>${state.editing?'退出编辑':'编辑排课策略'}</button>${state.editing?'<button class="btn btn-primary" data-save-rules>校验并保存策略</button>':'<button class="btn btn-primary" data-recommend>生成学生排课计划并推荐教师</button>'}`;
   }
@@ -684,7 +715,7 @@
   function renderTeachers() {
     const selectedCount=courses.filter(c=>state.direct[c.id]||state.selected[c.id]).length;
     const editing=state.editingTeacherRequirements;
-    $('#wizardBody').innerHTML=`<div class="teacher-selection-count"><span class="selection-summary">${editing?'正在修改老师要求，保存后重新展示推荐结果':`已选择 ${selectedCount} / ${courses.length} 门`}</span></div>
+    $('#wizardBody').innerHTML=`${scheduleTimezoneContext()}<div class="teacher-selection-count"><span class="selection-summary">${editing?'正在修改老师要求，保存后重新展示推荐结果':`已选择 ${selectedCount} / ${courses.length} 门`}</span></div>
       ${courses.map(c=>{
         const direct=state.direct[c.id],expanded=state.expandedPlanCourseId===c.id,requirement=teacherRequirementFor(c);
         const teacherPanel=direct?`<div class="candidate-grid">${renderCandidate(c,{name:direct},true)}</div>`:editing?'':renderCandidatesByStatus(c);
@@ -731,6 +762,7 @@
     const validLimit=value=>value==='无特殊要求'||Number.isInteger(Number(value))&&Number(value)>=1&&Number(value)<=10;
     if(!orderDates.start) return '请选择排课单开课日期';
     if(state.orderEndRule===endRules[0]&&(!orderDates.end||orderDates.end<orderDates.start)) return '结课日期不能为空，且不能早于开课日期';
+    if(!validScheduleTimezone(state.scheduleTimezone)) return '请选择有效的上课时区（例如 Europe/London）';
     if(!validLimit(global.weekCap)||!validLimit(global.dayCap)) return '学生总课节上限无效';
     if(!['随机排课','交叉排课'].includes(global.method)) return '多课程排课方式无效';
     if(!endRules.includes(state.orderEndRule)) return '全单兜底排课规则无效';
@@ -801,11 +833,11 @@
       const totalGap=Math.max(0,total-actualTotal);
       return `<section class="content-card result-course-card"><div class="content-card-header"><div class="course-analysis-title"><strong>${escapeHtml(course.name)}</strong><span class="meta-chip">授课老师：${escapeHtml(selectedTeacher(course))}</span></div><span class="result-status ${totalMet?'met':'unmet'}">${totalLabel} 已排${actualTotal}/${total}节${totalGap?` · 待补${totalGap}节`:''}</span></div><div class="content-card-inner">${requirementCards}</div></section>`;
     }).join('');
-    $('#wizardBody').innerHTML=`<div class="result-capacity-context">本周期预计排课是根据学生与所选老师日程形成的排课目标，最终以实际排课为准。本周期排课差额对照学生排课要求的下限计算，便于教务补课；各周期差额不直接等于课程总量待补节数。</div>${courseResults}`;
+    $('#wizardBody').innerHTML=`${scheduleTimezoneContext()}${courseResults}`;
     $('#wizardFooter').innerHTML='<button class="btn" data-restart-plan>重新排课</button><button class="btn btn-primary" data-close>关闭</button>';
   }
   function resultSnapshot() {
-    return copyData({draft:state.draft,orderDates,orderEndRule:state.orderEndRule,selected:state.selected,direct:state.direct,teacherRequirements:state.teacherRequirements,resultLessons:state.resultLessons,supplement:state.supplement,files:state.files,aiSnapshot:state.aiSnapshot,planMode:state.planMode,createdAt:state.currentPlanCreatedAt});
+    return copyData({draft:state.draft,orderDates,orderEndRule:state.orderEndRule,scheduleTimezone:state.scheduleTimezone,selected:state.selected,direct:state.direct,teacherRequirements:state.teacherRequirements,resultLessons:state.resultLessons,supplement:state.supplement,files:state.files,aiSnapshot:state.aiSnapshot,planMode:state.planMode,createdAt:state.currentPlanCreatedAt});
   }
   function restoreResultSnapshot(snapshot) {
     Object.assign(orderDates,defaultOrderDates,snapshot.orderDates||{});
@@ -813,6 +845,7 @@
     state.orderEndRule=snapshot.orderEndRule||(
       Object.values(snapshot.courseBoundaries||{}).some(boundary=>boundary.endMode==='排完全部课时结束')?endRules[1]:endRules[0]
     );
+    state.scheduleTimezone=snapshot.scheduleTimezone||'Asia/Shanghai';
     if(snapshot.courseBoundaries&&!snapshot.orderEndRule) for(const course of courses) {
       const oldBoundary=snapshot.courseBoundaries[course.id];
       const segments=state.draft.courses[course.id];
@@ -1032,6 +1065,15 @@
     if(event.target.id==='teacherScheduleDrawer') {closeTeacherScheduleDrawer();return;}
     if(event.target.id==='teacherLoadBackdrop') {closeTeacherLoad();return;}
     if(event.target.id==='modalBackdrop'&&event.target.classList.contains('flow-drawer-backdrop')) {closeWizard();return;}
+    const dateControl=event.target.closest('.order-date-controls .order-date-item');
+    if(dateControl&&event.target.tagName!=='INPUT') {
+      const input=dateControl.querySelector('input[type="date"]');
+      if(input&&!input.disabled) {
+        event.preventDefault();
+        try { input.showPicker(); } catch { input.focus(); }
+      }
+      return;
+    }
     if(!event.target.closest('.teacher-style-select')) {
       document.querySelectorAll('.teacher-style-menu').forEach(item=>item.hidden=true);
       document.querySelectorAll('[data-open-teacher-styles]').forEach(item=>item.setAttribute('aria-expanded','false'));
@@ -1212,6 +1254,7 @@
     if(button.hasAttribute('data-analyze')) {
       if(!orderDates.start) {notify('请选择开课日期');return;}
       if(state.orderEndRule===endRules[0]&&(!orderDates.end||orderDates.end<orderDates.start)) {notify('结课日期不能为空，且不能早于开课日期');return;}
+      if(!validScheduleTimezone(state.scheduleTimezone)) {notify('请选择有效的上课时区（例如 Europe/London）');return;}
       const aiError=simulatedAiAnalysisError();
       state.aiAnalysisError='';
       setLoading('正在分析排课要求','识别全局与各科目要求，输出自然语言及结构化策略…',()=>{
@@ -1242,6 +1285,10 @@
   });
   document.addEventListener('input',event=>{
     const t=event.target;
+    if(t.hasAttribute('data-schedule-timezone-input')) {
+      state.scheduleTimezone=t.value.trim();
+      return;
+    }
     if(t.hasAttribute('data-order-date')) {
       orderDates[t.dataset.orderDate]=t.value;
       if(t.dataset.orderDate==='start') {
@@ -1267,6 +1314,11 @@
   });
   document.addEventListener('change',event=>{
     const t=event.target;
+    if(t.hasAttribute('data-schedule-timezone-choice')) {
+      state.scheduleTimezone=t.value==='__custom__'?'':t.value;
+      refreshSupplement();
+      return;
+    }
     if(t.hasAttribute('data-teacher-requirement-field')&&state.teacherRequirementDrafts) {
       const courseId=t.closest('[data-teacher-requirement-course]')?.dataset.teacherRequirementCourse;
       if(courseId) state.teacherRequirementDrafts[courseId][t.dataset.teacherRequirementField]=t.value;
