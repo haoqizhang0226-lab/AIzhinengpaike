@@ -181,6 +181,7 @@
 .wizard[data-step="1"] .course-mini:nth-child(even) { background: #fbfdff; }
 .wizard[data-step="1"] .course-mini-head .meta-chip,
 .wizard[data-step="2"] .course-analysis-title .meta-chip { border: 1px solid #c7dcf6; background: #edf5ff; color: #2668b5; font-weight: 500; box-shadow: 0 1px 2px rgba(47,125,224,.05); }
+.wizard[data-step="2"] .course-analysis-title .lesson-duration-chip { border-color: #d8c9f2; background: #f5f0ff; color: #65449a; font-weight: 600; white-space: nowrap; }
 .wizard[data-step="2"] .content-card { border-color: #e2e7f1; border-radius: 12px; box-shadow: 0 8px 24px rgba(50,69,108,.055); }
 .wizard[data-step="2"] .analysis-card { border-color: #c5eaf4; border-radius: 8px; background: linear-gradient(108deg,#edf9ff 0%,#effff8 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,.5); }
 .wizard[data-step="2"] .analysis-heading { color: #214d80; font-size: 13px; }

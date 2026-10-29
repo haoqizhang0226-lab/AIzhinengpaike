@@ -1,0 +1,16 @@
+.legacy-nav>button{display:flex;align-items:center;gap:10px;width:100%;height:46px;border:0;background:transparent;color:#aebcda;text-align:left;padding:0 16px;font:inherit;cursor:pointer}
+.legacy-nav>button:hover,.legacy-nav .legacy-submenu button:hover{background:#31476f;color:#fff}
+.legacy-nav>button.active,.legacy-nav .legacy-submenu button.active{background:#3a4f7c;color:#fff;font-weight:600;border-left:4px solid #adc7ff;padding-left:12px}
+.legacy-nav .legacy-parent-menu span{margin-left:auto;font-size:14px}
+.legacy-nav .legacy-submenu{display:block;height:auto;padding:2px 0 6px;background:#1b2e54}
+.legacy-nav .legacy-submenu[hidden]{display:none}
+.legacy-nav .legacy-submenu button{height:39px;width:100%;border:0;background:transparent;color:#b8c9e8;text-align:left;padding:0 10px 0 38px;font:inherit;font-size:13px;cursor:pointer}
+.legacy-nav .legacy-submenu button.active{padding-left:34px}
+.teacher-management-page{height:calc(100vh - 44px);min-height:660px;background:#f3f6fb}
+.teacher-management-page iframe{display:block;width:100%;height:100%;border:0;background:#f3f6fb}
+body.formal-page-active .legacy-nav>button{height:56px;font-size:0;justify-content:center;padding:0}
+body.formal-page-active #scheduleMenu::before{content:'▣';font-size:16px}
+body.formal-page-active #teacherMenu::before{content:'♙';font-size:16px}
+body.formal-page-active #teacherMenu span,body.formal-page-active .legacy-nav .legacy-submenu{display:none}
+body.formal-page-active .legacy-nav div:nth-child(7)::before{content:'▧'}
+@media(max-width:850px){.legacy-nav>button{font-size:0;justify-content:center;padding:0}.legacy-nav .legacy-parent-menu span,.legacy-nav .legacy-submenu{display:none}.legacy-nav>button.active{padding:0}}

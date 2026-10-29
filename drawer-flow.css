@@ -153,6 +153,6 @@ body.flow-drawer-open { overflow: hidden; }
   #modalBackdrop.flow-drawer-backdrop #loadingBackdrop { top: 62px; padding: 16px; }
   #modalBackdrop.flow-drawer-backdrop #loadingBackdrop .loading-card { padding: 26px 22px; }
   #modalBackdrop.flow-drawer-backdrop .candidate-grid { grid-template-columns: 1fr; }
-  .supplement-panel .order-date-controls { grid-template-columns: repeat(4, minmax(220px, 1fr)); overflow-x: auto; }
+  .supplement-panel .order-date-controls { grid-template-columns: minmax(270px, 1fr) repeat(3, minmax(220px, 1fr)); overflow-x: auto; }
   .supplement-teacher-grid .teacher-line>span { width: 100%; }
 }

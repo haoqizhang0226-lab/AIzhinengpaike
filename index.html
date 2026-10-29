@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>智能排课V2.1 AI智能算法排课方案</title>
+  <title>智能排课V2.2 AI智能算法排课方案</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="formal-schedule.css">
   <link rel="stylesheet" href="legacy-pages.css">
@@ -14,12 +14,14 @@
   <link rel="stylesheet" href="drawer-flow.css">
   <link rel="stylesheet" href="readability.css">
   <link rel="stylesheet" href="teacher-schedule-drawer.css">
+  <link rel="stylesheet" href="teacher-approval-tip.css">
+  <link rel="stylesheet" href="teacher-management.css">
 </head>
 <body>
   <div class="legacy-app">
     <aside class="legacy-sidebar">
       <div class="legacy-brand"><div class="legacy-mark">A</div><div><strong>VISION ACADEMY</strong><span>惟寻国际教育</span></div></div>
-      <nav class="legacy-nav"><div class="active">▣ 我的排课单</div><div>▤ 售前咨单</div><div>□ 班级管理</div><div>⌂ 教室资源</div><div>♙ 教师管理</div><div>▧ 课次明细</div></nav>
+      <nav class="legacy-nav" aria-label="主菜单"><button type="button" class="active" id="scheduleMenu">▣ 我的排课单</button><div>▤ 售前咨单</div><div>□ 班级管理</div><div>⌂ 教室资源</div><button type="button" class="legacy-parent-menu" id="teacherMenu" aria-expanded="false">♙ 教师管理 <span aria-hidden="true">⌄</span></button><div class="legacy-submenu" id="teacherSubmenu" hidden><button type="button" id="teacherScheduleMenu">教师排课管理</button></div><div>▧ 课次明细</div></nav>
     </aside>
     <main class="legacy-main">
       <header class="legacy-topbar"><h1>教务工作台</h1><div><span>通知 0</span><span class="legacy-avatar">李</span><span>李春玲</span><button>退出</button></div></header>
@@ -43,6 +45,7 @@
         <div class="legacy-fixed-actions"><div><strong>驳回排课单</strong><textarea placeholder="请输入驳回原因"></textarea><button class="reject-button">驳回</button></div><div><button class="legacy-primary" id="startScheduling">✦ 去排课</button><button>人工排课</button></div></div>
       </section>
       <section id="resultPage" class="formal-schedule-page" hidden></section>
+      <section id="teacherManagementPage" class="teacher-management-page" hidden aria-label="教师排课管理"><iframe id="teacherManagementFrame" title="教师排课管理" src="teacher-priority-management/index.html?embedded=1" loading="lazy"></iframe></section>
     </main>
   </div>
 
@@ -57,6 +60,8 @@
   <div class="teacher-load-backdrop" id="teacherLoadBackdrop" hidden></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="teacher-schedule-export.js"></script>
+  <script src="teacher-priority-recommendation.js"></script>
+  <script src="teacher-management.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
