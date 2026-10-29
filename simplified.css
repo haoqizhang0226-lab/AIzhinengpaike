@@ -1,0 +1,27 @@
+.page-heading{align-items:center;margin-bottom:14px}
+.page-heading h1{margin:0}
+.course-switcher{padding:10px 14px;min-height:56px}
+.rule-set-card{padding:15px 20px}
+.rule-set-main label{display:block;margin-bottom:5px;color:#7b8ea7;font-size:12px;font-weight:650}
+.rule-set-main input{display:block;width:min(420px,100%);height:39px;padding:0 10px;border:1px solid #d4e0ef;border-radius:6px;background:#fff;color:#1d3b60;font-size:17px;font-weight:700}
+.rule-set-main input:focus{outline:2px solid #aec9ee;border-color:#4d87d7}
+.coverage-metric span,.coverage-progress>span{font-size:12px}
+.mode-head{padding:16px 20px}
+.mode-title h2{margin:0}
+.rule-card{min-height:135px}
+.rule-card h3{margin:9px 0 4px}
+.priority-preview{margin:9px 0 12px}
+.rule-card-footer{justify-content:flex-end}
+.rule-card-footer button{font-size:13px}
+.drawer-context{display:flex;align-items:center;gap:12px}
+.drawer-context[hidden]{display:none!important}
+.drawer-context label{font-weight:650;color:#35516e}
+.drawer-context select{height:36px;min-width:190px;padding:0 9px;border:1px solid #cbd9e9;border-radius:5px;background:#fff;color:#35516e}
+.section-heading p,.selection-summary{display:none}
+.priority-row{grid-template-columns:34px minmax(170px,1fr) minmax(215px,1.2fr) 92px;gap:9px}
+.priority-options{grid-column:auto;display:flex;align-items:center;flex-wrap:nowrap;gap:10px;min-width:0;padding-top:0}
+.priority-options .approval-option{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;color:#607896;font-size:12px}
+.priority-options .approval-option.selected{color:#ae681d}
+.approval-text-input{flex:1;min-width:0;height:34px;padding:0 9px;border:1px solid #cad9e9;border-radius:5px;color:#35516e;background:#fff;font-size:12px}
+.approval-text-input:focus{outline:2px solid #a8c9f4;border-color:#3982ed}
+@media(max-width:680px){.priority-row{grid-template-columns:30px minmax(120px,1fr) 88px}.priority-options{grid-column:2/-1;grid-row:2}.rule-set-card{flex-wrap:wrap}.rule-set-actions{margin-left:auto}}
