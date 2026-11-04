@@ -1,0 +1,346 @@
+/* Confirmation and editing drawers follow the approved strategy design. */
+#modalBackdrop.flow-drawer-backdrop .wizard[data-step="2"] .wizard-header {
+  height: 60px;
+  justify-content: flex-start;
+  gap: 15px;
+  padding: 0 21px;
+  background: #fff;
+}
+.wizard[data-step="2"] .wizard-title { gap: 12px; min-width: 0; flex-wrap: wrap; }
+.wizard[data-step="2"] .wizard-icon { display: none; }
+#modalBackdrop.flow-drawer-backdrop .wizard[data-step="2"] #closeWizard {
+  order: -1;
+  width: 31px;
+  height: 31px;
+  border: 0;
+  border-radius: 2px;
+  background: #3489f2;
+  color: #fff;
+  font-size: 27px;
+  line-height: 1;
+  font-weight: 300;
+}
+.wizard[data-step="2"] .strategy-timezone-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg,#f2eaff,#e4f8ff);
+  color: #5a6d85;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.wizard[data-step="2"] .strategy-timezone-pill span { color: #546afb; }
+#modalBackdrop.flow-drawer-backdrop .wizard[data-step="2"] .wizard-body {
+  padding: 16px 20px 28px;
+  background: #f5faff;
+}
+#modalBackdrop.flow-drawer-backdrop .wizard[data-step="2"] .content-card {
+  margin: 0 0 18px;
+  border: 1px solid #edf2f8;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(37,76,130,.035);
+}
+#modalBackdrop.flow-drawer-backdrop .wizard[data-step="2"] .strategy-global-card { margin-bottom: 38px; }
+#modalBackdrop.flow-drawer-backdrop .wizard[data-step="2"] .content-card-header {
+  min-height: 60px;
+  justify-content: flex-start;
+  padding: 17px 19px 8px;
+  border: 0;
+}
+.wizard[data-step="2"] .strategy-global-card .content-card-header > strong::before {
+  content: "▦";
+  margin-right: 10px;
+  color: #367ffe;
+  font-size: 17px;
+}
+.wizard[data-step="2"] .course-analysis-title { gap: 7px; }
+.wizard[data-step="2"] .course-analysis-title > strong { margin: 0 8px 0 0; }
+.wizard[data-step="2"] .course-analysis-title > strong::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 16px;
+  margin-right: 7px;
+  border-radius: 3px;
+  background: linear-gradient(#7554ff,#118bff);
+  vertical-align: -3px;
+}
+#modalBackdrop.flow-drawer-backdrop .wizard[data-step="2"] .course-analysis-title .meta-chip {
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 3px;
+  background: #eaf3ff;
+  color: #5481bd;
+  font-size: 11px;
+  line-height: 1.35;
+  font-weight: 600;
+  box-shadow: none;
+}
+#modalBackdrop.flow-drawer-backdrop .wizard[data-step="2"] .course-analysis-title .lesson-duration-chip {
+  background: #f0ebff;
+  color: #7770b6;
+}
+#modalBackdrop.flow-drawer-backdrop .wizard[data-step="2"] .content-card-inner { padding: 0 15px 17px; }
+.wizard[data-step="2"] .analysis-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 54px;
+  padding: 13px 15px;
+  border: 0;
+  border-radius: 4px;
+  background: linear-gradient(105deg,#f0fbff,#f3fffb);
+  box-shadow: none;
+}
+.wizard[data-step="2"] .analysis-card::after {
+  content: "AI✦";
+  position: absolute;
+  right: 10px;
+  bottom: -16px;
+  color: rgba(95,139,240,.10);
+  font-size: 57px;
+  font-weight: 900;
+  font-style: italic;
+  line-height: 1;
+  pointer-events: none;
+}
+.wizard[data-step="2"] .analysis-card p {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: #70808c;
+  font-size: 12px;
+  line-height: 1.75;
+}
+.wizard[data-step="2"] .structure {
+  margin-top: 13px;
+  border: 1px solid #e9eff8;
+  border-radius: 5px;
+  overflow: visible;
+}
+.wizard[data-step="2"] .structure > summary {
+  min-height: 40px;
+  align-items: center;
+  padding: 10px 14px;
+  background: linear-gradient(90deg,#eafaff,#f4f1ff);
+  color: #2f3d54;
+  font-size: 13px;
+  font-weight: 700;
+}
+.wizard[data-step="2"] .structure > summary span::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 14px;
+  margin-right: 7px;
+  border-radius: 3px;
+  background: #4086f7;
+  vertical-align: -2px;
+}
+.wizard[data-step="2"] .structure > summary::after {
+  border-color: #3f76f7;
+  border-width: 2px;
+}
+.wizard[data-step="2"] .structure-body { padding: 10px; }
+.wizard[data-step="2"] .global-policy-card {
+  padding: 7px 4px 5px;
+  border: 0;
+}
+.wizard[data-step="2"] .global-policy-card .rule-grid { gap: 20px; }
+.wizard[data-step="2"] .global-policy-card .rule-grid input,
+.wizard[data-step="2"] .global-policy-card .rule-grid select { max-width: 260px; }
+.wizard[data-step="2"] .rule-grid label,
+.wizard[data-step="2"] .course-rule-control > span,
+.wizard[data-step="2"] .strategy-limit-heading strong {
+  color: #63707d;
+  font-size: 12px;
+  font-weight: 600;
+}
+.wizard[data-step="2"] .rule-grid input,
+.wizard[data-step="2"] .rule-grid select {
+  height: 35px;
+  margin-top: 7px;
+  border: 1px solid #dfe5ed;
+  border-radius: 3px;
+  background: #fff;
+  color: #556170;
+  font-size: 12px;
+}
+.wizard[data-step="2"] .rule-grid input:disabled,
+.wizard[data-step="2"] .rule-grid select:disabled { background: #fff; color: #57616d; opacity: 1; }
+.wizard[data-step="2"] .requirement-strategy-pair {
+  margin-bottom: 10px;
+  border: 1px solid #e8edf6;
+  border-radius: 4px;
+  overflow: visible;
+  box-shadow: 0 1px 5px rgba(41,73,121,.035);
+}
+.wizard[data-step="2"] .requirement-strategy-pair .structured-segment { padding: 13px 12px 14px; }
+.wizard[data-step="2"] .structured-segment-head { margin-bottom: 14px; }
+.wizard[data-step="2"] .structured-segment-head strong {
+  padding: 6px 14px;
+  border-radius: 3px;
+  background: linear-gradient(105deg,#7752ff,#078cff);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.2;
+}
+.wizard[data-step="2"] .segment-delete-button {
+  color: #5794ec;
+  font-size: 12px;
+}
+.wizard[data-step="2"] .segment-delete-button::before { content: "♜ "; }
+.wizard[data-step="2"] .requirement-strategy-pair .rule-grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 14px 18px;
+}
+.wizard[data-step="2"] .date-range-field { grid-column: span 2; }
+.wizard[data-step="2"] .date-range-inputs { max-width: 520px; }
+.wizard[data-step="2"] .date-range-inputs input { min-width: 0; }
+.wizard[data-step="2"] .date-range-field + label { max-width: 265px; }
+.wizard[data-step="2"] .completion-specific-fields {
+  grid-column: 1/-1;
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+}
+.wizard[data-step="2"] .completion-specific-fields > label,
+.wizard[data-step="2"] .completion-specific-fields > .course-rule-control,
+.wizard[data-step="2"] [data-course-day-cap] { max-width: 265px; }
+.wizard[data-step="2"] .completion-specific-fields > .frequency-rule-control { max-width: 540px; }
+.wizard[data-step="2"] .frequency-rule-inputs { flex-wrap: nowrap; }
+.wizard[data-step="2"] .frequency-rule-inputs select { flex: 0 0 175px; }
+.wizard[data-step="2"] .frequency-rule-inputs input { flex: 0 0 75px; }
+.wizard[data-step="2"] .time-rule-control { grid-column: 1/-1; }
+.wizard[data-step="2"] .course-time-rule-view-list,
+.wizard[data-step="2"] .course-time-slot-list { gap: 9px; margin-top: 7px; }
+.wizard[data-step="2"] .course-time-rule-view-row,
+.wizard[data-step="2"] .course-time-slot-row {
+  display: flex;
+  min-height: 39px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 5px 9px;
+  border: 0;
+  border-radius: 3px;
+  background: #eaf5ff;
+  color: #596776;
+}
+.wizard[data-step="2"] .course-time-rule-view-row > strong,
+.wizard[data-step="2"] .course-time-rule-view-row > span:not(.slot-regular-description) {
+  display: inline-flex;
+  min-height: 27px;
+  align-items: center;
+  padding: 3px 8px;
+  border: 1px solid #e0e7ef;
+  border-radius: 2px;
+  background: #fff;
+  color: #586370;
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+.wizard[data-step="2"] .course-time-rule-view-row > strong { flex: none; }
+.wizard[data-step="2"] .course-time-rule-view-row .slot-regular-description { padding-left: 7px; }
+.wizard[data-step="2"] .course-time-rule-view-row i { color: #8390a0; font-style: normal; }
+.wizard[data-step="2"] .course-time-slot-row { padding: 5px 9px; }
+.wizard[data-step="2"] .course-time-slot-details { flex: 1; }
+.wizard[data-step="2"] .course-time-slot-row select,
+.wizard[data-step="2"] .course-time-slot-row input,
+.wizard[data-step="2"] .weekday-picker > summary { height: 29px; font-size: 12px; }
+.wizard[data-step="2"] .course-time-slot-row > select[data-time-rule-type] { flex-basis: 88px; }
+.wizard[data-step="2"] .course-time-slot-row .weekday-picker { flex-basis: 170px; }
+.wizard[data-step="2"] .course-time-slot-row .course-regular-time { padding-left: 8px; }
+.wizard[data-step="2"] .course-time-slot-row button[data-remove-time-slot] {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: #3e8cf1;
+  font-size: 21px;
+}
+.wizard[data-step="2"] .course-add-time-slot,
+.wizard[data-step="2"] .strategy-limit-add {
+  margin-top: 7px;
+  padding: 0;
+  min-height: 28px;
+  border: 0;
+  background: transparent;
+  color: #4a95ef;
+  font-size: 12px;
+}
+.wizard[data-step="2"] [data-course-day-cap] { grid-column: 1/-1; }
+.wizard[data-step="2"] .strategy-limit-module {
+  margin-top: 13px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.wizard[data-step="2"] .strategy-limit-heading { margin-bottom: 7px; }
+.wizard[data-step="2"] .strategy-limit-edit-row,
+.wizard[data-step="2"] .unavailable-view-row {
+  min-height: 40px;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 9px;
+  border: 0;
+  border-radius: 3px;
+  background: #f4f4f4;
+}
+.wizard[data-step="2"] .unavailable-view-row .unavailable-view-value {
+  min-height: 27px;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border: 1px solid #e3e6ea;
+  border-radius: 2px;
+  background: #fff;
+  color: #69727e;
+  font-size: 12px;
+}
+.wizard[data-step="2"] .unavailable-view-row i { color: #8a939e; font-style: normal; }
+.wizard[data-step="2"] .strategy-limit-edit-row .unavailable-field {
+  flex: 0 1 145px;
+  gap: 0;
+  font-size: 0;
+}
+.wizard[data-step="2"] .strategy-limit-edit-row .unavailable-field > span { display: none; }
+.wizard[data-step="2"] .strategy-limit-edit-row .unavailable-mode-field { flex-basis: 110px; }
+.wizard[data-step="2"] .strategy-limit-edit-row .unavailable-time-inputs { flex: 0 1 220px; align-items: center; }
+.wizard[data-step="2"] .strategy-limit-edit-row input,
+.wizard[data-step="2"] .strategy-limit-edit-row select,
+.wizard[data-step="2"] .strategy-limit-edit-row .weekday-picker > summary { height: 30px; font-size: 12px; }
+.wizard[data-step="2"] .strategy-limit-edit-row button[data-remove-unavailable-time] {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: #3e8cf1;
+  font-size: 21px;
+}
+.wizard[data-step="2"] .course-add-strategy {
+  display: block;
+  width: 100%;
+  min-height: 38px;
+  border: 0;
+  border-radius: 3px;
+  background: linear-gradient(90deg,#e6faff,#eeeaff);
+  color: #4a83ed;
+  font-size: 12px;
+  font-weight: 700;
+}
+.wizard[data-step="2"] .course-add-strategy:hover { background: linear-gradient(90deg,#d9f3ff,#e4ddff); }
+@media (max-width: 780px) {
+  .wizard[data-step="2"] .requirement-strategy-pair .rule-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .wizard[data-step="2"] .date-range-field { grid-column: 1/-1; }
+  .wizard[data-step="2"] .requirement-strategy-pair .rule-grid > label:nth-child(2) { grid-column: 1/-1; }
+}
+@media (max-width: 560px) {
+  .wizard[data-step="2"] .requirement-strategy-pair .rule-grid,
+  .wizard[data-step="2"] .global-policy-card .rule-grid { grid-template-columns: 1fr; }
+  .wizard[data-step="2"] .date-range-field,
+  .wizard[data-step="2"] .completion-specific-fields { grid-column: 1; }
+}

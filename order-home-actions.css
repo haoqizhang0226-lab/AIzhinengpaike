@@ -1,0 +1,76 @@
+/* 排课单首页底部按钮，按参考图设置；不影响正式排课页按钮。 */
+#orderPage .legacy-fixed-actions {
+  min-height: 64px;
+  padding: 10px 20px;
+  border-top: 1px solid #dfe5ed;
+  background: #fff;
+  gap: 14px;
+}
+#orderPage .legacy-fixed-actions > div { gap: 12px; }
+#orderPage .legacy-fixed-actions > div:first-child { flex: 1; min-width: 0; }
+#orderPage .legacy-fixed-actions > div:last-child { flex: none; }
+#orderPage .legacy-fixed-actions > div:first-child > strong { flex: none; }
+#orderPage .legacy-fixed-actions textarea {
+  flex: 1;
+  min-width: 100px;
+  max-width: 480px;
+  height: 40px;
+  padding: 8px 11px;
+  border: 1px solid #d6dde7;
+  border-radius: 5px;
+  resize: none;
+  color: #46566a;
+  background: #fff;
+}
+#orderPage .legacy-fixed-actions button {
+  flex: none;
+  min-height: 38px;
+  height: 38px;
+  border-radius: 5px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0;
+  transition: filter .15s ease, box-shadow .15s ease;
+}
+#orderPage .legacy-fixed-actions button:hover { filter: brightness(.97); }
+#orderPage .legacy-fixed-actions button:focus-visible { outline: 3px solid #8fbaff; outline-offset: 2px; }
+#orderPage .legacy-fixed-actions .reject-button {
+  width: 108px;
+  padding: 0;
+  border: 0;
+  background: #ff4c52;
+  color: #fff;
+}
+#orderPage .legacy-fixed-actions .legacy-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 130px;
+  padding: 0;
+  border: 0;
+  background: linear-gradient(105deg, #6742fc 0%, #2879ff 58%, #078bff 100%);
+  color: #fff;
+  white-space: nowrap;
+}
+#orderPage .legacy-fixed-actions .smart-sparkle { position: relative; font-size: 13px; line-height: 1; }
+#orderPage .legacy-fixed-actions .smart-sparkle::after { content: '✦'; position: absolute; right: -4px; top: -4px; font-size: 7px; }
+#orderPage .legacy-fixed-actions .legacy-manual {
+  width: 106px;
+  padding: 0;
+  border: 1px solid #d0d9e5;
+  background: #fff;
+  color: #6b7179;
+  white-space: nowrap;
+}
+@media (max-width: 1000px) {
+  #orderPage .legacy-fixed-actions { gap: 10px; padding-inline: 15px; }
+  #orderPage .legacy-fixed-actions > div { gap: 9px; }
+  #orderPage .legacy-fixed-actions > div:first-child > strong { display: none; }
+}
+@media (max-width: 600px) {
+  #orderPage .legacy-fixed-actions { min-height: 58px; padding: 8px 10px; }
+  #orderPage .legacy-fixed-actions .legacy-primary { width: 120px; }
+  #orderPage .legacy-fixed-actions .legacy-manual { width: 98px; }
+  #orderPage .legacy-fixed-actions button { font-size: 13px; }
+}
