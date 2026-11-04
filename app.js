@@ -1886,7 +1886,7 @@
   });
   if(flowOrder)$('#salesWorkspaceTab').addEventListener('click',event=>{
     event.preventDefault();
-    location.href=`../index.html?order=${flowOrder.id}#flow-return=${encodeURIComponent(JSON.stringify(flowOrder))}`;
+    location.href=`sales.html?order=${flowOrder.id}#flow-return=${encodeURIComponent(JSON.stringify(flowOrder))}`;
   });
   renderOrder();
   if(priorityPreviewRules) {

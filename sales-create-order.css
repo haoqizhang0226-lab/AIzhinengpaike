@@ -1,0 +1,58 @@
+.create-order-page{position:fixed;inset:0;z-index:50;background:#fff;color:#333;font-size:12px}
+.create-order-page form{height:100%;display:flex;flex-direction:column}
+.create-order-header{height:46px;min-height:46px;border:1px solid #e5e8ed;border-bottom-color:#e8ebef;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:14px}
+.create-order-header strong{font-weight:700}
+.create-close{border:0;background:none;color:#949aa3;font-size:25px;font-weight:300;line-height:1;padding:0 3px}
+.create-order-body{flex:1;min-height:0;overflow:auto;padding:19px 41px 26px 26px;scrollbar-color:#bfc9d7 #f7f9fc;scrollbar-width:thin}
+.create-student-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(5,24px);row-gap:20px;border-bottom:1px solid #d8dee8;padding-bottom:17px}
+.create-student-item{display:flex;align-items:center;min-width:0;gap:9px;white-space:nowrap}
+.create-label{color:#6c7179;min-width:65px}
+.create-colon{color:#525861}
+.student-name-input{width:162px;height:26px;border:1px solid #d6dfec;border-radius:3px;color:#69717e;padding:0 10px;background:#fff;font-size:11px}
+.create-course-section{padding-top:20px}
+.create-order-body h2{font-size:13px;margin:0 0 10px;font-weight:700;color:#373b42}
+.course-package-line{display:flex;align-items:center;gap:15px;height:30px;color:#70747c}
+.course-package-line select{width:226px;height:26px;border:1px solid #d9e0e9;border-radius:3px;background:#fff;color:#e39716;padding:0 12px;font-size:11px}
+.create-gold-tag{background:#eaa02c;color:#fff;border-radius:10px;font-weight:700;height:20px;padding:2px 11px;font-size:10px}
+.course-hours-summary{height:81px;margin-top:21px;background:#eaf3ff;border-radius:4px;display:flex;align-items:center;padding:0 0 0 10px}
+.course-hours-summary>div{width:117px;height:52px;border-right:1px solid #bfcde0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#70747b}
+.course-hours-summary>div:last-child{border-right:0}
+.course-hours-summary strong{font-size:17px;color:#363a42}
+.included-heading{height:54px;display:flex;align-items:center;gap:246px;color:#61666e}
+.included-heading .create-blue-btn{margin-left:auto}
+.create-blue-btn{height:26px;border:1px solid #3488f6;border-radius:2px;background:#3488f6;color:#fff;padding:0 14px;font-size:11px}
+.create-course-table-scroll{overflow-x:auto}
+.create-course-table{width:100%;min-width:1793px;table-layout:fixed;border-collapse:collapse;font-size:11px;color:#1e232b}
+.create-course-table th,.create-course-table td{border:1px solid #e5eaf1;text-align:center;vertical-align:middle;padding:4px 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.create-course-table th{height:36px;font-weight:700;background:#fff;color:#111}
+.create-course-table td{height:57px}
+.create-course-table tbody tr:nth-child(even){background:#eaf3ff}
+.create-cell-select,.teacher-input{height:25px;max-width:100%;border:1px solid #d6dfeb;border-radius:3px;background:#fff;color:#676f7c;padding:0 7px;font-size:11px}
+.create-cell-select{width:100%}
+.teacher-input{width:126px}
+.hours-stepper{height:26px;display:inline-flex;align-items:center;border:1px solid #d6dfeb;border-radius:3px;background:#fff;overflow:hidden}
+.hours-stepper button{height:24px;width:24px;border:0;background:#f5f6f8;color:#8d98a7;font-size:15px}
+.hours-stepper input{height:24px;width:40px;border:0;border-left:1px solid #e3e7ee;border-right:1px solid #e3e7ee;text-align:center;color:#545b66;font-size:11px}
+.remove-course{border:1px solid #a9caff;border-radius:50%;width:20px;height:20px;line-height:16px;padding:0;background:#eaf3ff;color:#3788f9;font-size:17px}
+.create-date-row{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:16px;height:35px}
+.create-date-row label,.create-type-row label{display:flex;align-items:center;gap:7px;color:#656a72}
+.required{color:#fa666b}
+.date-control{height:29px;width:198px;border:1px solid #d7e0ec;border-radius:3px;display:flex;align-items:center;gap:7px;padding:0 9px;color:#bac4d1}
+.date-control input{width:152px;height:25px;border:0;outline:none;color:#6a7078;font-size:11px}
+.create-type-row{height:45px;display:flex;align-items:center}
+.create-type-row select{width:198px;height:30px;border:1px solid #d7e0ec;border-radius:3px;color:#6c7078;background:#fff;padding:0 10px;font-size:11px}
+.create-time-row{height:45px;display:flex;align-items:center;gap:8px;color:#6a6e76}
+.create-time-row label{display:flex;align-items:center;gap:8px;margin-left:7px;cursor:pointer}
+.create-time-row input{accent-color:#3488f6;margin:0}
+.create-time-row label:has(input:checked){color:#3184f1}
+.create-requirement{position:relative}
+.create-requirement textarea{display:block;width:100%;height:100px;resize:vertical;border:1px solid #d9e0e9;border-radius:3px;background:#fff;padding:11px 12px 25px;color:#626973;font:inherit;outline:none}
+.create-requirement textarea:focus{border-color:#71a9f6}
+.create-requirement span{position:absolute;right:9px;bottom:9px;color:#aab2bd;font-size:11px}
+.create-other-section{margin-top:15px;border-top:1px solid #d9dfe8;padding-top:21px;min-height:75px}
+.create-order-footer{height:48px;min-height:48px;display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:0 12px;border-top:1px solid #e2e7ed;background:#fff}
+.create-order-footer button{height:28px;padding:0 14px;border-radius:3px;font-size:11px}
+.create-cancel{border:1px solid #d8e0ec;background:#fff;color:#687383}
+.create-submit{border:1px solid #3487f3;background:#3487f3;color:#fff}
+.create-order-footer button:hover,.create-blue-btn:hover{filter:brightness(.97)}
+@media(max-width:1500px){.create-course-table{min-width:1750px}.included-heading{gap:150px}.create-order-body{padding-right:26px}}
