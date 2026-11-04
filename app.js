@@ -9,8 +9,9 @@
         if(order?.submission&&Array.isArray(order.submission.courses))return order;
       }
       const saved=JSON.parse(localStorage.getItem('teacher-scheduling-v3-full-flow-orders')||'[]');
-      return Array.isArray(saved)?saved.find(order=>order?.submission&&Array.isArray(order.submission.courses))||null:null;
-    }catch{return null}
+      return (Array.isArray(saved)?saved.find(order=>order?.submission&&Array.isArray(order.submission.courses)):null)
+        ||{id:1,course:'授课反馈产品验收-英联邦学科-ALEVEL-商务&会计-1v1-新增',...window.smartSchedulingV3DemoOrder};
+    }catch{return {id:1,course:'授课反馈产品验收-英联邦学科-ALEVEL-商务&会计-1v1-新增',...window.smartSchedulingV3DemoOrder}}
   })();
   const flowSubmission=flowOrder?.submission;
   const flowStudentName=flowSubmission?.student||'托福组合排课测试学生';
@@ -489,12 +490,17 @@
     else renderCompletedPlan();
     $('#wizardBody').scrollTop=0;
   }
-  function supplementTeacherCard(course) {
+  function strategyTeacherAssignment(course) {
     const selected=state.direct[course.id];
     const editing=state.editingSpecifiedCourseId===course.id;
     const input=`<input class="teacher-input" data-specified-input="${course.id}" placeholder="输入老师姓名或工号" aria-label="${escapeHtml(course.name)}指定排课老师"><button type="button" class="supplement-specify-button" data-set-specified="${course.id}">指定</button>${editing?'<button type="button" class="btn btn-quiet" data-cancel-specified-change>取消</button>':''}`;
     const chosen=`<span class="specified-teacher-tag">${escapeHtml(selected)}<button type="button" data-clear-specified="${course.id}" aria-label="取消指定${escapeHtml(selected)}">×</button></span><span class="supplement-specified-state">✓ 已指定</span>`;
-    return `<div class="course-mini" data-course="${course.id}"><div class="course-mini-head"><strong>${escapeHtml(course.name)}</strong><span class="meta-chip">${course.hours}课时</span><span class="meta-chip">${escapeHtml(course.mode)}</span><span class="meta-chip">${escapeHtml(course.campus)}</span></div><div class="teacher-line"><span>当前授课老师</span><div class="teacher-list">${course.history.filter(h=>h[1]==='当前').map(h=>`<button type="button" class="teacher-choice ${selected===h[0]?'selected':''}" data-pick-history="${course.id}" data-teacher="${escapeHtml(h[0])}">${escapeHtml(h[0])}</button>`).join('')||'—'}</div></div><div class="teacher-line"><span>历史授课老师</span><div class="teacher-list">${course.history.filter(h=>h[1]==='历史').map(h=>`<button type="button" class="teacher-choice ${selected===h[0]?'selected':''}" data-pick-history="${course.id}" data-teacher="${escapeHtml(h[0])}">${escapeHtml(h[0])}</button>`).join('')||'—'}</div></div><div class="teacher-line specified-teacher-line"><span>指定排课老师</span><div class="specified-teacher-control">${selected&&!editing?chosen:input}</div></div></div>`;
+    return `<div class="strategy-teacher-assignment" data-strategy-teacher-course="${course.id}"><strong class="strategy-teacher-heading">指定授课老师</strong><div class="teacher-line"><span>当前授课老师</span><div class="teacher-list">${course.history.filter(h=>h[1]==='当前').map(h=>`<button type="button" class="teacher-choice ${selected===h[0]?'selected':''}" data-pick-history="${course.id}" data-teacher="${escapeHtml(h[0])}">${escapeHtml(h[0])}</button>`).join('')||'—'}</div></div><div class="teacher-line"><span>历史授课老师</span><div class="teacher-list">${course.history.filter(h=>h[1]==='历史').map(h=>`<button type="button" class="teacher-choice ${selected===h[0]?'selected':''}" data-pick-history="${course.id}" data-teacher="${escapeHtml(h[0])}">${escapeHtml(h[0])}</button>`).join('')||'—'}</div></div><div class="teacher-line specified-teacher-line"><span>指定排课老师</span><div class="specified-teacher-control">${selected&&!editing?chosen:input}</div></div></div>`;
+  }
+  function refreshStrategyTeacher(courseId) {
+    const host=$(`[data-strategy-teacher-course="${courseId}"]`);
+    const course=courses.find(item=>item.id===courseId);
+    if(host&&course)host.outerHTML=strategyTeacherAssignment(course);
   }
   function resolveSpecifiedTeacher(value) {
     const input=value.trim().replaceAll('（','(').replaceAll('）',')');
@@ -505,7 +511,6 @@
   function renderSupplement() {
     const knownTimezone=scheduleTimezoneOptions.some(([id])=>id===state.scheduleTimezone);
     const calendarIcon='<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4" width="14" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 2.5v4M13.5 2.5v4M3 8h14" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="6" y="10.5" width="2.5" height="2.5" rx=".3" fill="currentColor"/><rect x="11" y="10.5" width="2.5" height="2.5" rx=".3" fill="currentColor"/></svg>';
-    const teacherIcon='<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="6" r="3.5" fill="currentColor"/><path d="M2.5 17c0-3.6 2.5-5.5 6.5-5.5s6.5 1.9 6.5 5.5" fill="currentColor"/><path d="M16 11v6M13 14h6" stroke="currentColor" stroke-width="1.8"/></svg>';
     const uploadIcon='<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="currentColor"/><path d="M10 5.5v9M5.5 10h9" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>';
     $('#wizardBody').innerHTML=`${state.aiAnalysisError?`<section class="supplement-ai-error ai-analysis-error" role="alert"><strong>AI分析结果：</strong><p>${escapeHtml(state.aiAnalysisError)}</p></section>`:''}
       <section class="supplement-panel supplement-main-panel"><header class="supplement-panel-header"><h3><span class="supplement-heading-icon">${calendarIcon}</span>排课单信息</h3><span class="supplement-origin-badge">内容来自排课单</span></header>
@@ -518,8 +523,7 @@
         <div class="supplement-section-divider"></div><div class="supplement-panel-content"><h3 class="supplement-subheading"><span class="supplement-heading-icon">${uploadIcon}</span>补充排课要求</h3>
           <div class="supplement-text-wrap"><textarea id="supplementInput" maxlength="2000" placeholder="可以输入文字，或上传文件补充排课要求">${escapeHtml(state.supplement)}</textarea><span class="supplement-character-count" id="supplementCharacterCount">${state.supplement.length}/2000</span></div>
           <button type="button" class="supplement-upload-zone" id="supplementDropZone" data-choose-supplement><span class="supplement-upload-action">${uploadIcon}上传图片</span><span class="supplement-upload-divider"></span><span class="supplement-upload-description">点击上传补充信息或将文件拖拽到此处，只支持图片</span></button><input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
-          ${state.files.length?`<div class="supplement-file-list">${state.files.map((name,index)=>`<div class="supplement-file-row"><span class="supplement-file-icon">▤</span><span class="supplement-file-name">${escapeHtml(name)}</span><button type="button" data-remove-supplement-file="${index}" aria-label="删除${escapeHtml(name)}">×</button></div>`).join('')}</div>`:''}</div></section>
-      <section class="supplement-panel supplement-teachers-panel"><header class="supplement-panel-header"><h3><span class="supplement-heading-icon">${teacherIcon}</span>指定授课老师</h3><span class="supplement-specified-count">已指定：<b>${Object.keys(state.direct).length}</b>/${courses.length}</span></header><div class="supplement-teacher-grid">${courses.map(supplementTeacherCard).join('')}</div></section>`;
+          ${state.files.length?`<div class="supplement-file-list">${state.files.map((name,index)=>`<div class="supplement-file-row"><span class="supplement-file-icon">▤</span><span class="supplement-file-name">${escapeHtml(name)}</span><button type="button" data-remove-supplement-file="${index}" aria-label="删除${escapeHtml(name)}">×</button></div>`).join('')}</div>`:''}</div></section>`;
     $('#wizardFooter').innerHTML='<button class="btn" data-close>取消</button><button class="btn btn-primary" data-analyze>AI分析排课要求</button>';
   }
   function renderRequirementConversation() {
@@ -1082,7 +1086,7 @@
     title.closest('.wizard-header').querySelector('.strategy-timezone-pill')?.remove();
     title.parentElement.insertAdjacentHTML('afterend',`<span class="strategy-timezone-pill"><span aria-hidden="true">◉</span> 上课时区：${escapeHtml(scheduleTimezoneLabel(state.scheduleTimezone))}</span>`);
     $('#wizardBody').innerHTML=`<section class="content-card analysis-section strategy-global-card"><div class="content-card-header"><strong>全局排课策略</strong>${state.dirty?'<small>已修改 · 待校验</small>':''}</div><div class="content-card-inner"><div class="analysis-card"><p>根据AI分析结果：${escapeHtml(globalAnalysisSummary())}</p></div><details class="structure"${policyOpen}><summary><span>排课策略</span></summary><div class="structure-body">${globalStructure()}</div></details></div></section>
-      ${courses.map(c=>`<section class="content-card analysis-section strategy-course-card"><div class="content-card-header"><div class="course-analysis-title"><strong>${c.name}</strong><span class="meta-chip">${c.hours}课时</span><span class="meta-chip">${escapeHtml(c.mode)}</span><span class="meta-chip">${escapeHtml(c.campus)}</span>${courseLessonDurationChips(c)}<span class="meta-chip">${courseLessonTotal(c)}节</span></div></div><div class="content-card-inner"><div class="analysis-card"><p>根据AI分析结果：${escapeHtml(state.aiSnapshot.courses[c.id])}</p></div><details class="structure"${policyOpen}><summary><span>排课策略</span></summary>${courseStructure(c)}</details></div></section>`).join('')}`;
+      ${courses.map(c=>`<section class="content-card analysis-section strategy-course-card"><div class="content-card-header"><div class="course-analysis-title"><strong>${c.name}</strong><span class="meta-chip">${c.hours}课时</span><span class="meta-chip">${escapeHtml(c.mode)}</span><span class="meta-chip">${escapeHtml(c.campus)}</span>${courseLessonDurationChips(c)}<span class="meta-chip">${courseLessonTotal(c)}节</span></div></div><div class="content-card-inner"><div class="analysis-card"><p>根据AI分析结果：${escapeHtml(state.aiSnapshot.courses[c.id])}</p></div>${strategyTeacherAssignment(c)}<details class="structure"${policyOpen}><summary><span>排课策略</span></summary>${courseStructure(c)}</details></div></section>`).join('')}`;
     $('#wizardFooter').innerHTML=`<button class="btn" data-back-supplement>补充排课要求</button><button class="btn btn-quiet" data-toggle-edit>${state.editing?'退出编辑':'编辑排课策略'}</button>${state.editing?'<button class="btn btn-primary" data-save-rules>校验并保存策略</button>':'<button class="btn btn-primary" data-recommend>生成学生排课计划并推荐教师</button>'}`;
   }
   function renderCandidate(course,teacher,specified=false,tier=null,knownCoverage=null) {
@@ -1723,19 +1727,20 @@
     if(button.id==='viewConfirmedRequirements') { state.editing=false;openWizard(2);return; }
     if(button.id==='closeWizard'||button.hasAttribute('data-close')) {closeWizard();return;}
     if(button.hasAttribute('data-restart-plan')) {openWizard(1);return;}
-    if(button.hasAttribute('data-pick-history')) {state.direct[button.dataset.pickHistory]=button.dataset.teacher;state.editingSpecifiedCourseId=null;refreshSupplement();return;}
-    if(button.hasAttribute('data-change-specified')) {state.editingSpecifiedCourseId=button.dataset.changeSpecified;refreshSupplement();return;}
-    if(button.hasAttribute('data-cancel-specified-change')) {state.editingSpecifiedCourseId=null;refreshSupplement();return;}
+    if(button.hasAttribute('data-pick-history')) {const id=button.dataset.pickHistory;state.direct[id]=button.dataset.teacher;delete state.selected[id];state.editingSpecifiedCourseId=null;refreshStrategyTeacher(id);return;}
+    if(button.hasAttribute('data-change-specified')) {const id=button.dataset.changeSpecified;state.editingSpecifiedCourseId=id;refreshStrategyTeacher(id);return;}
+    if(button.hasAttribute('data-cancel-specified-change')) {const id=state.editingSpecifiedCourseId;state.editingSpecifiedCourseId=null;refreshStrategyTeacher(id);return;}
     if(button.hasAttribute('data-set-specified')) {
       const id=button.dataset.setSpecified;
       const teacher=resolveSpecifiedTeacher($(`[data-specified-input="${id}"]`).value);
       if(!teacher) {notify('请输入已有老师的姓名或工号，其他老师请填写姓名(工号)');return;}
       state.direct[id]=teacher;
+      delete state.selected[id];
       state.editingSpecifiedCourseId=null;
-      refreshSupplement();
+      refreshStrategyTeacher(id);
       return;
     }
-    if(button.hasAttribute('data-clear-specified')) {delete state.direct[button.dataset.clearSpecified];state.editingSpecifiedCourseId=null;refreshSupplement();return;}
+    if(button.hasAttribute('data-clear-specified')) {const id=button.dataset.clearSpecified;delete state.direct[id];state.editingSpecifiedCourseId=null;refreshStrategyTeacher(id);return;}
     if(button.hasAttribute('data-confirm-conflict-option')) {submitRequirementConversation(button.dataset.confirmConflictOption);return;}
     if(button.hasAttribute('data-send-conflict-message')) {submitRequirementConversation($('#requirementChatInput')?.value);return;}
     if(button.hasAttribute('data-analyze')) {
@@ -1886,7 +1891,7 @@
   });
   if(flowOrder)$('#salesWorkspaceTab').addEventListener('click',event=>{
     event.preventDefault();
-    location.href=`sales.html?order=${flowOrder.id}#flow-return=${encodeURIComponent(JSON.stringify(flowOrder))}`;
+    location.href=`index.html?order=${flowOrder.id}#flow-return=${encodeURIComponent(JSON.stringify(flowOrder))}`;
   });
   renderOrder();
   if(priorityPreviewRules) {

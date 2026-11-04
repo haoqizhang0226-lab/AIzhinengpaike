@@ -10,6 +10,7 @@ const orders = [
   {id:9,course:'授课反馈产品验收-英联邦学科-ALEVEL-会计-1v1-新增',created:'2026-10-20 13:07:55',type:'1V1排课单',attribute:'新增排课单',handler:'李春玲',status:'已完成',finished:'2026-10-20 13:15:14',applicant:'李春玲',start:'2026-10-24'},
   {id:10,course:'授课反馈产品验收-英联邦学科-ALEVEL-商务-1v1-新增',created:'2026-10-20 13:04:37',type:'1V1排课单',attribute:'新增排课单',handler:'李春玲',status:'已驳回',finished:'2026-10-22 18:04:18',applicant:'李春玲',action:'重新申请',start:'2026-10-24'}
 ];
+Object.assign(orders[0],window.smartSchedulingV3DemoOrder);
 // 首页十条按设计稿录入；其余页使用同结构的演示记录，便于检验分页交互。
 const allOrders=orders.concat(Array.from({length:2014},(_,i)=>({...orders[(i+1)%orders.length],id:i+11})));
 const demoOrderStorageKey='teacher-scheduling-v3-full-flow-orders';
@@ -118,7 +119,7 @@ $('applyFilters').onclick=()=>{readFilters();state.page=1;renderList()};$('reset
 
 $('closeOrderDrawer').onclick=()=>showList();
 function educatorWorkspaceHref(order){
-  return order?.submission?`index.html#flow-order=${encodeURIComponent(JSON.stringify(order))}`:'index.html';
+  return order?.submission?`educator.html#flow-order=${encodeURIComponent(JSON.stringify(order))}`:'educator.html';
 }
 $('educatorWorkspaceTab').onclick=event=>{
   const order=allOrders.find(item=>item.id===state.currentOrderId&&item.submission)||allOrders.find(item=>item.submission);
