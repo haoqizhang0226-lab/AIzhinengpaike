@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>智能排课V3.0完整流程｜顾问发起</title>
-  <link rel="stylesheet" href="sales-styles.css">
-  <link rel="stylesheet" href="sales-detail-drawer.css">
-  <link rel="stylesheet" href="sales-create-order.css">
-  <link rel="stylesheet" href="sales-precheck.css">
-  <link rel="stylesheet" href="sales-flow-integration.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="detail-drawer.css">
+  <link rel="stylesheet" href="create-order.css">
+  <link rel="stylesheet" href="precheck.css">
+  <link rel="stylesheet" href="flow-integration.css">
   <link rel="stylesheet" href="workspace-tabs.css">
   <link rel="stylesheet" href="workspace-unified.css">
 </head>
@@ -42,7 +42,7 @@
 
   <div class="workspace">
     <header class="topbar">
-      <div class="top-left"><span class="refresh" aria-hidden="true">⟳</span><nav class="workspace-tabs" aria-label="工作台切换"><a class="workspace-tab active" href="index.html" aria-current="page">销售工作台</a><a class="workspace-tab" id="educatorWorkspaceTab" href="educator.html">教务工作台</a></nav></div>
+      <div class="top-left"><span class="refresh" aria-hidden="true">⟳</span><nav class="workspace-tabs" aria-label="工作台切换"><a class="workspace-tab active" href="index.html" aria-current="page">销售工作台</a><a class="workspace-tab" id="educatorWorkspaceTab" href="教务端/index.html">教务工作台</a></nav></div>
       <div class="top-announcement"><span class="bell-blue">♟</span><strong>今日您有 <em>0</em> 个客户生日</strong><span class="ann-sep">|</span><strong>当日首课 <em>0</em> 人 · 一周内首课 <em>0</em> 人</strong><span class="ann-sep">|</span><strong>线索量： A: 795 B: 263（不受助分配 28、影响分配 235）</strong></div>
       <div class="top-right"><span class="orange-app">薪心</span><span class="top-icon with-count">♧<b>99+</b></span><span class="top-icon with-count">⇩<b>0</b></span><span class="top-icon with-count">⇧<b>0</b></span><span class="top-avatar">A</span><span>李春玲</span><a href="#" class="logout" onclick="return false">退出</a></div>
     </header>
@@ -71,7 +71,7 @@
     <div class="order-drawer-header"><button class="order-drawer-close" id="closeOrderDrawer" aria-label="关闭排课单详情">×</button><strong id="drawerTitle">1V1排课单详情</strong><button type="button" class="handoff-educator" id="handoffEducator" hidden>转入教务处理 →</button></div>
     <div class="order-drawer-body">
       <section class="student-card"><div class="student-card-header"><strong>学生信息</strong><button type="button" class="decrypt-button" id="decryptButton">♙解密</button></div><div class="student-card-fields" id="studentFields"></div></section>
-      <div class="order-drawer-main"><section class="drawer-card course-card"><div class="drawer-card-title"><strong>课程信息</strong><span class="gold-badge">★ 金牌</span></div><div class="course-table-wrap"><table class="drawer-course-table"><colgroup><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:188px"><col style="width:145px"><col style="width:72px"><col style="width:160px"></colgroup><thead><tr><th>课程项</th><th>班型</th><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>授课模式</th><th>校区</th><th>课时</th><th>历史授课老师</th><th>当前授课老师</th><th>老师时间<br>是否已沟通</th><th>学生成绩</th></tr></thead><tbody id="detailCourses"></tbody></table></div></section><section class="drawer-card order-info-card"><div class="drawer-card-title"><strong>排课单详情</strong></div><div class="order-info-grid" id="detailOrderInfo"></div></section><section class="drawer-card precheck-supplement-card" id="detailSupplementCard" hidden><div class="drawer-card-title"><strong>补充排课要求</strong></div><div class="precheck-supplement-list" id="detailSupplementList"></div></section></div>
+      <div class="order-drawer-main"><section class="drawer-card course-card"><div class="drawer-card-title"><strong>课程信息</strong><span class="gold-badge">★ 金牌</span></div><div class="course-table-wrap"><table class="drawer-course-table"><colgroup><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:188px"><col style="width:145px"><col style="width:72px"><col style="width:160px"></colgroup><thead><tr><th>课程项</th><th>班型</th><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>授课模式</th><th>校区</th><th>课时</th><th>历史授课老师</th><th>当前授课老师</th><th>老师时间<br>是否已沟通</th><th>学生成绩</th></tr></thead><tbody id="detailCourses"></tbody></table></div></section><section class="drawer-card order-info-card"><div class="drawer-card-title"><strong>排课单详情</strong></div><div class="order-info-grid" id="detailOrderInfo"></div></section><section class="drawer-card ai-detection-card" id="detailAiCard" hidden><div class="drawer-card-title"><strong>AI检测结果</strong></div><div class="ai-detection-body"><span class="ai-detection-status" id="detailAiStatus"></span><button type="button" class="ai-detection-action" id="detailAiAction" hidden>查看并补充 →</button></div></section><section class="drawer-card precheck-supplement-card" id="detailSupplementCard" hidden><div class="drawer-card-title"><strong>补充排课要求</strong></div><div class="precheck-supplement-list" id="detailSupplementList"></div></section></div>
     </div>
   </aside>
   <section class="create-order-page" id="createOrderPage" role="dialog" aria-modal="true" aria-label="新增1V1排课单" hidden>
@@ -104,18 +104,23 @@
       <div class="create-order-footer"><button type="button" class="create-cancel" id="cancelCreateOrder">取消</button><button type="submit" class="create-submit">申请</button></div>
     </form>
   </section>
-  <button type="button" class="ai-precheck-fab" id="aiPrecheckFab" aria-label="查看AI排课提示" title="AI排课提示" hidden><img src="sales-ai-dialog-avatar.png" alt="" aria-hidden="true"><span class="ai-fab-dot" id="aiPrecheckDot" hidden></span></button>
+  <button type="button" class="ai-precheck-fab" id="aiPrecheckFab" aria-label="查看AI排课提示" title="AI排课提示" hidden><img src="ai-dialog-avatar.png" alt="" aria-hidden="true"><span class="ai-fab-dot" id="aiPrecheckDot" hidden></span></button>
   <div class="ai-precheck-backdrop" id="aiPrecheckBackdrop" hidden></div>
   <aside class="ai-precheck-drawer" id="aiPrecheckDrawer" role="dialog" aria-modal="true" aria-label="AI排课提示" hidden>
-    <div class="ai-precheck-header"><div><img class="ai-precheck-icon" src="sales-ai-dialog-avatar.png" alt="" aria-hidden="true"><strong>AI排课提示</strong></div><button type="button" id="closeAiPrecheck" aria-label="关闭AI排课提示">×</button></div>
-    <div class="ai-precheck-body">
-      <section class="ai-precheck-card ai-precheck-order-card"><div class="ai-precheck-order-switch"><label for="aiPrecheckOrderSelect">切换排课单</label><select id="aiPrecheckOrderSelect" aria-label="选择待确认的排课单"></select><span id="aiPrecheckOrderTotal"></span></div><div class="ai-precheck-student" id="aiPrecheckStudent"></div></section>
-      <section class="ai-precheck-card ai-precheck-issues"><h2>排课待确认问题</h2><div class="ai-precheck-issue-text" id="aiPrecheckIssueList"></div><div class="ai-precheck-reply"><label for="aiPrecheckReply">补充说明</label><textarea id="aiPrecheckReply" maxlength="1000" placeholder="请一次性补充上述问题的回答"></textarea><span id="aiPrecheckReplyCount">0/1000</span><p id="aiPrecheckReplyError" role="alert" hidden>请先填写回复内容</p></div></section>
-      <section class="ai-precheck-card"><h2>排课单信息</h2><h3>课程信息</h3><div class="ai-precheck-table-wrap course-table-wrap"><table class="drawer-course-table"><colgroup><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:188px"><col style="width:145px"><col style="width:72px"><col style="width:160px"></colgroup><thead><tr><th>课程项</th><th>班型</th><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>授课模式</th><th>校区</th><th>课时</th><th>历史授课老师</th><th>当前授课老师</th><th>老师时间<br>是否已沟通</th><th>学生成绩</th></tr></thead><tbody id="aiPrecheckCourses"></tbody></table></div><h3>排课单详情</h3><div class="ai-precheck-summary" id="aiPrecheckSummary"></div></section>
+    <div class="ai-precheck-header"><button type="button" id="closeAiPrecheck" aria-label="关闭AI排课提示">×</button><div><strong>AI排课提示</strong></div></div>
+    <div class="ai-precheck-loading" id="aiPrecheckLoading" role="status" aria-live="polite" hidden><div class="ai-precheck-loading-card"><span class="ai-precheck-loading-icon" aria-hidden="true">✦</span><strong id="aiPrecheckLoadingText">AI正在分析排课要求</strong><div class="ai-precheck-progress" aria-hidden="true"><span></span></div><button type="button" id="deferAiPrecheck" hidden>稍后查看</button></div></div>
+    <div class="ai-precheck-body" id="aiPrecheckBody">
+      <section class="ai-precheck-left" aria-label="排课单信息">
+        <div class="ai-precheck-card ai-precheck-order-card"><h2>当前排课单</h2><div class="ai-precheck-order-switch"><strong id="aiPrecheckOrderName"></strong><button type="button" id="aiPrecheckOrderToggle" aria-label="切换待确认排课单" aria-haspopup="listbox" aria-expanded="false" aria-controls="aiPrecheckOrderMenu">⌄</button><div class="ai-precheck-order-menu" id="aiPrecheckOrderMenu" role="listbox" aria-label="待确认排课单" hidden></div></div></div>
+        <div class="ai-precheck-card"><h2>学生信息</h2><div class="ai-precheck-student" id="aiPrecheckStudent"></div></div>
+        <div class="ai-precheck-card"><h2>课程信息</h2><div class="ai-precheck-table-wrap course-table-wrap"><table class="drawer-course-table"><thead><tr><th>课程项</th><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>授课模式</th><th>校区</th><th>课时</th><th>历史授课老师</th><th>当前授课老师</th></tr></thead><tbody id="aiPrecheckCourses"></tbody></table></div></div>
+        <div class="ai-precheck-card"><h2>排课单详情</h2><div class="ai-precheck-summary" id="aiPrecheckSummary"></div></div>
+      </section>
+      <section class="ai-precheck-right" aria-label="AI分析结果"><div class="ai-precheck-right-scroll"><div class="ai-precheck-card ai-precheck-issues"><div class="ai-precheck-result-heading"><h2>AI分析结果</h2><span>待确认</span></div><div class="ai-precheck-issue-text" id="aiPrecheckIssueList"></div><p class="ai-precheck-help">请一次性回答所有待确认内容。原排课单信息可在左侧对照查看。</p><div class="ai-precheck-reply"><label for="aiPrecheckReply">补充说明</label><textarea id="aiPrecheckReply" maxlength="1000" placeholder="请填写对待确认问题的回复"></textarea><span id="aiPrecheckReplyCount">0/1000</span><p id="aiPrecheckReplyError" role="alert" hidden>请先填写补充说明</p></div></div></div><div class="ai-precheck-footer"><button type="button" id="dismissAiPrecheck">稍后处理</button><button type="button" class="ai-precheck-submit" id="submitAiPrecheckReply">提交回复</button></div></section>
     </div>
-    <div class="ai-precheck-footer"><button type="button" id="dismissAiPrecheck">稍后处理</button><button type="button" class="ai-precheck-submit" id="submitAiPrecheckReply">提交回复</button></div>
+    <div class="ai-precheck-success-view" id="aiPrecheckSuccess" hidden><div class="ai-precheck-success-card"><span class="ai-precheck-success-icon" aria-hidden="true">✓</span><h2>排课要求分析完成</h2><p>当前排课单暂无待确认问题。</p><button type="button" id="closeAiPrecheckSuccess">关闭</button></div></div>
   </aside>
   <script src="flow-demo-order.js"></script>
-  <script src="sales-app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

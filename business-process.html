@@ -1,0 +1,46 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>业务流程图说明</title><style>body{font:15px/1.75 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;color:#173253;background:#f3f7fd;margin:0}header{position:sticky;top:0;background:#fff;border-bottom:1px solid #dce7f5;padding:14px max(24px,calc((100% - 1000px)/2));z-index:2}header a{color:#2671d9;text-decoration:none;font-weight:600}main{box-sizing:border-box;max-width:1048px;margin:28px auto;padding:32px 42px;background:#fff;border:1px solid #e1e9f3;border-radius:12px;box-shadow:0 8px 28px #1c4b8510}h1,h2,h3{line-height:1.35;color:#123c73}h1{font-size:29px}h2{font-size:22px;border-bottom:1px solid #e5edf7;padding-bottom:9px;margin-top:36px}h3{font-size:18px;margin-top:26px}table{border-collapse:collapse;display:block;overflow-x:auto;width:100%;font-size:13px}th,td{border:1px solid #dce5f1;padding:7px 10px;min-width:70px;vertical-align:top}th{background:#edf4ff}pre{overflow:auto;padding:16px;background:#f4f7fb;border:1px solid #dce5f1;border-radius:8px;font-size:13px}code{background:#f2f6fb;padding:1px 4px;border-radius:4px}pre code{background:none;padding:0}blockquote{border-left:4px solid #4989ee;margin-left:0;padding:5px 18px;background:#f5f9ff}a{color:#2170cf}img{max-width:100%}@media(max-width:700px){main{margin:0;padding:18px;border-radius:0}header{padding:12px 18px}}</style></head><body><header><a href="index.html">← 返回业务流程图</a></header><main><h1 id="v3.0ai">智能排课V3.0：AI算法排课</h1>
+<p>本图描述目标业务流程。顾问或学管提交排课单后，立即触发 AI 异步预处理排课要求；无需等待分析完成，排课单即进入教务待处理。预处理状态为“通过”时，教务工作台自动触发策略分析；状态为“待确认”时，先补充信息并重新预处理，通过后再分析策略。当前静态原型中的 AI 结果与课节均为演示数据。</p>
+<pre class="mermaid">flowchart TD
+    A["01 顾问或学管填写并提交排课单&lt;br/>处理：提交排课单，触发AI异步预处理排课要求"] --> B["系统保存排课单&lt;br/>立即返回列表，排课单进入教务待处理"]
+    B --> C["02 AI 异步预处理排课要求&lt;br/>一次性找出全部模糊、逻辑混乱、矛盾和待确认事项&lt;br/>输出预处理状态"]
+    C --> E{"预处理状态"}
+    E -->|通过| D["03 教务工作台自动触发 AI 排课策略分析&lt;br/>按课程拆解全局要求和单科分段策略"]
+    E -->|待确认| F["Web 与移动端提示顾问或学管&lt;br/>一次性展示全部待确认问题；暂不触发策略分析"]
+    E -->|技术异常| Z["系统重试预处理&lt;br/>不判为通过"]
+    Z --> C
+    F --> G{"顾问或学管是否补充"}
+    G -->|已补充| H["单独保存补充内容与时间&lt;br/>关联原排课单"]
+    H --> C
+    G -->|尚未补充| I["教务打开待确认排课单&lt;br/>先补充信息，才能进行策略分析"]
+    I --> C
+    D --> K{"策略分析结果"}
+    K -->|成功| L["结构与业务校验通过&lt;br/>生成待教务确认的策略"]
+    K -->|业务问题| M["一次性展示全部问题&lt;br/>教务补充要求或联系发起人"]
+    K -->|技术故障| N["提示系统故障并重试分析"]
+    M --> O
+    N --> D
+    O["04 教务查看排课单与分析结果&lt;br/>查看原要求、预处理状态及补充内容"]
+    L --> O
+    O --> P{"是否已有可执行的策略"}
+    P -->|没有，先补充或重新分析| C
+    P -->|有| R["05 教务确认或编辑排课策略&lt;br/>全局规则、各科阶段、时段及限制；可逐科指定老师"]
+    R --> S["06 系统生成学生排课计划&lt;br/>周期要求、候选时段、容量与缺口"]
+    CFG["07A 教务维护教师组织架构优先级&lt;br/>按课程项、授课模式及校区／发起人架构配置候选组织、优先级与审批提示&lt;br/>属于预先维护的基础数据，非每单操作"]
+    CFG -. 已配置规则 .-> T
+    S --> T["07B 系统推荐教师&lt;br/>资格与组织范围筛选、50% 准入、逐级比较师生覆盖度&lt;br/>每个保留层级最多 4 位，达到 80% 停止"]
+    T --> U["教务为未指定课程选择授课老师&lt;br/>需要架构审批时展示自定义提示"]
+    U --> V["08 选师后重算师生可排时段&lt;br/>多课程联合排课并生成方案"]
+    V --> W["09 教务查看结果并调整课节&lt;br/>校验冲突、差额与课程总量"]
+    W --> X["按实际日期换算北京时间&lt;br/>必要时拆分跨天系统记录"]
+    X --> Y["校验后写入系统&lt;br/>保留逻辑课节、排课方案与操作记录"]
+</pre>
+<h2 id="section">关键业务口径</h2>
+<ul>
+<li>提交排课单时触发 AI 异步预处理，顾问或学管无需等待结果。预处理返回“通过”或“待确认”；技术异常由系统单独重试，不视为通过。</li>
+<li>“通过”时教务工作台自动触发 AI 排课策略分析。“待确认”时提示顾问或学管补充，暂不触发策略分析；如果顾问未补充，教务打开排课单后须补充信息。两种补充都重新预处理，通过后再触发策略分析。排课单仍可流转和查看。</li>
+<li>AI 预处理和策略分析都应一次性列出已识别的全部业务问题，避免逐项往返沟通。技术故障单独提示。</li>
+<li>顾问补充以独立字段留存，展示补充时间与内容。若策略已生成，教务可选择重新生成或继续当前策略；下次重新生成时自动带入补充内容。</li>
+<li>教师组织架构优先级属于预先维护的基础数据。系统推荐时读取已配置规则和当前学生排课计划，再依次完成选师、联合排课及正式课节；课节写入时才换算到北京时区。</li>
+<li>确认排课策略时，教务可在每门课程的 AI 分析文字下指定授课老师；未指定的课程再进入教师推荐和选择。已指定老师不参加推荐排序，但仍校验真实日程与硬约束。</li>
+</ul>
+</main></body></html>
