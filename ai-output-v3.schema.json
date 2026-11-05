@@ -1,0 +1,496 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/scheduling/v2.2/ai-strategy-output.schema.json",
+  "title": "智能排课 V2.2 AI 策略输出业务结构",
+  "description": "技术失败由调用系统包装；模型只能生成 SUCCESS 或 BUSINESS_FAILED。跨字段业务逻辑另由服务端校验。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status"
+  ],
+  "properties": {
+    "status": {
+      "enum": [
+        "SUCCESS",
+        "BUSINESS_FAILED",
+        "TECHNICAL_FAILED"
+      ]
+    },
+    "biz_error": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "global": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/globalStrategy"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "courses": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/courseStrategy"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "SUCCESS"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "biz_error": {
+            "type": "null"
+          },
+          "global": {
+            "$ref": "#/$defs/globalStrategy"
+          },
+          "courses": {
+            "minProperties": 1
+          }
+        },
+        "required": [
+          "biz_error",
+          "global",
+          "courses"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "BUSINESS_FAILED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "biz_error": {
+            "type": "string",
+            "minLength": 1
+          },
+          "global": {
+            "type": "null"
+          },
+          "courses": {
+            "maxProperties": 0
+          }
+        },
+        "required": [
+          "biz_error",
+          "global",
+          "courses"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "TECHNICAL_FAILED"
+          }
+        }
+      },
+      "then": {
+        "maxProperties": 1
+      }
+    }
+  ],
+  "$defs": {
+    "date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "time": {
+      "type": "string",
+      "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+    },
+    "hours": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "multipleOf": 0.25
+    },
+    "days": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 7
+      }
+    },
+    "globalStrategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary",
+        "week_max",
+        "day_max",
+        "multi_mode"
+      ],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "week_max": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "day_max": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "multi_mode": {
+          "enum": [
+            "CROSS",
+            "RANDOM"
+          ]
+        }
+      }
+    },
+    "timeRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "days",
+        "all_day",
+        "from",
+        "to"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "FIXED",
+            "ONLY",
+            "PREFERRED",
+            "NORMAL"
+          ]
+        },
+        "days": {
+          "$ref": "#/$defs/days"
+        },
+        "all_day": {
+          "type": "boolean"
+        },
+        "from": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "to": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "unavailableRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "start",
+        "end",
+        "days",
+        "all_day",
+        "from",
+        "to"
+      ],
+      "properties": {
+        "start": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "end": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "days": {
+          "$ref": "#/$defs/days"
+        },
+        "all_day": {
+          "type": "boolean"
+        },
+        "from": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "to": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "strategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "no",
+        "start",
+        "end",
+        "mode",
+        "cycle",
+        "freq_min",
+        "freq_max",
+        "lesson_count",
+        "week_max",
+        "day_max",
+        "slots",
+        "blocked"
+      ],
+      "properties": {
+        "no": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "start": {
+          "$ref": "#/$defs/date"
+        },
+        "end": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mode": {
+          "enum": [
+            "FREQUENCY",
+            "LESSON_COUNT",
+            "UNTIL_REMAINING"
+          ]
+        },
+        "cycle": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "WEEK",
+            "BIWEEK",
+            "MONTH",
+            null
+          ]
+        },
+        "freq_min": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "freq_max": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "lesson_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "week_max": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "day_max": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "slots": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/timeRule"
+          }
+        },
+        "blocked": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/unavailableRule"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "FREQUENCY"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "cycle": {
+                "enum": [
+                  "WEEK",
+                  "BIWEEK",
+                  "MONTH"
+                ]
+              },
+              "freq_min": {
+                "type": "integer"
+              },
+              "freq_max": {
+                "type": "integer"
+              },
+              "lesson_count": {
+                "type": "null"
+              },
+              "week_max": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "cycle": {
+                "type": "null"
+              },
+              "freq_min": {
+                "type": "null"
+              },
+              "freq_max": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "LESSON_COUNT"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "lesson_count": {
+                "type": "integer"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "lesson_count": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "courseStrategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "hours",
+        "lesson_hours",
+        "lesson_options",
+        "summary",
+        "stages"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hours": {
+          "$ref": "#/$defs/hours"
+        },
+        "lesson_hours": {
+          "$ref": "#/$defs/hours"
+        },
+        "lesson_options": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/hours"
+          }
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stages": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/strategy"
+          }
+        }
+      }
+    }
+  }
+}

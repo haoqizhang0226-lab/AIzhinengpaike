@@ -2,125 +2,222 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>智能排课V3.0完整流程｜顾问发起</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="detail-drawer.css">
-  <link rel="stylesheet" href="create-order.css">
-  <link rel="stylesheet" href="precheck.css">
-  <link rel="stylesheet" href="flow-integration.css">
-  <link rel="stylesheet" href="workspace-tabs.css">
-  <link rel="stylesheet" href="workspace-unified.css">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>智能排课V3.0：AI算法排课</title>
+  <style>
+    :root{font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif;color:#213653;background:#f3f6fb}
+    *{box-sizing:border-box}body{margin:0}.sheet{width:min(1240px,calc(100% - 32px));margin:28px auto 50px}
+    .hero{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:27px 34px;border:1px solid #dbe6f6;border-radius:14px;background:linear-gradient(115deg,#fff 48%,#e9f6ff);box-shadow:0 10px 30px #23476e0b}
+    .hero h1{margin:0;font-size:26px}.hero-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-left:auto}.hero-actions a{padding:8px 12px;border:1px solid #cdddf2;border-radius:6px;color:#276fc8;background:#fff;font-size:12px;text-decoration:none;white-space:nowrap}.hero-actions a:hover{background:#edf5ff}
+    .legend{display:flex;gap:16px;flex-wrap:wrap;margin:17px 5px;color:#667d98;font-size:12px}.legend span{display:inline-flex;align-items:center;gap:6px}.legend i{width:9px;height:9px;border-radius:50%}.sales{background:#e58b30}.ai{background:#7054d8}.edu{background:#169e79}.sys{background:#397bea}
+    .flow{padding:0 12px}.node{display:block}
+    .step-badge{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:25px;margin-right:9px;padding:0 7px;border-radius:5px;background:#397bea;color:#fff;font-size:12px;font-weight:800;vertical-align:1px}.step-badge.sales-step{background:#e58b30}.step-badge.ai-step{background:#7054d8}.step-badge.edu-step{background:#169e79}.step-badge.system-step{background:#397bea}
+    .card{overflow:hidden;border:1px solid #dfe8f4;border-radius:11px;background:#fff;box-shadow:0 4px 15px #24456b0a}
+    .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:54px;padding:13px 19px;border-bottom:1px solid #ecf1f8}
+    .card-head h2{margin:0;font-size:17px}.actor{padding:5px 9px;border-radius:20px;background:#edf4ff;color:#376fbc;font-size:11px;font-weight:700}
+    .actor.sales-actor{background:#fff1e1;color:#ac631f}.actor.ai-actor{background:#f0eaff;color:#684bbd}.actor.edu-actor{background:#e4f7f0;color:#15795e}.actor.sys-actor{background:#e8f1ff;color:#2c67b8}
+    .card-body{padding:16px 19px 18px}.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .field{padding:11px 13px;border-radius:7px;background:#f7f9fd;font-size:12px;line-height:1.7;color:#435c79}.field b{display:block;margin-bottom:3px;color:#295078;font-size:12px}
+    .connector{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:56px;color:#6787ab;font-size:11px;font-weight:700}
+    .connector:before{content:"";position:absolute;top:0;bottom:13px;left:50%;border-left:2px solid #adc6e5}.connector:after{content:"";position:absolute;bottom:8px;left:calc(50% - 4px);width:7px;height:7px;border-right:2px solid #729fd6;border-bottom:2px solid #729fd6;transform:rotate(45deg)}
+    .connector span{z-index:1;padding:4px 10px;border:1px solid #d8e8f8;border-radius:20px;background:#f3f8fe}
+    .parallel-label{text-align:center;margin:2px 0 12px;color:#6d83a0;font-size:12px;font-weight:700}
+    .parallel{display:grid;grid-template-columns:1fr 1fr;gap:18px}.lane{border:1px solid #dce7f5;border-radius:11px;background:#fff;overflow:hidden;box-shadow:0 4px 15px #24456b0a}
+    .teacher-pair{display:grid;grid-template-columns:1fr 1.3fr;gap:18px}.teacher-pair .card{height:100%}.teacher-pair .card-head{align-items:flex-start}.teacher-pair .card-body{display:grid;gap:9px}.teacher-pair .field{min-width:0}.teacher-pair .teacher-source{border-left:4px solid #169e79}.teacher-pair .teacher-recommend{border-left:4px solid #397bea}
+    .lane-head{padding:14px 17px;color:#fff;font-weight:800;font-size:15px}.lane-head.ai-blue{background:linear-gradient(90deg,#7054d8,#9674e7)}.lane-head.ai-purple{background:linear-gradient(90deg,#6248c6,#8268df)}.lane-head .step-badge{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.45);vertical-align:0}
+    .lane-content{padding:15px 17px}.lane-content p{margin:0 0 10px;color:#455d79;font-size:12px;line-height:1.75}.lane-content strong{color:#263f61}
+    .diamond{margin:12px 0;padding:9px 12px;border:1px solid #d8c9f4;border-radius:6px;background:#f7f2ff;color:#6849b5;text-align:center;font-size:12px;font-weight:800}
+    .outcomes{display:grid;gap:8px}.outcome{padding:9px 11px;border-left:3px solid #72b1e9;border-radius:4px;background:#f7faff;color:#4c6581;font-size:12px;line-height:1.65}.outcome b{color:#2866a9}
+    .outcome.warn{border-color:#e7a452;background:#fff8ef}.outcome.warn b{color:#aa712d}
+    .outcome.good{border-color:#43bda2;background:#f0fbf7}.outcome.good b{color:#238774}
+    .merge{margin-left:0}.callout{padding:13px 17px;border:1px dashed #a8caec;border-radius:8px;background:#eff7ff;color:#45729f;font-size:12px;line-height:1.7;text-align:center}
+    .decision-row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13px}.decision-row span{padding:10px;border-radius:6px;background:#f5f9fe;color:#476986;font-size:12px;line-height:1.65}
+    .decision-row b{display:block;color:#2d6ea9}.finish{padding:15px 20px;border-radius:9px;background:linear-gradient(90deg,#eafaf5,#e9f3ff);border:1px solid #c8eadd;color:#287a69;font-size:14px;font-weight:800;text-align:center}
+    .precheck-branches{display:grid;grid-template-columns:1fr 1fr;gap:12px}.precheck-branches .outcome{min-height:84px}.precheck-branches .outcome b{display:block;margin-bottom:4px}
+    .card[data-detail]{cursor:pointer;transition:border-color .18s,box-shadow .18s,transform .18s}.card[data-detail]:hover{border-color:#8ab7ed;box-shadow:0 10px 25px #24456b18;transform:translateY(-2px)}.card[data-detail]:focus-visible{outline:3px solid #3b82f6;outline-offset:3px}.card[data-detail] .card-head{flex-wrap:wrap}.card[data-detail] .card-head:after{content:"查看详情 ↗";order:3;color:#377acf;font-size:11px;font-weight:700;white-space:nowrap}.card[data-detail] .card-head .actor{margin-left:auto}
+    .detail-backdrop{position:fixed;inset:0;z-index:1000;background:#142b49a8}.detail-drawer{position:fixed;inset:0 0 0 auto;z-index:1001;display:flex;flex-direction:column;width:min(700px,100vw);height:100vh;height:100dvh;background:#f6f9fd;box-shadow:-15px 0 40px #0e27404a}.detail-backdrop[hidden],.detail-drawer[hidden]{display:none!important}body.detail-open{overflow:hidden}.detail-header{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;padding:20px 24px;border-bottom:1px solid #dce6f3;background:#fff}.detail-header small{display:block;margin-bottom:5px;color:#6480a2;font-size:11px;letter-spacing:.08em}.detail-header h2{margin:0;color:#203a5d;font-size:20px;line-height:1.4}.detail-close{display:grid;place-items:center;flex:none;width:34px;height:34px;border:1px solid #d5e2f2;border-radius:7px;background:#fff;color:#466486;font-size:24px;line-height:1;cursor:pointer}.detail-close:hover{background:#eaf3ff;color:#1465bd}.detail-body{flex:1;overflow:auto;padding:24px}.detail-section{margin-bottom:16px;padding:18px 20px;border:1px solid #dfe8f4;border-radius:10px;background:#fff;box-shadow:0 3px 12px #24456b08}.detail-section h3{margin:0 0 12px;padding-left:10px;border-left:3px solid #397bea;color:#254a73;font-size:15px}.detail-section p,.detail-section li{color:#455e7b;font-size:13px;line-height:1.8}.detail-section p{margin:0 0 8px}.detail-section p:last-child{margin-bottom:0}.detail-section ul,.detail-section ol{margin:0;padding-left:20px}.detail-section li+li{margin-top:6px}.detail-section strong{color:#234c78}.detail-note{padding:11px 13px;border-left:3px solid #8a70e1;border-radius:5px;background:#f5f1ff;color:#574a83;font-size:12px;line-height:1.8}.detail-example{padding:11px 13px;border-radius:6px;background:#eff7ff;color:#365d83;font-size:12px;line-height:1.8}.detail-footer{display:flex;justify-content:flex-end;padding:13px 24px;border-top:1px solid #dce6f3;background:#fff}.detail-footer a{padding:8px 12px;border:1px solid #cdddf2;border-radius:6px;color:#276fc8;text-decoration:none;font-size:12px}.detail-footer a:hover{background:#edf5ff}
+    @media(max-width:850px){.sheet{width:min(100% - 18px,1240px);margin:10px auto}.hero{flex-wrap:wrap;padding:19px}.hero h1{font-size:21px}.hero-actions{width:100%;justify-content:flex-start;margin-left:0}.flow{padding:0}.fields,.precheck-branches{grid-template-columns:1fr}.parallel,.teacher-pair{grid-template-columns:1fr}.decision-row{grid-template-columns:1fr}.card-head h2{font-size:15px}}
+    @media print{body{background:#fff}.sheet{width:100%;margin:0}.hero,.card,.lane{box-shadow:none}.hero-actions,.detail-backdrop,.detail-drawer{display:none!important}.flow{break-inside:avoid}.node,.parallel,.lane{break-inside:avoid}}
+  </style>
 </head>
-<body class="sales-workspace">
-  <aside class="sidebar" aria-label="左侧导航">
-    <div class="brand"><div class="brand-mark">A</div><div class="brand-words"><strong>VISION ACADEMY</strong><span>惟 寻 国 际 教 育</span></div></div>
-    <nav class="side-menu">
-      <div class="side-item"><span class="side-icon">⌂</span>销售首页</div>
-      <div class="side-item"><span class="side-icon">♙</span>客户管理<span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">◉</span>TMK管理<span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">♧</span>客户微信管理<span class="side-arrow">⌄</span></div>
-      <div class="side-item open"><span class="side-icon">▤</span>订单管理<span class="side-arrow">⌃</span></div>
-      <div class="side-sub dark">我的订单</div>
-      <div class="side-sub dark">信息表 <b class="small-badge">14</b></div>
-      <div class="side-item"><span class="side-icon">▣</span>审批管理<span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">◇</span>优惠券<span class="side-arrow">⌄</span></div>
-      <div class="side-item open"><span class="side-icon">◈</span>教务管理<span class="side-arrow">⌃</span></div>
-      <div class="side-sub active">我的排课</div>
-      <div class="side-sub">智能排课</div>
-      <div class="side-sub">我的班级</div>
-      <div class="side-sub">课表查询</div>
-      <div class="side-item"><span class="side-icon">◇</span>会员中心 <b class="small-badge">99+</b><span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">▧</span>电话外呼配置<span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">▣</span>业绩管理<span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">▧</span>排班信息<span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">♧</span>线索自动分配<span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">⚙</span>活动配置<span class="side-arrow">⌄</span></div>
-    </nav>
-    <span class="side-collapse">☷</span>
-  </aside>
-
-  <div class="workspace">
-    <header class="topbar">
-      <div class="top-left"><span class="refresh" aria-hidden="true">⟳</span><nav class="workspace-tabs" aria-label="工作台切换"><a class="workspace-tab active" href="index.html" aria-current="page">销售工作台</a><a class="workspace-tab" id="educatorWorkspaceTab" href="教务端/index.html">教务工作台</a></nav></div>
-      <div class="top-announcement"><span class="bell-blue">♟</span><strong>今日您有 <em>0</em> 个客户生日</strong><span class="ann-sep">|</span><strong>当日首课 <em>0</em> 人 · 一周内首课 <em>0</em> 人</strong><span class="ann-sep">|</span><strong>线索量： A: 795 B: 263（不受助分配 28、影响分配 235）</strong></div>
-      <div class="top-right"><span class="orange-app">薪心</span><span class="top-icon with-count">♧<b>99+</b></span><span class="top-icon with-count">⇩<b>0</b></span><span class="top-icon with-count">⇧<b>0</b></span><span class="top-avatar">A</span><span>李春玲</span><a href="#" class="logout" onclick="return false">退出</a></div>
-    </header>
-
-    <main class="main-area">
-      <section class="list-panel" id="listPanel">
-        <div class="tabs" role="tablist"><button class="tab current" data-tab="mine" role="tab" aria-selected="true">我发起的排课单</button><button class="tab" data-tab="student" role="tab" aria-selected="false">学生排课单</button></div>
-        <div class="filters">
-          <label class="filter-group course-filter"><span>课程</span><input id="courseFilter" type="text" placeholder="课程" autocomplete="off"></label>
-          <label class="filter-group"><span>排课单类型</span><select id="typeFilter"><option value="">请选择</option><option>1V1排课单</option><option>自组班排课单</option></select></label>
-          <label class="filter-group"><span>排课单状态</span><select id="statusFilter"><option value="">请选择</option><option>处理中</option><option>已完成</option><option>已驳回</option></select></label>
-          <label class="filter-group date-filter"><span>发起时间</span><span class="date-range"><span class="calendar-icon">▦</span><input id="createdFrom" type="text" placeholder="开始日期" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"><span class="date-to">至</span><input id="createdTo" type="text" placeholder="结束日期" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"></span></label>
-          <label class="filter-group date-filter"><span>开课时间</span><span class="date-range"><span class="calendar-icon">▦</span><input id="startFrom" type="text" placeholder="开始日期" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"><span class="date-to">至</span><input id="startTo" type="text" placeholder="结束日期" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"></span></label>
-          <div class="filter-actions"><button class="btn plain" id="resetFilters">重置</button><button class="btn primary" id="applyFilters">查询</button></div>
-        </div>
-        <div class="list-toolbar"><button class="btn primary create-btn" id="createOrder">发起排课单</button></div>
-        <div class="table-scroll"><table class="order-table"><colgroup><col class="col-course"><col class="col-created"><col class="col-type"><col class="col-attribute"><col class="col-handler"><col class="col-status"><col class="col-finished"><col class="col-applicant"><col class="col-action"><col class="col-settings"></colgroup><thead><tr><th>排课课程</th><th>发起时间</th><th>排课单类型</th><th>排课单属性</th><th>处理人名称</th><th>排课单状态</th><th>完成时间</th><th>申请人名称</th><th>操作</th><th><button class="table-settings" aria-label="表格设置">☷</button></th></tr></thead><tbody id="orderRows"></tbody></table></div>
-        <div class="pagination"><button class="page-arrow" id="prevPage" aria-label="上一页">‹</button><div id="pageNumbers" class="page-numbers"></div><button class="page-arrow" id="nextPage" aria-label="下一页">›</button><select id="pageSize"><option value="10">10条/页</option><option value="20">20条/页</option><option value="50">50条/页</option></select><span id="totalCount">共 2024 条</span><span class="jump-label">前往</span><input type="number" id="jumpPage" min="1" value="1"><span>页</span></div>
-      </section>
-      <section class="detail-panel" id="detailPanel" hidden></section>
-    </main>
+<body>
+<main class="sheet">
+  <header class="hero">
+    <h1>智能排课V3.0：AI算法排课</h1>
+    <div class="hero-actions"><a href="sales-v3-20261105.html" target="_blank" rel="noopener">查看原型</a><a href="algorithm-v3-20261105.html" target="_blank" rel="noopener">查看算法方案</a><a href="ai-config-v3-20261105.html" target="_blank" rel="noopener">查看AI配置</a></div>
+  </header>
+  <div class="legend"><span><i class="sales"></i>顾问／学管</span><span><i class="ai"></i>AI 分析</span><span><i class="edu"></i>教务</span><span><i class="sys"></i>系统算法</span></div>
+  <div class="flow">
+    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge sales-step">01</span>发起并提交排课单</h2><span class="actor sales-actor">顾问／学管</span></div><div class="card-body fields"><div class="field"><b>输入</b>课程、总课时、开结课日期、排课要求及相关信息。</div><div class="field"><b>处理</b>提交排课单，触发AI异步预处理排课要求。</div><div class="field"><b>输出</b>提交成功后返回列表；排课单进入教务待处理，AI 结果完成后回填。</div></div></article></section>
+    <div class="connector"><span>提交后异步触发，顾问／学管无需等待分析完成</span></div>
+    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge ai-step">02</span>AI 预处理排课要求</h2><span class="actor ai-actor">AI · 异步任务</span></div><div class="card-body"><div class="field"><b>检查与输出</b>读取已提交的课程信息和原始排课要求，一次性找出全部模糊、逻辑混乱、前后冲突及待确认事项；返回预处理状态“通过”或“待确认”。技术异常单独重试，不判为通过。</div><div class="diamond">预处理状态是否通过？</div><div class="precheck-branches"><div class="outcome good"><b>通过 → 教务工作台自动触发策略分析</b>没有待确认内容，系统自动分析排课策略；教务打开排课单时可查看分析结果。</div><div class="outcome warn"><b>待确认 → 暂不触发策略分析</b>通过 Web 与移动端一次性提示顾问／学管全部问题。顾问补充后重新预处理；若顾问未补充，教务打开排课单时须先补充信息并重新预处理。排课单仍可查看和处理。</div></div></div></article></section>
+    <div class="connector"><span>仅预处理通过后，自动触发 AI 排课策略分析</span></div>
+    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge ai-step">03</span>AI 分析排课策略</h2><span class="actor ai-actor">AI · 条件触发</span></div><div class="card-body"><div class="field"><b>触发条件与输入</b>预处理状态为“通过”；读取排课单原文、课程信息及已收到的顾问或教务补充内容，拆解全局要求与各科分段策略。</div><div class="decision-row"><span><b>分析成功</b>输出结构化策略并通过结构与业务校验，等待教务确认。</span><span><b>业务问题</b>一次性列出全部已识别的问题，由教务补充或联系发起人后重新分析。</span><span><b>技术故障</b>提示系统故障并重试，不作为业务问题展示。</span></div></div></article></section>
+    <div class="connector merge"><span>预处理结果、补充内容和策略结果汇入教务端</span></div>
+    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge edu-step">04</span>教务查看排课单与分析结果</h2><span class="actor edu-actor">教务</span></div><div class="card-body"><div class="fields"><div class="field"><b>详情页</b>展示原始要求、预处理状态、顾问补充的内容与时间。</div><div class="field"><b>状态已通过</b>点击智能排课进入确认策略页，随时查看完整排课要求。</div><div class="field"><b>状态待确认</b>若顾问尚未补充，教务须在排课单中补充信息，重新预处理通过后才能启动策略分析。</div></div><div class="decision-row"><span><b>顾问先补充</b>保存补充内容并重新预处理；通过后自动分析策略。</span><span><b>教务补充</b>保存补充内容并重新预处理；通过后自动分析策略。</span><span><b>策略生成后又有补充</b>提示教务有新内容，可选择重新生成策略，补充内容仍入单。</span></div></div></article></section>
+    <div class="connector"><span>教务确认可执行的策略</span></div>
+    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge edu-step">05</span>确认或编辑排课策略</h2><span class="actor edu-actor">教务</span></div><div class="card-body fields"><div class="field"><b>全局</b>学生总日／周上限、多课程排课方式。</div><div class="field"><b>单科</b>课节时长、阶段日期、频次、时段偏好和不可排时段；可在 AI 分析文字下指定授课老师。</div><div class="field"><b>输出</b>经教务确认并通过校验的策略版本及已指定老师。</div></div></article></section>
+    <div class="connector"><span>系统按策略与真实日程测算</span></div>
+    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge system-step">06</span>生成学生排课计划</h2><span class="actor sys-actor">系统算法</span></div><div class="card-body fields"><div class="field"><b>周期要求</b>按策略日期、频次和有效天数折算每周期目标。</div><div class="field"><b>候选时段</b>结合学生日程、停排与时段规则生成可排时间。</div><div class="field"><b>输出</b>学生排课要求、可排容量、暂定计划量与缺口。</div></div></article></section>
+    <div class="connector"><span>学生计划与已维护的教师规则共同输入推荐</span></div>
+    <section class="teacher-pair" aria-label="教师组织配置与系统推荐">
+      <article class="card teacher-source"><div class="card-head"><h2><span class="step-badge edu-step">07A</span>配置教师组织架构优先级</h2><span class="actor edu-actor">基础数据维护</span></div><div class="card-body"><div class="field"><b>维护时机</b>教务预先配置并持续维护；无需为每张排课单重复设置。</div><div class="field"><b>配置内容</b>按课程项、授课模式及授课校区／发起人架构配置可参与的教师组织、优先级和审批提示。</div><div class="field"><b>输出</b>校验通过的有效规则供系统读取；未命中规则的场景使用既定兜底筛选。</div></div></article>
+      <article class="card teacher-recommend"><div class="card-head"><h2><span class="step-badge system-step">07B</span>系统推荐并由教务选择老师</h2><span class="actor sys-actor">每张排课单执行</span></div><div class="card-body"><div class="field"><b>候选与准入</b>先按课程资格、老师要求和命中的组织范围筛选；教师剩余可排节数须达到该科尚需节数的 50%。</div><div class="field"><b>逐级推荐</b>按组织优先级逐级求师生时段覆盖度，每个保留层级最多展示 4 位；低优先级层级只保留覆盖度高于最近保留层级最高值的老师，达到 80% 后停止向下查找。</div><div class="field"><b>输出</b>教务为未指定老师的课程选择老师；需要架构审批时展示自定义提示。已配置但无人入围时显示“暂无可用教师”。</div></div></article>
+    </section>
+    <div class="connector"><span>选师后按最新师生日程重算</span></div>
+    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge system-step">08</span>多课程联合排课</h2><span class="actor sys-actor">系统算法</span></div><div class="card-body fields"><div class="field"><b>输入</b>已确认策略、学生候选、所选教师日程与已有课程。</div><div class="field"><b>处理</b>重新求师生交集，处理固定任务、时段争抢和多科共享额度。</div><div class="field"><b>输出</b>排课方案、具体课节及未满足要求的差额。</div></div></article></section>
+    <div class="connector"><span>教务核查并提交课节</span></div>
+    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge edu-step">09</span>核查结果并写入正式课节</h2><span class="actor edu-actor">教务 · 系统</span></div><div class="card-body fields"><div class="field"><b>教务</b>查看课表与差额，按需手动补排、调整、保存方案。</div><div class="field"><b>系统</b>按每节实际日期换算北京时间；跨天时拆分系统记录。</div><div class="field"><b>完成</b>校验冲突与写入结果，保留课节、方案和操作记录。</div></div></article></section>
+    <div class="connector"><span>排课处理完成</span></div>
+    <div class="finish">正式课节进入系统，顾问与教务可查看对应排课单及处理结果</div>
   </div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <div class="detail-backdrop" id="detailBackdrop" hidden></div>
-  <aside class="order-drawer" id="orderDrawer" role="dialog" aria-modal="true" aria-label="排课单详情" hidden>
-    <div class="order-drawer-header"><button class="order-drawer-close" id="closeOrderDrawer" aria-label="关闭排课单详情">×</button><strong id="drawerTitle">1V1排课单详情</strong><button type="button" class="handoff-educator" id="handoffEducator" hidden>转入教务处理 →</button></div>
-    <div class="order-drawer-body">
-      <section class="student-card"><div class="student-card-header"><strong>学生信息</strong><button type="button" class="decrypt-button" id="decryptButton">♙解密</button></div><div class="student-card-fields" id="studentFields"></div></section>
-      <div class="order-drawer-main"><section class="drawer-card course-card"><div class="drawer-card-title"><strong>课程信息</strong><span class="gold-badge">★ 金牌</span></div><div class="course-table-wrap"><table class="drawer-course-table"><colgroup><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:188px"><col style="width:145px"><col style="width:72px"><col style="width:160px"></colgroup><thead><tr><th>课程项</th><th>班型</th><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>授课模式</th><th>校区</th><th>课时</th><th>历史授课老师</th><th>当前授课老师</th><th>老师时间<br>是否已沟通</th><th>学生成绩</th></tr></thead><tbody id="detailCourses"></tbody></table></div></section><section class="drawer-card order-info-card"><div class="drawer-card-title"><strong>排课单详情</strong></div><div class="order-info-grid" id="detailOrderInfo"></div></section><section class="drawer-card ai-detection-card" id="detailAiCard" hidden><div class="drawer-card-title"><strong>AI检测结果</strong></div><div class="ai-detection-body"><span class="ai-detection-status" id="detailAiStatus"></span><button type="button" class="ai-detection-action" id="detailAiAction" hidden>查看并补充 →</button></div></section><section class="drawer-card precheck-supplement-card" id="detailSupplementCard" hidden><div class="drawer-card-title"><strong>补充排课要求</strong></div><div class="precheck-supplement-list" id="detailSupplementList"></div></section></div>
-    </div>
-  </aside>
-  <section class="create-order-page" id="createOrderPage" role="dialog" aria-modal="true" aria-label="新增1V1排课单" hidden>
-    <form id="createOrderForm">
-      <div class="create-order-header"><strong>新增1V1排课单</strong><button type="button" class="create-close" id="closeCreateOrder" aria-label="关闭">×</button></div>
-      <div class="create-order-body">
-        <div class="create-student-grid">
-          <div class="create-student-item"><span class="create-label">学生姓名</span><span class="create-colon">:</span><input class="student-name-input" type="text" value="授课反馈产品验收" readonly></div><div></div><div></div>
-          <div class="create-student-item"><span class="create-label">英文名</span><span class="create-colon">:</span><span>--</span></div><div class="create-student-item"><span class="create-label">性别</span><span class="create-colon">:</span><span>男</span></div><div class="create-student-item"><span class="create-label">在读年级</span><span class="create-colon">:</span><span>8年级</span></div>
-          <div class="create-student-item"><span class="create-label">出生日期</span><span class="create-colon">:</span><span>--</span></div><div class="create-student-item"><span class="create-label">登记年龄</span><span class="create-colon">:</span><span>--</span></div><div class="create-student-item"><span class="create-label">意向国家</span><span class="create-colon">:</span><span>--</span></div>
-          <div class="create-student-item"><span class="create-label">学生手机</span><span class="create-colon">:</span><span>138****9993</span></div><div class="create-student-item"><span class="create-label">学生微信</span><span class="create-colon">:</span><span>Z****2</span></div><div class="create-student-item"><span class="create-label">学生邮箱</span><span class="create-colon">:</span><span></span></div>
-          <div class="create-student-item"><span class="create-label">在读学校</span><span class="create-colon">:</span><span>上海市建平中学</span></div><div></div><div></div>
-        </div>
+</main>
+<div class="detail-backdrop" id="detail-backdrop" hidden></div>
+<aside class="detail-drawer" id="detail-drawer" role="dialog" aria-modal="true" aria-labelledby="detail-title" hidden>
+  <div class="detail-header"><div><small id="detail-step"></small><h2 id="detail-title"></h2></div><button class="detail-close" id="detail-close" type="button" aria-label="关闭详情">×</button></div>
+  <div class="detail-body" id="detail-body"></div>
+  <div class="detail-footer"><a id="detail-source" href="algorithm-v3-20261105.html" target="_blank" rel="noopener">查看完整方案</a></div>
+</aside>
 
-        <section class="create-course-section"><h2>课程信息</h2><div class="course-package-line"><span>选择课时包</span><select aria-label="选择课时包"><option>英联邦-英联邦学科-ALEVEL-1v1</option></select><span class="create-gold-tag">★ 金牌</span></div>
-          <div class="course-hours-summary"><div><span>购买课时</span><strong>600</strong></div><div><span>已排课时</span><strong>120.5</strong></div><div><span>已上课时</span><strong>202.5</strong></div><div><span>可排课时</span><strong>277</strong></div></div>
-          <div class="included-heading"><span>包含课程</span><span>班级所需课时: 20</span><button type="button" class="create-blue-btn" id="addCourseButton">添加课程</button></div>
-          <div class="create-course-table-scroll"><table class="create-course-table"><colgroup><col style="width:204px"><col style="width:133px"><col style="width:133px"><col style="width:162px"><col style="width:162px"><col style="width:162px"><col style="width:133px"><col style="width:108px"><col style="width:108px"><col style="width:144px"><col style="width:144px"><col style="width:146px"><col style="width:54px"></colgroup><thead><tr><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>学生水平</th><th>期望成绩</th><th>授课模式</th><th>历史授课老师</th><th>校区</th><th>课时</th><th>当前授课老师</th><th>老师时间是否已沟通</th><th>操作</th></tr></thead><tbody>
-            <tr><td>商务</td><td>OCR</td><td>AS</td><td><select class="create-cell-select" aria-label="商务模块"><option>P1</option></select></td><td><select class="create-cell-select" aria-label="商务学生水平"><option>先修/同步-B及以上</option></select></td><td><select class="create-cell-select" aria-label="商务期望成绩"><option>先修/同步-B及以上</option></select></td><td>线上</td><td class="truncate">李春玲、成兴玲...</td><td>/</td><td><span class="hours-stepper"><button type="button" data-hour-step="-1">−</button><input type="text" value="10.0" aria-label="商务课时"><button type="button" data-hour-step="1">+</button></span></td><td><input class="teacher-input" value="无" aria-label="商务当前授课老师"></td><td><select class="create-cell-select" aria-label="商务老师时间是否已沟通"><option>是</option><option>否</option></select></td><td><button type="button" class="remove-course" aria-label="删除商务课程">−</button></td></tr>
-            <tr><td>会计</td><td>EDX</td><td>AS</td><td>/</td><td><select class="create-cell-select" aria-label="会计学生水平"><option>先修/同步-B及以上</option></select></td><td><select class="create-cell-select" aria-label="会计期望成绩"><option>先修/同步-B及以上</option></select></td><td>线下</td><td>李春玲</td><td><select class="create-cell-select" aria-label="会计校区"><option>舜元中心</option></select></td><td><span class="hours-stepper"><button type="button" data-hour-step="-1">−</button><input type="text" value="10.0" aria-label="会计课时"><button type="button" data-hour-step="1">+</button></span></td><td><input class="teacher-input" value="无" aria-label="会计当前授课老师"></td><td><select class="create-cell-select" aria-label="会计老师时间是否已沟通"><option>是</option><option>否</option></select></td><td><button type="button" class="remove-course" aria-label="删除会计课程">−</button></td></tr>
-          </tbody></table></div>
-        </section>
+<template id="detail-01">
+  <section class="detail-section"><h3>输入</h3><ul><li>顾问或学管填写课程信息、课程总课时、开结课日期及原始排课要求，提交排课单。</li><li>排课要求可包含课程频次、日期、时段、老师偏好等自然语言内容。</li></ul></section>
+  <section class="detail-section"><h3>提交与流转</h3><ol><li>系统先保存排课单并立即返回列表。</li><li>提交动作触发 AI 异步预处理排课要求；顾问或学管无需留在页面等待结果。</li><li>排课单同时进入教务待处理列表；AI 结果完成后回填到该排课单。</li></ol></section>
+  <section class="detail-section"><h3>输出</h3><p>形成可追溯的原始排课单和预处理任务。后续的顾问补充、教务补充与分析结果都关联同一张排课单。</p></section>
+</template>
 
-        <div class="create-date-row"><label><span class="required">*</span> 开课日期<span class="create-colon">:</span><span class="date-control"><span>▦</span><input type="text" value="2026-11-02" aria-label="开课日期"></span></label><label><span class="required">*</span> 结课日期<span class="create-colon">:</span><span class="date-control"><span>▦</span><input type="text" value="2026-11-30" aria-label="结课日期"></span></label></div>
-        <div class="create-type-row"><label><span class="required">*</span> 排课类型<span class="create-colon">:</span><select aria-label="排课类型"><option>此科目新排</option></select></label></div>
-        <div class="create-time-row"><span class="required">*</span> 时间要求<span class="create-colon">:</span><label><input type="radio" name="timeRequirement" checked>模糊排课</label><label><input type="radio" name="timeRequirement">精准排课</label></div>
-        <div class="create-requirement"><textarea id="createRequirement" maxlength="500" aria-label="排课要求">测试排课单</textarea><span id="createRequirementCount">5/500</span></div>
-        <section class="create-other-section"><h2>其他信息</h2></section>
-      </div>
-      <div class="create-order-footer"><button type="button" class="create-cancel" id="cancelCreateOrder">取消</button><button type="submit" class="create-submit">申请</button></div>
-    </form>
-  </section>
-  <button type="button" class="ai-precheck-fab" id="aiPrecheckFab" aria-label="查看AI排课提示" title="AI排课提示" hidden><img src="ai-dialog-avatar.png" alt="" aria-hidden="true"><span class="ai-fab-dot" id="aiPrecheckDot" hidden></span></button>
-  <div class="ai-precheck-backdrop" id="aiPrecheckBackdrop" hidden></div>
-  <aside class="ai-precheck-drawer" id="aiPrecheckDrawer" role="dialog" aria-modal="true" aria-label="AI排课提示" hidden>
-    <div class="ai-precheck-header"><button type="button" id="closeAiPrecheck" aria-label="关闭AI排课提示">×</button><div><strong>AI排课提示</strong></div></div>
-    <div class="ai-precheck-loading" id="aiPrecheckLoading" role="status" aria-live="polite" hidden><div class="ai-precheck-loading-card"><span class="ai-precheck-loading-icon" aria-hidden="true">✦</span><strong id="aiPrecheckLoadingText">AI正在分析排课要求</strong><div class="ai-precheck-progress" aria-hidden="true"><span></span></div><button type="button" id="deferAiPrecheck" hidden>稍后查看</button></div></div>
-    <div class="ai-precheck-body" id="aiPrecheckBody">
-      <section class="ai-precheck-left" aria-label="排课单信息">
-        <div class="ai-precheck-card ai-precheck-order-card"><h2>当前排课单</h2><div class="ai-precheck-order-switch"><strong id="aiPrecheckOrderName"></strong><button type="button" id="aiPrecheckOrderToggle" aria-label="切换待确认排课单" aria-haspopup="listbox" aria-expanded="false" aria-controls="aiPrecheckOrderMenu">⌄</button><div class="ai-precheck-order-menu" id="aiPrecheckOrderMenu" role="listbox" aria-label="待确认排课单" hidden></div></div></div>
-        <div class="ai-precheck-card"><h2>学生信息</h2><div class="ai-precheck-student" id="aiPrecheckStudent"></div></div>
-        <div class="ai-precheck-card"><h2>课程信息</h2><div class="ai-precheck-table-wrap course-table-wrap"><table class="drawer-course-table"><thead><tr><th>课程项</th><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>授课模式</th><th>校区</th><th>课时</th><th>历史授课老师</th><th>当前授课老师</th></tr></thead><tbody id="aiPrecheckCourses"></tbody></table></div></div>
-        <div class="ai-precheck-card"><h2>排课单详情</h2><div class="ai-precheck-summary" id="aiPrecheckSummary"></div></div>
-      </section>
-      <section class="ai-precheck-right" aria-label="AI分析结果"><div class="ai-precheck-right-scroll"><div class="ai-precheck-card ai-precheck-issues"><div class="ai-precheck-result-heading"><h2>AI分析结果</h2><span>待确认</span></div><div class="ai-precheck-issue-text" id="aiPrecheckIssueList"></div><p class="ai-precheck-help">请一次性回答所有待确认内容。原排课单信息可在左侧对照查看。</p><div class="ai-precheck-reply"><label for="aiPrecheckReply">补充说明</label><textarea id="aiPrecheckReply" maxlength="1000" placeholder="请填写对待确认问题的回复"></textarea><span id="aiPrecheckReplyCount">0/1000</span><p id="aiPrecheckReplyError" role="alert" hidden>请先填写补充说明</p></div></div></div><div class="ai-precheck-footer"><button type="button" id="dismissAiPrecheck">稍后处理</button><button type="button" class="ai-precheck-submit" id="submitAiPrecheckReply">提交回复</button></div></section>
-    </div>
-    <div class="ai-precheck-success-view" id="aiPrecheckSuccess" hidden><div class="ai-precheck-success-card"><span class="ai-precheck-success-icon" aria-hidden="true">✓</span><h2>排课要求分析完成</h2><p>当前排课单暂无待确认问题。</p><button type="button" id="closeAiPrecheckSuccess">关闭</button></div></div>
-  </aside>
-  <script src="flow-demo-order.js"></script>
-  <script src="app.js"></script>
+<template id="detail-02">
+  <section class="detail-section"><h3>输入与检查范围</h3><p>读取已提交的课程信息和原始排课要求，对整张排课单一次性检查模糊表述、前后冲突、逻辑不完整和需要确认的条件；应把识别到的全部业务问题一起返回。</p></section>
+  <section class="detail-section"><h3>预处理状态</h3><ul><li><strong>通过：</strong>没有待确认内容，教务工作台自动触发 AI 排课策略分析。</li><li><strong>待确认：</strong>返回具体问题，暂不触发策略分析。排课单仍可进入教务工作台查看。</li><li><strong>技术异常：</strong>由系统记录并重试；不能当作“通过”，也不能向顾问展示为业务错误。</li></ul></section>
+  <section class="detail-section"><h3>待确认后的补充路径</h3><ol><li>Web 工作台和移动端向顾问或学管一次性展示全部待确认问题。</li><li>顾问补充后，单独保存内容及补充时间，并重新预处理。</li><li>若顾问尚未补充，教务打开排课单时可自行补充；重新预处理通过后才自动分析策略。</li></ol><p class="detail-note">待确认限制的是自动策略分析的启动，不阻断排课单提交和教务查看。</p></section>
+</template>
+
+<template id="detail-03">
+  <section class="detail-section"><h3>触发条件与输入</h3><p>仅在预处理状态为“通过”后，由教务工作台自动启动。读取课程信息、原排课单文字、已收到的顾问或教务补充内容及相关图片；使用教务手动选择的上课时区理解日期和时段。</p></section>
+  <section class="detail-section"><h3>分析内容</h3><ul><li>识别全局要求：学生总日／周课节上限及多课程排课方式。</li><li>逐课程匹配完整课程名称，识别课节时长和多个分段策略：日期、频次或指定课节数、时段状态、不可排时段等。</li><li>课程没有单独开课日期时，将全单开课日期写入策略；课程有自己的明确日期时按课程要求执行。</li><li>老师相关要求保留在单科自然语言说明中，供后续教务选师参考。</li></ul></section>
+  <section class="detail-section"><h3>输出与校验</h3><ul><li><strong>成功：</strong>输出结构化的全局与单科策略，经结构和业务校验后供教务确认。</li><li><strong>业务问题：</strong>一次性列出全部已识别的具体原因，不输出半成品策略。</li><li><strong>技术故障：</strong>系统提示故障并重试，不作为业务问题展示。</li></ul></section>
+</template>
+
+<template id="detail-04">
+  <section class="detail-section"><h3>教务看到的内容</h3><p>排课单详情展示原始要求、预处理状态、顾问收到提示后补充的文字及补充时间，以及已有的 AI 策略分析结果或问题说明。</p></section>
+  <section class="detail-section"><h3>处理路径</h3><ul><li><strong>预处理通过且策略已生成：</strong>进入确认排课策略页，可随时查看完整排课要求。</li><li><strong>预处理待确认且顾问未补充：</strong>教务先补充信息，系统重新预处理；通过后启动策略分析。</li><li><strong>策略分析仍有业务问题：</strong>教务查看全部问题，补充要求或联系发起人，重新分析。</li><li><strong>策略生成后又收到补充：</strong>提示教务查看新内容，可选择重新生成策略；补充内容保留在排课单中。</li></ul></section>
+</template>
+
+<template id="detail-05">
+  <section class="detail-section"><h3>全局策略</h3><p>教务确认学生所有课程合计的每日、每周总课节上限，以及多课程排课方式；学生未作要求时，默认使用随机排课。</p></section>
+  <section class="detail-section"><h3>单科分段策略</h3><ul><li>每门课可有多条有序策略，包含课程课节时长、开始与结束日期、按频次／指定课节数／排完剩余课节的方式。</li><li>频次可按自然周、自然双周或自然月设置上下限；按课节数和排完剩余课节时，使用相应的日／周上限约束。</li><li>时段可分别标为固定、仅限、优先或常规；不可排时段独立记录日期范围、星期、全天或具体起止时间。</li><li>末段在“排完为止”条件下可没有结束日期；非末段必须有结束日期，阶段不得重叠。</li></ul></section>
+  <section class="detail-section"><h3>指定授课老师</h3><p>每门课程的 AI 自然语言分析下方可选择当前、历史授课老师，也可输入老师姓名或工号指定。已指定老师随策略确认结果进入后续步骤；未指定的课程在教师推荐页选择。指定老师跳过推荐排序，仍需校验真实师生日程和不可放宽的硬约束。</p></section>
+  <section class="detail-section"><h3>确认前校验</h3><p>校验固定、仅限与禁排是否冲突，频次和课程总量是否可解释，日期范围与课节时长是否合法。教务可修改策略；保存后形成明确的策略版本，学生计划按该版本测算。</p></section>
+</template>
+<template id="detail-06">
+  <section class="detail-section"><h3>第一步：折算周期排课要求</h3><p>只读取已确认策略、阶段日期、全天停排日期及课程尚需量。按自然周、自然双周或自然月划分原生周期；有效天数等于阶段与周期相交的日历天数，减去全天停排天数。局部禁排、已有课或日上限已满不从有效天数中扣除。</p><p class="detail-example">频次为每周 2—4 节，某周只有 2 个有效天：下限 2×2÷7≈0.57，四舍五入为 1；上限 4×2÷7≈1.14，向上取整为 2。本周要求为 1—2 节。各周期独立折算，小数不结转。</p></section>
+  <section class="detail-section"><h3>第二步：生成学生候选时段</h3><p>结合策略日期、固定／仅限／优先／常规时段、不可排时段、学生已有课、总日／周上限及单科上限，列出具体当地日期和真实起止时间。候选集合保留全部合法选择，不按本周期频次上限提前裁剪。</p><p>学生已有课按每节实际日期换算至上课时区，以真实时间判冲突；非北京时区的候选还要预检最终写入北京时间时的合法性。</p></section>
+  <section class="detail-section"><h3>第三步：合并容量并生成暂定计划</h3><p>单科学生可排容量是在本周期仅排这一门课时，满足时间互斥、已有课、日／周上限、频次上限和剩余量后的最多逻辑课节数。随后多门课程共同分配学生时段与总额度，形成暂定计划，不读取老师日程。</p><p>每科每周期输出：排课日期、有效天数、学生排课要求、学生可排容量、学生侧计划量、要求缺口与候选时段。频次周期的要求缺口为“折算下限减去学生侧计划量”，负值按 0。</p><p class="detail-note">学生计划是选师前的测算。选定老师后还需重新计算师生交集，最终以联合排课结果为准。</p></section>
+</template>
+
+<template id="detail-07A">
+  <section class="detail-section"><h3>配置维度</h3><p>教师排课管理按课程项维护大规则；线下／OMO小规则按授课校区命中，线上小规则按排课单发起人组织架构命中。同一条小规则可对应多个校区或发起人架构。</p></section>
+  <section class="detail-section"><h3>教师组织优先级</h3><p>每条小规则配置有顺序的教师组织层级；同一优先级可多选组织架构。每级可设置“排课需审批”和共用的自定义提示文案。命中规则后，只有该规则配置的组织老师进入候选。</p></section>
+  <section class="detail-section"><h3>保存校验与兜底</h3><ul><li>校验同一课程项跨大规则重复、小规则条件重叠、线上父子架构交叉命中及教师架构范围交叉。</li><li>勾选排课需审批时，提示文案不能为空；保存后有效规则立即供推荐读取。</li><li>未命中规则时，线下／OMO按授课校区、线上按授课模式兜底筛选。已命中规则但无人合格时不扩大到未配置的组织。</li></ul><p class="detail-note">这是预先维护的基础数据，不需要为每张排课单重新配置。</p></section>
+</template>
+
+<template id="detail-07B">
+  <section class="detail-section"><h3>资格与评估窗口</h3><p>先按课程项、科目、考试局、年级、模块及教务设置的授课模式、校区、教师级别、试听、诊断、自组班等老师要求筛选。明确结束日期时用课程开始日至结束日；排完为止时，以学生侧暂定计划估算结束日，再加两个完整自然周作为顺延评估区。</p><p>教师已有课、休假与不可排时间按各节真实日期换算到学生上课时区。所有老师使用相同评估窗口与该科尚需逻辑课节数。</p></section>
+  <section class="detail-section"><h3>50% 准入与覆盖度</h3><p>先计算教师自身剩余可排课节数，不与学生时段求交。只有达到该科尚需节数的一半，向上取整，才进入覆盖计算。例如尚需 15 节，老师可排 7 节被剔除，可排 8 节才继续评估。</p><p>通过准入后计算师生可共同安排的最多逻辑课节数；<strong>覆盖度＝共同可安排节数 ÷ 本科尚需节数</strong>。固定任务和真实日程冲突还要单独校验；覆盖度不是联合排课的实际结果。</p></section>
+  <section class="detail-section"><h3>按组织层级逐级推荐</h3><ol><li>从最高优先级开始找第一个有合格老师的层级，按覆盖度取前 4 位。</li><li>若该层级最高覆盖度已达到 80%，停止向下检索。</li><li>不足 80% 时继续看下一层级；低优先级老师只有个人覆盖度<strong>严格高于最近保留层级的最高值</strong>才展示，每层级最多 4 位。</li><li>若新保留层级最高覆盖度达到 80% 则停止，否则继续，直到层级耗尽。</li></ol><p class="detail-example">浦西最高 75%：保留；浦东最高 70%：跳过；橡沐最高 81%：保留并停止。橡沐层级仅展示个人覆盖度高于 75% 的老师。</p></section>
+  <section class="detail-section"><h3>选师结果</h3><p>确认策略时已指定的老师沿用到选师结果；教务在此页为其他课程选择老师。老师姓名后展示排课状态；需架构审批时，在选师按钮上显示提醒及自定义文案。已配置规则但全部层级无人入围，显示“暂无可用教师”，教务可修改老师要求重新推荐。已指定老师仍须校验硬冲突。</p></section>
+</template>
+
+<template id="detail-08">
+  <section class="detail-section"><h3>输入与决策单位</h3><p>输入已确认的多科策略、学生候选时段与计划、逐科选定的老师及最新日程、已有课、教室等独占资源和课程尚需课时。选师后先重读日程，重新求师生真实可排交集。</p><p>对每个合法的“课程＋师生可排时段”建立一个是否选择该课节的决策。排课日期、星期和周期按学生上课时区的当地时间归属；时间重叠按同一真实时间基准判断。</p></section>
+  <section class="detail-section"><h3>先满足的硬约束</h3><ul><li>学生、老师及独占教室的真实上课时间不得重叠；同一时段至多安排一节。</li><li>学生全部课程合计日／周上限、单科日／周上限均扣除已有课后校验。</li><li>遵守策略阶段日期、每个原生周期的频次上限、课程剩余总量、固定任务、仅限与不可排时段。</li><li>候选须能合法写入系统；北京时间写入映射不能增加师生真实可排容量。</li></ul></section>
+  <section class="detail-section"><h3>目标的先后顺序</h3><ol><li>绝不突破硬约束，尽量减少有明确截止课程的总量、阶段和周期下限差额。</li><li>开放式排完课程尽量早完成；仍有余量时，频次课程向本周期上限靠拢。</li><li>再考虑优先时段、课程交叉或随机方式、均匀分布等偏好。后一级收益不能抵消前一级目标。</li></ol><p>固定时段先尝试、优先时段随后尝试、常规时段最后尝试；这是可回退的搜索顺序，不能把先选课节永久锁死。</p></section>
+  <section class="detail-section"><h3>截止前的必需量</h3><p>对有明确截止日期的课程，先计算<strong>后续真实最多还能安排多少节</strong>，同时考虑师生交集和所有单科硬限制。用“课程尚欠节数－后续最大容量”得到本周期至少要争取的数量，并与本周期独立折算下限、阶段目标的必要量比较，取其中较大者；负值按 0。</p><p class="detail-example">还欠 8 节，本周期允许 1—3 节，后续真实最多排 6 节，本周期至少争取 2 节；若后续最多 5 节，本周期至少争取 3 节。没有明确截止的课程不把当前预览窗口当成截止日。</p></section>
+  <section class="detail-section"><h3>时段争抢与回退</h3><p>系统分别假设“今天完全不排这门课”和“只放弃当前具体时段”，检查周期内剩余真实容量。若放弃后无法满足本周期必需量，今天或该时段就不可完全让出。两种假设分开计算。</p><p>在同一天，对全部合法“课程＋时段”联合选择，受学生剩余日容量、单科日上限和真实时间互斥共同限制。试选一个组合后，重新检查受影响课程的周期容量和截止前必要量；若失败，撤销该组合并尝试其他时段、其他课程，必要时回退更早日期的安排。</p><p class="detail-example">学生今日剩余日容量为 2：08:20 时段可排 A 或 B，10:30 时段只可排 C。合法两节组合是 A＋C 或 B＋C；A 与 B 不能同时占用 08:20。若 A、B 都被前瞻判为今日必需，系统需回退早先安排或报告冲突。</p></section>
+  <section class="detail-section"><h3>输出</h3><p>输出完整或最大合法部分的排课方案、每节真实上课时间、未满足的周期／阶段目标及差额。应区分已排完、部分完成、已证明无解、运行超时和输入已变化；必要的单科容量检查不能代替最终多科联合可行性判断。</p></section>
+</template>
+
+<template id="detail-09">
+  <section class="detail-section"><h3>教务核查</h3><p>按课程和策略阶段查看排课方案、课表、实际课节、本周期差额和课程总量待补。教务可手动补排或调整，系统必须重新校验时间冲突、课节上限及课程剩余总量。</p><p>频次课程的本周期差额＝本周期独立折算下限减去本周期实际排课节数，负值按 0。各周期差额不能直接相加代替课程总量待补。</p></section>
+  <section class="detail-section"><h3>上课时区与北京写入</h3><p>逻辑课节按学生所选上课时区的真实日期和时段统计。正式写入时，根据<strong>每节实际上课日期</strong>的时区规则换算为北京时间，不能用排课当天的固定时差。</p><p>若北京时间跨零点，系统按日期拆成两条不跨天记录，分别满足 0.25 课时粒度；如需为录入粒度做时间偏移，课节标记“换时区偏移”并展示原北京时间。偏移不改变师生真实上课时间。</p></section>
+  <section class="detail-section"><h3>提交校验与留痕</h3><ul><li>提交前重新读取排课要求、学生及老师日程、课程剩余课时和时区规则的最新版本。</li><li>真实师生与教室占用、北京时间写入占用、跨天拆分和全部系统记录写入应在同一事务完成；任一记录失败则整体回滚。</li><li>跨天的两条系统记录共用同一逻辑课节标识，课时扣减、课节数和课程总量仍只按原来的一个逻辑课节计算。</li><li>保存方案、原真实时间、换算与偏移信息、操作记录及未完成原因，供后续核查和改课使用。</li></ul></section>
+</template>
+
+<script>
+  (() => {
+    const drawer = document.getElementById('detail-drawer');
+    const backdrop = document.getElementById('detail-backdrop');
+    const closeButton = document.getElementById('detail-close');
+    const title = document.getElementById('detail-title');
+    const stepLabel = document.getElementById('detail-step');
+    const body = document.getElementById('detail-body');
+    const source = document.getElementById('detail-source');
+    let returnFocus = null;
+
+    function openDetail(step, card) {
+      const template = document.getElementById(`detail-${step}`);
+      if (!template) return;
+      returnFocus = card;
+      title.textContent = card.querySelector('h2').textContent.replace(step, '').trim();
+      stepLabel.textContent = `流程步骤 ${step}`;
+      body.replaceChildren(template.content.cloneNode(true));
+      body.scrollTop = 0;
+      if (step === '01' || step === '02' || step === '04') {
+        source.href = 'business-process-v3-20261105.html';
+        source.textContent = '查看业务流程说明';
+      } else if (step === '03') {
+        source.href = 'ai-config-v3-20261105.html';
+        source.textContent = '查看 AI 配置';
+      } else if (step === '07A' || step === '07B') {
+        source.href = 'teacher-recommendation-v3-20261105.html';
+        source.textContent = '查看教师推荐流程';
+      } else {
+        source.href = 'algorithm-v3-20261105.html';
+        source.textContent = '查看完整算法方案';
+      }
+      backdrop.hidden = false;
+      drawer.hidden = false;
+      document.body.classList.add('detail-open');
+      closeButton.focus();
+    }
+
+    function closeDetail() {
+      if (drawer.hidden) return;
+      drawer.hidden = true;
+      backdrop.hidden = true;
+      document.body.classList.remove('detail-open');
+      if (returnFocus) returnFocus.focus();
+    }
+
+    for (const card of document.querySelectorAll('.flow article.card')) {
+      const step = card.querySelector('.step-badge')?.textContent.trim();
+      if (!step || !document.getElementById(`detail-${step}`)) continue;
+      card.dataset.detail = step;
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-haspopup', 'dialog');
+      card.setAttribute('aria-label', `查看${step} ${card.querySelector('h2').textContent.replace(step, '').trim()}的详细内容`);
+      card.addEventListener('click', () => openDetail(step, card));
+      card.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openDetail(step, card);
+        }
+      });
+    }
+
+    closeButton.addEventListener('click', closeDetail);
+    backdrop.addEventListener('click', closeDetail);
+    document.addEventListener('keydown', event => {
+      if (drawer.hidden) return;
+      if (event.key === 'Escape') { closeDetail(); return; }
+      if (event.key !== 'Tab') return;
+      const focusable = [...drawer.querySelectorAll('button, a[href]')];
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    });
+  })();
+</script>
 </body>
 </html>

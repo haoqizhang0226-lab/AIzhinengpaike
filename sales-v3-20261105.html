@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>智能排课V3.0完整流程｜顾问发起</title>
+  <style data-bundled-from="styles.css">
+:root{font-family:Arial,"Microsoft YaHei","PingFang SC",sans-serif;font-size:12px;color:#17223c;background:#f8f9fb;font-synthesis:none}*{box-sizing:border-box}body{margin:0;min-width:1080px}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #5a9bff;outline-offset:2px}[hidden]{display:none!important}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:163px;background:#203258;color:#d9e3f5;z-index:10;overflow:hidden}.brand{height:67px;display:flex;align-items:flex-start;gap:8px;padding:18px 6px 0 8px;background:#1b294b;color:#fff;white-space:nowrap}.brand-mark{height:36px;width:36px;flex:0 0 36px;border:2px solid #f1f5ff;border-radius:50%;display:grid;place-items:center;font-size:23px;font-weight:bold;font-style:italic;line-height:1}.brand-words{padding-top:6px;display:flex;flex-direction:column;gap:2px}.brand-words strong{font-size:11px;line-height:1;font-weight:700;letter-spacing:.1px}.brand-words span{font-size:7px;letter-spacing:1.15px;white-space:nowrap}.side-menu{height:calc(100% - 67px);overflow:auto;scrollbar-width:thin;scrollbar-color:#7186ae transparent}.side-item{height:46px;display:flex;align-items:center;gap:9px;padding:0 13px;color:#d6e3fa;font-size:13px;white-space:nowrap}.side-icon{color:#9eb3d8;width:15px;text-align:center;font-size:15px}.side-arrow{margin-left:auto;color:#acbede;font-size:17px}.side-item.open{background:#223762;color:#fff;font-weight:700}.side-sub{height:46px;display:flex;align-items:center;padding-left:40px;background:#152443;color:#d8e4ff;font-size:12px;white-space:nowrap}.side-sub.dark{background:#14213d}.side-sub.active{margin:8px 11px 5px;padding-left:30px;height:38px;border-radius:5px;background:linear-gradient(100deg,#2457ee,#3291ec);color:#fff;font-weight:700}.small-badge{display:inline-grid;place-items:center;min-width:21px;height:16px;margin-left:4px;padding:0 4px;border-radius:9px;background:#fa6b72;color:#fff;font-size:10px;font-weight:700}.side-collapse{position:absolute;right:11px;bottom:22px;color:#cbd9f4;font-size:16px}
+.workspace{margin-left:163px;min-height:100vh}.topbar{height:48px;padding:0 20px;display:flex;align-items:center;gap:35px;background:#fff;border-bottom:1px solid #e7eaf0;white-space:nowrap}.top-left{display:flex;align-items:center;gap:18px;color:#333;font-size:15px}.refresh{font-size:21px;color:#404749;line-height:1}.top-announcement{height:34px;border-radius:19px;padding:0 16px;display:flex;align-items:center;gap:11px;background:#e6efff;color:#277bea;font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis}.top-announcement strong{font-weight:700}.top-announcement em{font-style:normal;color:#ec9b18}.bell-blue{font-size:16px}.ann-sep{color:#9ab4d9}.top-right{margin-left:auto;display:flex;align-items:center;gap:17px;color:#4c4c4c;font-size:12px}.orange-app{display:grid;place-items:center;width:31px;height:31px;border-radius:5px;background:#ff7d18;color:#fff;font-size:10px;font-weight:700}.top-icon{position:relative;color:#20242b;font-size:21px;line-height:1}.top-icon b{position:absolute;left:13px;top:-10px;min-width:16px;height:15px;border-radius:9px;background:#fb6874;color:white;font-size:9px;display:grid;place-items:center;padding:0 2px}.top-avatar{border:1px solid #243e66;border-radius:50%;width:20px;height:20px;display:grid;place-items:center;color:#244171;font-size:11px;font-weight:700}.logout{color:#2274dd;text-decoration:none}
+.main-area{padding:16px 16px 30px;min-height:calc(100vh - 48px);background:#f9fafc}.list-panel{background:#fff;min-height:646px;padding:0 18px 16px}.tabs{height:46px;display:flex;align-items:stretch;gap:35px;border-bottom:1px solid #d8dfe9}.tab{border:0;background:none;color:#29334d;padding:0 0 2px;font-size:12px;position:relative}.tab.current{color:#2f7eeb}.tab.current:after{content:"";height:2px;background:#3284f5;position:absolute;bottom:0;left:0;right:0}.filters{display:flex;align-items:center;gap:22px;min-height:65px;border-bottom:1px solid #d8dfe7;white-space:nowrap}.filter-group{display:flex;align-items:center;gap:16px;color:#46516b}.filter-group>span:first-child{flex:none}.filter-group input,.filter-group select{height:29px;border:1px solid #d9e1ec;background:#fff;border-radius:3px;padding:0 12px;color:#47556f;outline:none}.filter-group input::placeholder{color:#bfc5d0}.course-filter input{width:135px}.filter-group select{width:135px;appearance:none;background-image:linear-gradient(45deg,transparent 50%,#bdc7d5 50%),linear-gradient(135deg,#bdc7d5 50%,transparent 50%);background-position:calc(100% - 17px) 12px,calc(100% - 12px) 12px;background-size:5px 5px;background-repeat:no-repeat;padding-right:27px}.date-filter{gap:12px}.date-range{height:29px;width:207px;border:1px solid #d9e1ec;border-radius:3px;display:flex;align-items:center;color:#bec5d0;padding:0 8px;gap:4px}.calendar-icon{color:#c5cbd6}.date-range input{border:0;padding:0;width:76px;min-width:0;height:25px;font-size:11px}.date-range input[type=date]{width:84px;font-size:10px}.date-to{color:#222;font-size:12px}.filter-actions{display:flex;gap:11px;margin-left:auto}.btn{height:29px;min-width:50px;padding:0 11px;border-radius:3px;border:1px solid #d6deeb;background:#fff;color:#4e5a71}.btn.primary{border-color:#3383f1;background:#3383f1;color:#fff}.btn:hover{filter:brightness(.97)}.list-toolbar{height:65px;display:flex;align-items:center;justify-content:flex-end}.create-btn{min-width:83px}.table-scroll{overflow-x:auto}.order-table{width:100%;min-width:1570px;border-collapse:collapse;table-layout:fixed;font-size:11px;color:#172039}.order-table col.col-course{width:37%}.order-table col.col-created{width:8.8%}.order-table col.col-type{width:6.6%}.order-table col.col-attribute{width:6.6%}.order-table col.col-handler{width:6.6%}.order-table col.col-status{width:6.6%}.order-table col.col-finished{width:8.8%}.order-table col.col-applicant{width:6.6%}.order-table col.col-action{width:7.2%}.order-table col.col-settings{width:2.2%}.order-table th,.order-table td{border:1px solid #e5e9f0;text-align:center;vertical-align:middle;padding:0 6px}.order-table th{height:39px;color:#111;font-weight:700;background:#fff}.order-table td{height:37px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.order-table tbody tr:nth-child(even){background:#f8f8f8}.order-table a{color:#287bf2;text-decoration:none}.order-table a:hover{text-decoration:underline}.table-settings{height:25px;width:25px;border:1px solid #d7dfeb;background:#fff;color:#66748d;border-radius:50%;font-size:14px}.pagination{height:44px;display:flex;align-items:center;justify-content:flex-end;gap:9px;color:#4b566d;white-space:nowrap;font-size:11px}.pagination button{border:0;height:26px;min-width:27px;color:#4a566d;background:#f5f6f8}.pagination .page-numbers{display:flex;gap:9px;align-items:center}.pagination .active{background:#3383f1;color:#fff}.pagination select{height:27px;border:1px solid #d7e0ec;border-radius:3px;background:#fff;color:#536078;padding:0 10px;font-size:11px}.pagination input{width:40px;height:27px;border:1px solid #d7e0ec;border-radius:3px;text-align:center;color:#778399}.pagination .jump-label{margin-left:18px}.pagination button:disabled{opacity:.4;cursor:default}
+.detail-panel{background:#fff;min-height:640px;padding:22px 28px}.detail-breadcrumb{color:#7d8ba5;margin-bottom:18px}.detail-breadcrumb a{color:#327eef;text-decoration:none}.detail-head{display:flex;align-items:center;gap:16px;border-bottom:1px solid #e2e8f1;padding-bottom:18px}.detail-head h1{font-size:18px;margin:0;color:#1d304e}.detail-head .status-tag{padding:4px 9px;background:#fff4d9;color:#a67816;border-radius:3px}.detail-back{height:28px;border:1px solid #d8e0ec;color:#4a5f7d;background:#fff;border-radius:3px;padding:0 10px}.detail-section{margin-top:22px;border:1px solid #e2e8ef}.detail-section h2{font-size:14px;margin:0;padding:13px 16px;background:#f7f9fc;border-bottom:1px solid #e2e8ef}.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0 30px;padding:4px 16px 17px}.detail-field{display:flex;gap:12px;padding-top:18px;color:#273d5e}.detail-field span{color:#7b8ba4;min-width:84px}.detail-empty{padding:18px;color:#8796ab}.toast{position:fixed;z-index:30;left:50%;bottom:24px;transform:translateX(-50%);background:#273c5d;color:#fff;border-radius:4px;padding:10px 16px;opacity:0;pointer-events:none;transition:opacity .2s}.toast.show{opacity:1}
+@media(max-width:1530px){.top-announcement{max-width:560px}.filters{flex-wrap:wrap;padding:14px 0;gap:12px 18px}.filter-actions{margin-left:0}.order-table{min-width:1570px}}@media(max-width:1160px){.top-announcement{max-width:340px}.top-right{gap:8px}.sidebar{width:150px}.workspace{margin-left:150px}.main-area{padding:12px}.list-panel{padding-left:12px;padding-right:12px}}
+
+</style>
+  <style data-bundled-from="detail-drawer.css">
+.detail-backdrop{position:fixed;inset:0;background:rgba(22,32,54,.17);z-index:20}.order-drawer{position:fixed;right:0;top:0;bottom:0;width:min(1302px,calc(100vw - 240px));background:#f8f8f8;box-shadow:-6px 0 18px rgba(27,39,58,.13);z-index:21;display:flex;flex-direction:column;color:#111;font-size:13px}.order-drawer-header{height:42px;min-height:42px;display:flex;align-items:center;gap:18px;padding:0 19px;background:#fff;border-bottom:1px solid #ebebeb}.order-drawer-header strong{font-size:14px;font-weight:500}.order-drawer-close{width:30px;height:30px;display:grid;place-items:center;border:0;background:#3485f7;color:#fff;font-size:25px;line-height:1;font-weight:300;padding:0}.order-drawer-body{flex:1;display:flex;align-items:flex-start;gap:18px;padding:18px 14px 30px 19px;overflow:auto}.student-card{width:189px;min-width:189px;background:#fff}.student-card-header{height:45px;border-bottom:1px solid #ededed;padding:0 18px;display:flex;align-items:center;justify-content:space-between;white-space:nowrap}.student-card-header strong{font-size:13px;font-weight:500}.decrypt-button{border:0;background:none;color:#2d82f1;padding:0;font-size:12px}.student-card-fields{padding:17px 18px 11px}.student-field{margin-bottom:10px;line-height:21px}.student-field-label{color:#687181}.student-field-value{color:#111;overflow-wrap:anywhere}.order-drawer-main{min-width:0;flex:1}.drawer-card{background:#fff}.drawer-card-title{height:45px;padding:0 18px;border-bottom:1px solid #ededed;display:flex;align-items:center;gap:5px}.drawer-card-title strong{font-size:13px;font-weight:500}.gold-badge{border-radius:12px;background:#efaa36;color:#fff;font-size:11px;font-weight:700;line-height:22px;padding:0 7px}.course-card{height:239px;margin-bottom:18px}.course-table-wrap{margin:19px 18px 17px;height:157px;overflow:auto hidden;scrollbar-width:auto;scrollbar-color:#bfccd6 #f5f7fa}.drawer-course-table{border-collapse:collapse;table-layout:fixed;min-width:1240px;color:#111;font-size:12px}.drawer-course-table th,.drawer-course-table td{border:1px solid #e8edf4;text-align:center;padding:0 5px}.drawer-course-table th{height:78px;font-weight:700;background:#fff}.drawer-course-table td{height:37px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.drawer-course-table tbody tr:nth-child(even){background:#f9f9f9}.order-info-card{min-height:649px}.order-info-grid{display:grid;grid-template-columns:49% 51%;padding:8px 18px 15px}.order-info-field{min-height:45px;display:flex;align-items:center;min-width:0}.order-info-field.wide{grid-column:1/-1}.order-info-label{color:#687181;white-space:nowrap}.order-info-colon{margin:0 10px;color:#596477}.order-info-value{color:#111;min-width:0}.order-info-value .blue-tag{display:inline-block;border:1px solid #d6e7ff;border-radius:2px;background:#eff6ff;color:#3181ed;padding:2px 7px;font-size:11px}.order-info-empty{padding:20px;color:#8a96a8}.student-card,.drawer-card{box-shadow:0 0 0 1px rgba(234,237,242,.28)}
+@media(max-width:1180px){.order-drawer{width:calc(100vw - 170px)}.order-drawer-body{gap:12px;padding-left:12px}.student-card{width:176px;min-width:176px}.order-info-grid{column-gap:10px}}@media(max-width:850px){.order-drawer{width:calc(100vw - 65px)}.order-drawer-body{display:block}.student-card{width:100%;margin-bottom:14px}.student-card-fields{display:grid;grid-template-columns:repeat(2,1fr);gap:0 12px}.order-info-grid{grid-template-columns:1fr}.order-info-field{grid-column:1/-1}}
+.precheck-supplement-card{margin-top:18px;margin-bottom:20px}
+.precheck-supplement-list{padding:15px 18px}
+.precheck-supplement-item{border:1px solid #e3eaf3;background:#f8fbff;border-radius:4px;padding:12px 14px}
+.precheck-supplement-item+.precheck-supplement-item{margin-top:10px}
+.precheck-supplement-meta{display:flex;align-items:center;gap:10px;color:#7b8798;font-size:11px;margin-bottom:8px}
+.precheck-supplement-content{white-space:pre-wrap;overflow-wrap:anywhere;color:#263750;line-height:1.7}
+.ai-detection-card{margin-top:18px}.ai-detection-body{min-height:68px;padding:15px 18px;display:flex;align-items:center;gap:14px}.ai-detection-status{display:inline-flex;align-items:center;min-height:27px;padding:4px 10px;border-radius:14px;font-size:12px;font-weight:700}.ai-detection-status.is-pass{color:#218052;background:#e8f8ef}.ai-detection-status.is-pending{color:#ad6b14;background:#fff2de}.ai-detection-status.is-loading{color:#3269ae;background:#eaf3ff}.ai-detection-action{border:0;background:none;color:#2d7de8;padding:4px 0;font-weight:700}.ai-detection-action:hover{text-decoration:underline}.ai-detection-card+.precheck-supplement-card{margin-top:10px}
+
+</style>
+  <style data-bundled-from="create-order.css">
+.create-order-page{position:fixed;inset:0;z-index:50;background:#fff;color:#333;font-size:12px}
+.create-order-page form{height:100%;display:flex;flex-direction:column}
+.create-order-header{height:46px;min-height:46px;border:1px solid #e5e8ed;border-bottom-color:#e8ebef;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:14px}
+.create-order-header strong{font-weight:700}
+.create-close{border:0;background:none;color:#949aa3;font-size:25px;font-weight:300;line-height:1;padding:0 3px}
+.create-order-body{flex:1;min-height:0;overflow:auto;padding:19px 41px 26px 26px;scrollbar-color:#bfc9d7 #f7f9fc;scrollbar-width:thin}
+.create-student-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(5,24px);row-gap:20px;border-bottom:1px solid #d8dee8;padding-bottom:17px}
+.create-student-item{display:flex;align-items:center;min-width:0;gap:9px;white-space:nowrap}
+.create-label{color:#6c7179;min-width:65px}
+.create-colon{color:#525861}
+.student-name-input{width:162px;height:26px;border:1px solid #d6dfec;border-radius:3px;color:#69717e;padding:0 10px;background:#fff;font-size:11px}
+.create-course-section{padding-top:20px}
+.create-order-body h2{font-size:13px;margin:0 0 10px;font-weight:700;color:#373b42}
+.course-package-line{display:flex;align-items:center;gap:15px;height:30px;color:#70747c}
+.course-package-line select{width:226px;height:26px;border:1px solid #d9e0e9;border-radius:3px;background:#fff;color:#e39716;padding:0 12px;font-size:11px}
+.create-gold-tag{background:#eaa02c;color:#fff;border-radius:10px;font-weight:700;height:20px;padding:2px 11px;font-size:10px}
+.course-hours-summary{height:81px;margin-top:21px;background:#eaf3ff;border-radius:4px;display:flex;align-items:center;padding:0 0 0 10px}
+.course-hours-summary>div{width:117px;height:52px;border-right:1px solid #bfcde0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#70747b}
+.course-hours-summary>div:last-child{border-right:0}
+.course-hours-summary strong{font-size:17px;color:#363a42}
+.included-heading{height:54px;display:flex;align-items:center;gap:246px;color:#61666e}
+.included-heading .create-blue-btn{margin-left:auto}
+.create-blue-btn{height:26px;border:1px solid #3488f6;border-radius:2px;background:#3488f6;color:#fff;padding:0 14px;font-size:11px}
+.create-course-table-scroll{overflow-x:auto}
+.create-course-table{width:100%;min-width:1793px;table-layout:fixed;border-collapse:collapse;font-size:11px;color:#1e232b}
+.create-course-table th,.create-course-table td{border:1px solid #e5eaf1;text-align:center;vertical-align:middle;padding:4px 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.create-course-table th{height:36px;font-weight:700;background:#fff;color:#111}
+.create-course-table td{height:57px}
+.create-course-table tbody tr:nth-child(even){background:#eaf3ff}
+.create-cell-select,.teacher-input{height:25px;max-width:100%;border:1px solid #d6dfeb;border-radius:3px;background:#fff;color:#676f7c;padding:0 7px;font-size:11px}
+.create-cell-select{width:100%}
+.teacher-input{width:126px}
+.hours-stepper{height:26px;display:inline-flex;align-items:center;border:1px solid #d6dfeb;border-radius:3px;background:#fff;overflow:hidden}
+.hours-stepper button{height:24px;width:24px;border:0;background:#f5f6f8;color:#8d98a7;font-size:15px}
+.hours-stepper input{height:24px;width:40px;border:0;border-left:1px solid #e3e7ee;border-right:1px solid #e3e7ee;text-align:center;color:#545b66;font-size:11px}
+.remove-course{border:1px solid #a9caff;border-radius:50%;width:20px;height:20px;line-height:16px;padding:0;background:#eaf3ff;color:#3788f9;font-size:17px}
+.create-date-row{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:16px;height:35px}
+.create-date-row label,.create-type-row label{display:flex;align-items:center;gap:7px;color:#656a72}
+.required{color:#fa666b}
+.date-control{height:29px;width:198px;border:1px solid #d7e0ec;border-radius:3px;display:flex;align-items:center;gap:7px;padding:0 9px;color:#bac4d1}
+.date-control input{width:152px;height:25px;border:0;outline:none;color:#6a7078;font-size:11px}
+.create-type-row{height:45px;display:flex;align-items:center}
+.create-type-row select{width:198px;height:30px;border:1px solid #d7e0ec;border-radius:3px;color:#6c7078;background:#fff;padding:0 10px;font-size:11px}
+.create-time-row{height:45px;display:flex;align-items:center;gap:8px;color:#6a6e76}
+.create-time-row label{display:flex;align-items:center;gap:8px;margin-left:7px;cursor:pointer}
+.create-time-row input{accent-color:#3488f6;margin:0}
+.create-time-row label:has(input:checked){color:#3184f1}
+.create-requirement{position:relative}
+.create-requirement textarea{display:block;width:100%;height:100px;resize:vertical;border:1px solid #d9e0e9;border-radius:3px;background:#fff;padding:11px 12px 25px;color:#626973;font:inherit;outline:none}
+.create-requirement textarea:focus{border-color:#71a9f6}
+.create-requirement span{position:absolute;right:9px;bottom:9px;color:#aab2bd;font-size:11px}
+.create-other-section{margin-top:15px;border-top:1px solid #d9dfe8;padding-top:21px;min-height:75px}
+.create-order-footer{height:48px;min-height:48px;display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:0 12px;border-top:1px solid #e2e7ed;background:#fff}
+.create-order-footer button{height:28px;padding:0 14px;border-radius:3px;font-size:11px}
+.create-cancel{border:1px solid #d8e0ec;background:#fff;color:#687383}
+.create-submit{border:1px solid #3487f3;background:#3487f3;color:#fff}
+.create-order-footer button:hover,.create-blue-btn:hover{filter:brightness(.97)}
+@media(max-width:1500px){.create-course-table{min-width:1750px}.included-heading{gap:150px}.create-order-body{padding-right:26px}}
+
+</style>
+  <style data-bundled-from="precheck.css">
+.ai-precheck-fab{position:fixed;right:25px;bottom:25px;z-index:32;width:60px;height:60px;padding:3px;border:2px solid #fff;border-radius:50%;background:#fff;box-shadow:0 5px 18px rgba(28,67,132,.28);transition:transform .18s,box-shadow .18s}
+.ai-precheck-fab:hover{transform:translateY(-3px);box-shadow:0 9px 24px rgba(28,67,132,.32)}
+.ai-precheck-fab img{width:100%;height:100%;display:block;object-fit:cover;border-radius:50%}
+.ai-fab-dot{position:absolute;right:0;top:0;width:15px;height:15px;border:2px solid #fff;border-radius:50%;background:#f04444;box-shadow:0 1px 4px #d72f2f66}
+.ai-precheck-backdrop{position:fixed;inset:0;z-index:59;background:rgba(16,30,52,.48)}
+.ai-precheck-drawer{position:fixed;top:0;right:0;bottom:0;z-index:60;width:min(1120px,calc(100vw - 202px));background:#f3f8fc;box-shadow:-20px 0 55px rgba(18,32,57,.22);display:flex;flex-direction:column;color:#25334c;animation:ai-drawer-enter .24s ease-out both}
+@keyframes ai-drawer-enter{from{transform:translateX(24px);opacity:.72}to{transform:translateX(0);opacity:1}}
+.ai-precheck-header{height:61px;min-height:61px;padding:0 17px;background:#fff;border-bottom:1px solid #dfe6ef;display:flex;align-items:center;justify-content:flex-start;gap:18px}
+.ai-precheck-header>div{display:flex;align-items:center;font-size:16px;color:#303943}
+.ai-precheck-header button{width:30px;height:30px;padding:0;border:0;border-radius:0;background:#3988f5;color:#fff;font-size:27px;font-weight:400;line-height:26px}
+.ai-precheck-loading{flex:1;min-height:0;display:grid;place-items:center;padding:24px;background:linear-gradient(135deg,#f2fbff,#f8f7ff)}
+.ai-precheck-loading-card{width:min(480px,100%);min-height:214px;padding:30px 34px 32px;background:#fff;border:1px solid #d7e4f4;border-radius:11px;box-shadow:0 16px 36px rgba(37,76,139,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:17px;text-align:center}
+.ai-precheck-loading-icon{width:49px;height:49px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#7952ff,#168fff);color:#fff;font-size:27px;box-shadow:0 5px 14px rgba(72,101,232,.2)}
+.ai-precheck-loading-card strong{color:#173861;font-size:17px;line-height:1.5}
+.ai-precheck-progress{width:100%;height:5px;border-radius:5px;background:#eaf0f8;overflow:hidden}
+.ai-precheck-progress span{display:block;width:42%;height:100%;border-radius:5px;background:#3189f2;animation:precheck-progress 1.5s ease-in-out infinite alternate}
+@keyframes precheck-progress{from{transform:translateX(0)}to{transform:translateX(140%)}}
+.ai-precheck-loading-card #deferAiPrecheck{height:34px;padding:0 20px;border:1px solid #3189f2;border-radius:5px;background:#3189f2;color:#fff;font-weight:700}
+.ai-precheck-success{display:flex;align-items:center;gap:14px;border-color:#d2ebdf;background:#f7fffa}
+.ai-precheck-success-icon{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#22ad71;color:#fff;font-size:20px;font-weight:700}
+.ai-precheck-card.ai-precheck-success h2{margin:0 0 4px;color:#216d50}
+.ai-precheck-success p{margin:0;color:#567466}
+.ai-precheck-body{flex:1;min-height:0;overflow:auto;padding:15px 18px 25px;background:#f3f8fc;scrollbar-color:#cdd8e8 transparent}
+.ai-precheck-order-switch{display:flex;align-items:center;gap:12px}
+.ai-precheck-order-switch label{flex:none;color:#1e3557;font-size:13px;font-weight:700}
+.ai-precheck-order-switch select{flex:1;min-width:0;max-width:100%;height:34px;padding:0 32px 0 10px;border:1px solid #cbd9ea;border-radius:4px;background:#fff;color:#273651;text-overflow:ellipsis}
+.ai-precheck-order-switch>span{flex:none;color:#7388a3;font-size:12px}
+.ai-precheck-card{margin-bottom:17px;background:#fff;border:0;border-radius:11px;padding:18px;box-shadow:0 3px 14px rgba(43,83,123,.08)}
+.ai-precheck-card h2{display:flex;align-items:center;gap:9px;font-size:15px;margin:0 0 15px;color:#303b48;font-weight:700}
+.ai-precheck-card h2::before{content:"";width:4px;height:16px;border-radius:4px;background:#367df4;flex:none}
+.ai-precheck-card h3{font-size:13px;margin:17px 0 10px;color:#263c5a;font-weight:600}
+.ai-precheck-card h2+h3{margin-top:0}
+.ai-precheck-student{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:15px;padding-top:15px;border-top:1px solid #e7edf5}
+.ai-precheck-student>div{display:flex;align-items:center;gap:12px;min-width:0}
+.ai-precheck-student span{color:#7d8ba0;min-width:72px}
+.ai-precheck-student strong{font-weight:500;color:#273651;overflow-wrap:anywhere}
+.ai-precheck-table-wrap.course-table-wrap{height:auto;max-height:210px;margin:0;overflow:auto}
+.ai-precheck-table-wrap .drawer-course-table{min-width:1240px}
+.ai-precheck-table-wrap .drawer-course-table th{height:49px}
+.ai-precheck-table-wrap .drawer-course-table td{height:38px}
+.ai-precheck-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px 18px}
+.ai-precheck-summary>div{display:flex;align-items:flex-start;gap:9px;min-width:0;line-height:1.5}
+.ai-precheck-summary span{color:#7d8ba0;min-width:145px;flex:0 0 145px}
+.ai-precheck-summary strong{color:#273651;font-weight:500;white-space:pre-wrap;overflow-wrap:anywhere}
+.ai-precheck-summary>div.wide{grid-column:1/-1}
+.ai-precheck-order-switch label{display:flex;align-items:center;gap:9px;color:#303b48;font-size:14px}
+.ai-precheck-order-switch label::before{content:"";width:4px;height:16px;border-radius:4px;background:#367df4;flex:none}
+.ai-precheck-issues{border-color:transparent}
+.ai-precheck-issue-text{padding:12px 14px;background:#fffbf5;border:1px solid #faead6;border-radius:4px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
+.ai-precheck-reply{position:relative;margin-top:18px;padding-top:17px;border-top:1px solid #f0e5d8}
+.ai-precheck-reply label{display:block;font-size:14px;font-weight:700;color:#1e3557;margin-bottom:12px}
+.ai-precheck-reply textarea{width:100%;min-height:105px;resize:vertical;border:1px solid #d7e1ee;border-radius:4px;padding:11px 12px 27px;color:#33435d;font:inherit;line-height:1.6;outline:none}
+.ai-precheck-reply textarea:focus{border-color:#3988f1}
+.ai-precheck-reply textarea::placeholder{color:#a6b0c0}
+.ai-precheck-reply>span{display:block;margin-top:-25px;padding-right:12px;position:relative;text-align:right;color:#9aa6b6;font-size:11px;pointer-events:none}
+.ai-precheck-reply p{margin:7px 0 0;color:#d65353}
+.ai-precheck-footer{height:70px;min-height:70px;background:#fff;border-top:1px solid #e6ebf2;box-shadow:0 -5px 16px rgba(59,85,119,.05);display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:12px 25px}
+.sales-workspace .ai-precheck-drawer .ai-precheck-footer button{height:38px;min-height:38px;border:1px solid #cfd9e8;background:#fff;color:#435575;border-radius:6px;padding:0 17px;font-size:12px;font-weight:650}
+.sales-workspace .ai-precheck-drawer .ai-precheck-footer .ai-precheck-submit{border-color:#2b7be8;background:#2b7be8;color:#fff;box-shadow:0 4px 10px #257aee22}
+@media(max-width:800px){.ai-precheck-drawer{width:100vw}.ai-precheck-header{padding:0 15px}.ai-precheck-body{padding:14px 12px 22px}.ai-precheck-footer{padding:10px 12px}.ai-precheck-summary,.ai-precheck-student{grid-template-columns:1fr}.ai-precheck-summary>div.wide{grid-column:auto}.ai-precheck-summary span{min-width:115px;flex-basis:115px}.ai-precheck-order-switch{flex-wrap:wrap}.ai-precheck-order-switch select{flex-basis:calc(100% - 110px)}.ai-precheck-fab{right:16px;bottom:16px}}
+.ai-precheck-drawer{width:min(1280px,calc(100vw - 100px))}
+.ai-precheck-body{display:grid;grid-template-columns:minmax(0,3fr) minmax(360px,2fr);padding:0;overflow:hidden}
+.ai-precheck-left{min-width:0;min-height:0;overflow:auto;padding:18px;background:#f3f8fc;scrollbar-color:#cdd8e8 transparent}
+.ai-precheck-right{min-width:0;min-height:0;display:flex;flex-direction:column;border-left:1px solid #e3eaf3;background:#f8fafd}
+.ai-precheck-right-scroll{flex:1;min-height:0;overflow:auto;padding:18px;scrollbar-color:#cdd8e8 transparent}
+.ai-precheck-order-switch{position:relative;display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid #e4edf8;border-radius:5px;background:#f4f8fd;color:#315e99;line-height:1.6}
+.ai-precheck-order-switch strong{flex:1;min-width:0;font-weight:500;overflow-wrap:anywhere}
+.ai-precheck-order-switch>button{flex:none;width:30px;height:30px;border:1px solid #caddf2;border-radius:4px;background:#fff;color:#367be3;font-size:17px;line-height:1}
+.ai-precheck-order-switch>button[aria-expanded="true"]{background:#e8f2ff;border-color:#75aaed}
+.ai-precheck-order-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:20;max-height:235px;overflow:auto;border:1px solid #dce7f3;border-radius:6px;background:#fff;box-shadow:0 13px 28px #243f6d2a}
+.ai-precheck-order-menu button{display:flex;align-items:flex-start;gap:10px;width:100%;padding:11px 12px;border:0;border-bottom:1px solid #eef2f7;background:#fff;text-align:left;color:#38506d;line-height:1.55}
+.ai-precheck-order-menu button:last-child{border-bottom:0}.ai-precheck-order-menu button:hover,.ai-precheck-order-menu button[aria-selected="true"]{background:#f1f7ff;color:#216fd0}
+.ai-precheck-order-menu button span{flex:1;min-width:0;overflow-wrap:anywhere}.ai-precheck-order-menu button em{flex:none;font-style:normal;font-size:11px;color:#b37622;background:#fff3df;border-radius:3px;padding:2px 5px}
+.ai-precheck-student{grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin:0;padding:0;border:0}.ai-precheck-student>div{display:block}.ai-precheck-student span{display:block;min-width:0;margin-bottom:6px;font-size:12px}
+.ai-precheck-table-wrap.course-table-wrap{max-height:220px;border:1px solid #e3eaf4;border-radius:5px}.ai-precheck-table-wrap .drawer-course-table{min-width:920px}.ai-precheck-table-wrap .drawer-course-table th{height:42px}.ai-precheck-table-wrap .drawer-course-table td{height:39px}
+.ai-precheck-summary{gap:18px 16px}.ai-precheck-summary>div{display:block}.ai-precheck-summary span{display:block;min-width:0;margin-bottom:6px;font-size:12px}.ai-precheck-summary>div.is-requirement strong{display:block;line-height:1.8;white-space:pre-wrap}
+.ai-precheck-result-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}.ai-precheck-result-heading h2{margin:0}.ai-precheck-result-heading>span{padding:5px 10px;border-radius:20px;background:#fff1df;color:#bd7414;font-size:12px;white-space:nowrap}
+.ai-precheck-issue-text{margin-top:18px;padding:15px 16px}.ai-precheck-help{color:#7b8ba0;font-size:12px;line-height:1.7;margin:14px 0 0}.ai-precheck-reply{margin-top:18px}.ai-precheck-reply textarea{min-height:140px}
+.ai-precheck-footer{padding:12px 18px}.ai-precheck-success-view{flex:1;min-height:0;display:grid;place-items:center;padding:22px;background:#f3f8fc}.ai-precheck-success-card{text-align:center;width:min(380px,100%);padding:32px 25px;border:1px solid #dce7f5;border-radius:10px;background:#fff;box-shadow:0 14px 34px #274a8018}.ai-precheck-success-icon{margin:0 auto 17px;width:44px;height:44px;font-size:26px}.ai-precheck-success-card h2{margin:0;color:#18375c;font-size:17px}.ai-precheck-success-card p{margin:11px 0 0;color:#748a9e;line-height:1.6}.ai-precheck-success-card button{margin-top:20px;padding:8px 18px;border:1px solid #2b7be8;border-radius:6px;background:#2b7be8;color:#fff}
+@media(max-width:900px){.ai-precheck-drawer{width:100vw}.ai-precheck-body{grid-template-columns:minmax(0,1fr) minmax(330px,.82fr)}}
+@media(max-width:700px){.ai-precheck-body{display:block;overflow:auto}.ai-precheck-left,.ai-precheck-right-scroll{overflow:visible}.ai-precheck-right{border-left:0;border-top:1px solid #e3eaf3}.ai-precheck-student,.ai-precheck-summary{grid-template-columns:1fr}.ai-precheck-footer{position:sticky;bottom:0}}
+
+</style>
+  <style data-bundled-from="flow-integration.css">
+.handoff-educator{margin-left:auto;height:29px;padding:0 13px;border:1px solid #3383f1;border-radius:3px;background:#3383f1;color:#fff;font-size:12px;font-weight:700}
+.handoff-educator:hover{background:#2275e3}
+
+</style>
+  <style data-bundled-from="workspace-tabs.css">
+.workspace-tabs{align-self:stretch;display:flex;align-items:stretch;gap:24px;white-space:nowrap}
+.workspace-tab{position:relative;display:flex;align-items:center;padding:0 2px;color:#66758b;font-size:13px;font-weight:500;text-decoration:none;cursor:pointer}
+.workspace-tab:hover{color:#2479e9}
+.workspace-tab.active{color:#2479e9;font-weight:700}
+.workspace-tab.active::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;border-radius:3px 3px 0 0;background:#2f83f4}
+.topbar .top-left{align-self:stretch;gap:14px}
+.legacy-topbar .workspace-tabs{height:100%}
+@media(max-width:1020px){.top-announcement{display:none}}
+@media(max-width:620px){.workspace-tabs{gap:12px}.workspace-tab{font-size:12px}.topbar{gap:8px;padding:0 10px}.top-right{gap:5px}}
+
+</style>
+  <style data-bundled-from="workspace-unified.css">
+/* Shared control scale for the sales and educator workbenches. */
+:root {
+  --workbench-font: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+  --workbench-text: 13px;
+  --workbench-small: 12px;
+  --workbench-heading: 15px;
+  --workbench-field-height: 34px;
+  --workbench-button-height: 36px;
+}
+body.sales-workspace,
+body.educator-workspace,
+body.teacher-management-workspace {
+  font-family: var(--workbench-font);
+  font-size: var(--workbench-text);
+  line-height: 1.5;
+}
+body.sales-workspace button,
+body.sales-workspace input,
+body.sales-workspace select,
+body.sales-workspace textarea,
+body.educator-workspace button,
+body.educator-workspace input,
+body.educator-workspace select,
+body.educator-workspace textarea,
+body.teacher-management-workspace button,
+body.teacher-management-workspace input,
+body.teacher-management-workspace select,
+body.teacher-management-workspace textarea {
+  font-family: inherit;
+}
+
+/* Workbench frame and navigation */
+.sales-workspace .sidebar { width: 164px; }
+.sales-workspace .workspace { margin-left: 164px; }
+.sales-workspace .brand { height: 64px; }
+.sales-workspace .side-menu { height: calc(100% - 64px); }
+.sales-workspace .side-item,
+.sales-workspace .side-sub,
+.educator-workspace .legacy-nav div,
+.educator-workspace .legacy-nav > button,
+.educator-workspace .legacy-nav .legacy-submenu button { font-size: 13px; }
+.sales-workspace .topbar,
+.educator-workspace .legacy-topbar,
+body.educator-workspace.formal-page-active .legacy-topbar { height: 48px; }
+.sales-workspace .top-left,
+.educator-workspace .legacy-topbar h1 { font-size: 15px; }
+.sales-workspace .top-right,
+.educator-workspace .legacy-topbar > div { font-size: 13px; }
+.sales-workspace .workspace-tab,
+.educator-workspace .workspace-tab { font-size: 13px; }
+
+/* Sales workbench: list, details, new order, and AI prompt */
+.sales-workspace .tab,
+.sales-workspace .filter-group,
+.sales-workspace .order-drawer,
+.sales-workspace .create-order-page,
+.sales-workspace .ai-precheck-drawer { font-size: var(--workbench-text); }
+.sales-workspace .btn,
+.sales-workspace .detail-back,
+.sales-workspace .handoff-educator,
+.sales-workspace .create-blue-btn,
+.sales-workspace .create-order-footer button,
+.sales-workspace .ai-precheck-footer button {
+  min-height: var(--workbench-button-height);
+  height: var(--workbench-button-height);
+  padding: 0 14px;
+  font-size: var(--workbench-text);
+}
+.sales-workspace .filter-group input,
+.sales-workspace .filter-group select,
+.sales-workspace .date-range,
+.sales-workspace .ai-precheck-order-switch select,
+.sales-workspace .student-name-input,
+.sales-workspace .course-package-line select,
+.sales-workspace .create-cell-select,
+.sales-workspace .teacher-input,
+.sales-workspace .date-control,
+.sales-workspace .create-type-row select {
+  height: var(--workbench-field-height);
+  font-size: var(--workbench-text);
+}
+.sales-workspace .date-range input,
+.sales-workspace .date-range input[type="date"],
+.sales-workspace .date-control input { height: 30px; font-size: var(--workbench-small); }
+.sales-workspace .course-package-line { height: 38px; }
+.sales-workspace .filter-group select { background-position: calc(100% - 17px) 15px, calc(100% - 12px) 15px; }
+.sales-workspace .date-range { width: 224px; }
+.sales-workspace .date-range input { width: 84px; }
+.sales-workspace .order-table,
+.sales-workspace .drawer-course-table,
+.sales-workspace .create-course-table,
+.sales-workspace .ai-precheck-table-wrap .drawer-course-table { font-size: var(--workbench-small); }
+.sales-workspace .order-table th { height: 42px; }
+.sales-workspace .order-table td { height: 40px; }
+.sales-workspace .order-drawer-header strong,
+.sales-workspace .student-card-header strong,
+.sales-workspace .drawer-card-title strong,
+.sales-workspace .create-order-header strong,
+.sales-workspace .ai-precheck-card h2 { font-size: var(--workbench-heading); font-weight: 700; }
+.sales-workspace .student-field-label,
+.sales-workspace .order-info-label,
+.sales-workspace .create-label { color: #536780; font-size: var(--workbench-text); }
+.sales-workspace .student-field-value,
+.sales-workspace .order-info-value,
+.sales-workspace .create-student-item { font-size: var(--workbench-text); }
+.sales-workspace .create-order-body h2,
+.sales-workspace .ai-precheck-card h3 { font-size: 14px; }
+.sales-workspace .create-requirement textarea,
+.sales-workspace .ai-precheck-reply textarea { font-size: var(--workbench-text); }
+.sales-workspace .pagination { font-size: var(--workbench-small); }
+.sales-workspace .pagination button,
+.sales-workspace .pagination select,
+.sales-workspace .pagination input { min-height: 30px; font-size: var(--workbench-small); }
+.sales-workspace .ai-precheck-reply label { font-size: 14px; }
+
+/* Educator workbench: detail, flow drawers, and formal scheduling */
+.educator-workspace .legacy-app,
+.educator-workspace .formal-schedule-page,
+.educator-workspace .formal-dialog-window { font-size: var(--workbench-text); }
+.educator-workspace .legacy-card-title,
+.educator-workspace .content-card-header strong,
+.educator-workspace .formal-workspace-head h2 { font-size: var(--workbench-heading); }
+.educator-workspace .legacy-fields label,
+.educator-workspace .legacy-status-grid label,
+.educator-workspace .legacy-detail-lines span { font-size: var(--workbench-text); }
+.educator-workspace .legacy-table-wrap th,
+.educator-workspace .legacy-table-wrap td { font-size: var(--workbench-small); }
+.educator-workspace .legacy-fixed-actions button,
+.educator-workspace #modalBackdrop.flow-drawer-backdrop .wizard-footer .btn,
+.educator-workspace .formal-dialog-window > footer button {
+  min-height: var(--workbench-button-height);
+  font-size: var(--workbench-text);
+}
+.educator-workspace .teacher-management-page,
+body.educator-workspace.formal-page-active .formal-schedule-page { min-height: calc(100vh - 48px); }
+.educator-workspace .teacher-management-page { height: calc(100vh - 48px); }
+.educator-workspace .formal-schedule-page .formal-toolbar button,
+.educator-workspace .formal-head-actions button,
+.educator-workspace .formal-schedule-page .formal-actions button,
+.educator-workspace .formal-filter-actions button,
+.educator-workspace .formal-schedule-tabs button,
+.educator-workspace .formal-fixed-footer button {
+  min-height: var(--workbench-field-height);
+  font-size: var(--workbench-small);
+}
+.educator-workspace .formal-schedule-page .formal-bottom-filters input,
+.educator-workspace .formal-schedule-page .formal-bottom-filters select {
+  height: var(--workbench-field-height);
+  font-size: var(--workbench-small);
+}
+
+/* Teacher management is embedded in the educator workbench. */
+.teacher-management-workspace .button { height: var(--workbench-button-height); font-size: var(--workbench-text); }
+.teacher-management-workspace .course-tab { height: var(--workbench-field-height); font-size: var(--workbench-text); }
+
+@media (max-width: 1160px) {
+  .sales-workspace .sidebar { width: 150px; }
+  .sales-workspace .workspace { margin-left: 150px; }
+}
+
+</style>
+</head>
+<body class="sales-workspace">
+  <aside class="sidebar" aria-label="左侧导航">
+    <div class="brand"><div class="brand-mark">A</div><div class="brand-words"><strong>VISION ACADEMY</strong><span>惟 寻 国 际 教 育</span></div></div>
+    <nav class="side-menu">
+      <div class="side-item"><span class="side-icon">⌂</span>销售首页</div>
+      <div class="side-item"><span class="side-icon">♙</span>客户管理<span class="side-arrow">⌄</span></div>
+      <div class="side-item"><span class="side-icon">◉</span>TMK管理<span class="side-arrow">⌄</span></div>
+      <div class="side-item"><span class="side-icon">♧</span>客户微信管理<span class="side-arrow">⌄</span></div>
+      <div class="side-item open"><span class="side-icon">▤</span>订单管理<span class="side-arrow">⌃</span></div>
+      <div class="side-sub dark">我的订单</div>
+      <div class="side-sub dark">信息表 <b class="small-badge">14</b></div>
+      <div class="side-item"><span class="side-icon">▣</span>审批管理<span class="side-arrow">⌄</span></div>
+      <div class="side-item"><span class="side-icon">◇</span>优惠券<span class="side-arrow">⌄</span></div>
+      <div class="side-item open"><span class="side-icon">◈</span>教务管理<span class="side-arrow">⌃</span></div>
+      <div class="side-sub active">我的排课</div>
+      <div class="side-sub">智能排课</div>
+      <div class="side-sub">我的班级</div>
+      <div class="side-sub">课表查询</div>
+      <div class="side-item"><span class="side-icon">◇</span>会员中心 <b class="small-badge">99+</b><span class="side-arrow">⌄</span></div>
+      <div class="side-item"><span class="side-icon">▧</span>电话外呼配置<span class="side-arrow">⌄</span></div>
+      <div class="side-item"><span class="side-icon">▣</span>业绩管理<span class="side-arrow">⌄</span></div>
+      <div class="side-item"><span class="side-icon">▧</span>排班信息<span class="side-arrow">⌄</span></div>
+      <div class="side-item"><span class="side-icon">♧</span>线索自动分配<span class="side-arrow">⌄</span></div>
+      <div class="side-item"><span class="side-icon">⚙</span>活动配置<span class="side-arrow">⌄</span></div>
+    </nav>
+    <span class="side-collapse">☷</span>
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar">
+      <div class="top-left"><span class="refresh" aria-hidden="true">⟳</span><nav class="workspace-tabs" aria-label="工作台切换"><a class="workspace-tab active" href="sales-v3-20261105.html" aria-current="page">销售工作台</a><a class="workspace-tab" id="educatorWorkspaceTab" href="educator-v3-20261105.html">教务工作台</a></nav></div>
+      <div class="top-announcement"><span class="bell-blue">♟</span><strong>今日您有 <em>0</em> 个客户生日</strong><span class="ann-sep">|</span><strong>当日首课 <em>0</em> 人 · 一周内首课 <em>0</em> 人</strong><span class="ann-sep">|</span><strong>线索量： A: 795 B: 263（不受助分配 28、影响分配 235）</strong></div>
+      <div class="top-right"><span class="orange-app">薪心</span><span class="top-icon with-count">♧<b>99+</b></span><span class="top-icon with-count">⇩<b>0</b></span><span class="top-icon with-count">⇧<b>0</b></span><span class="top-avatar">A</span><span>李春玲</span><a href="#" class="logout" onclick="return false">退出</a></div>
+    </header>
+
+    <main class="main-area">
+      <section class="list-panel" id="listPanel">
+        <div class="tabs" role="tablist"><button class="tab current" data-tab="mine" role="tab" aria-selected="true">我发起的排课单</button><button class="tab" data-tab="student" role="tab" aria-selected="false">学生排课单</button></div>
+        <div class="filters">
+          <label class="filter-group course-filter"><span>课程</span><input id="courseFilter" type="text" placeholder="课程" autocomplete="off"></label>
+          <label class="filter-group"><span>排课单类型</span><select id="typeFilter"><option value="">请选择</option><option>1V1排课单</option><option>自组班排课单</option></select></label>
+          <label class="filter-group"><span>排课单状态</span><select id="statusFilter"><option value="">请选择</option><option>处理中</option><option>已完成</option><option>已驳回</option></select></label>
+          <label class="filter-group date-filter"><span>发起时间</span><span class="date-range"><span class="calendar-icon">▦</span><input id="createdFrom" type="text" placeholder="开始日期" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"><span class="date-to">至</span><input id="createdTo" type="text" placeholder="结束日期" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"></span></label>
+          <label class="filter-group date-filter"><span>开课时间</span><span class="date-range"><span class="calendar-icon">▦</span><input id="startFrom" type="text" placeholder="开始日期" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"><span class="date-to">至</span><input id="startTo" type="text" placeholder="结束日期" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"></span></label>
+          <div class="filter-actions"><button class="btn plain" id="resetFilters">重置</button><button class="btn primary" id="applyFilters">查询</button></div>
+        </div>
+        <div class="list-toolbar"><button class="btn primary create-btn" id="createOrder">发起排课单</button></div>
+        <div class="table-scroll"><table class="order-table"><colgroup><col class="col-course"><col class="col-created"><col class="col-type"><col class="col-attribute"><col class="col-handler"><col class="col-status"><col class="col-finished"><col class="col-applicant"><col class="col-action"><col class="col-settings"></colgroup><thead><tr><th>排课课程</th><th>发起时间</th><th>排课单类型</th><th>排课单属性</th><th>处理人名称</th><th>排课单状态</th><th>完成时间</th><th>申请人名称</th><th>操作</th><th><button class="table-settings" aria-label="表格设置">☷</button></th></tr></thead><tbody id="orderRows"></tbody></table></div>
+        <div class="pagination"><button class="page-arrow" id="prevPage" aria-label="上一页">‹</button><div id="pageNumbers" class="page-numbers"></div><button class="page-arrow" id="nextPage" aria-label="下一页">›</button><select id="pageSize"><option value="10">10条/页</option><option value="20">20条/页</option><option value="50">50条/页</option></select><span id="totalCount">共 2024 条</span><span class="jump-label">前往</span><input type="number" id="jumpPage" min="1" value="1"><span>页</span></div>
+      </section>
+      <section class="detail-panel" id="detailPanel" hidden></section>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="detail-backdrop" id="detailBackdrop" hidden></div>
+  <aside class="order-drawer" id="orderDrawer" role="dialog" aria-modal="true" aria-label="排课单详情" hidden>
+    <div class="order-drawer-header"><button class="order-drawer-close" id="closeOrderDrawer" aria-label="关闭排课单详情">×</button><strong id="drawerTitle">1V1排课单详情</strong><button type="button" class="handoff-educator" id="handoffEducator" hidden>转入教务处理 →</button></div>
+    <div class="order-drawer-body">
+      <section class="student-card"><div class="student-card-header"><strong>学生信息</strong><button type="button" class="decrypt-button" id="decryptButton">♙解密</button></div><div class="student-card-fields" id="studentFields"></div></section>
+      <div class="order-drawer-main"><section class="drawer-card course-card"><div class="drawer-card-title"><strong>课程信息</strong><span class="gold-badge">★ 金牌</span></div><div class="course-table-wrap"><table class="drawer-course-table"><colgroup><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:188px"><col style="width:145px"><col style="width:72px"><col style="width:160px"></colgroup><thead><tr><th>课程项</th><th>班型</th><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>授课模式</th><th>校区</th><th>课时</th><th>历史授课老师</th><th>当前授课老师</th><th>老师时间<br>是否已沟通</th><th>学生成绩</th></tr></thead><tbody id="detailCourses"></tbody></table></div></section><section class="drawer-card order-info-card"><div class="drawer-card-title"><strong>排课单详情</strong></div><div class="order-info-grid" id="detailOrderInfo"></div></section><section class="drawer-card ai-detection-card" id="detailAiCard" hidden><div class="drawer-card-title"><strong>AI检测结果</strong></div><div class="ai-detection-body"><span class="ai-detection-status" id="detailAiStatus"></span><button type="button" class="ai-detection-action" id="detailAiAction" hidden>查看并补充 →</button></div></section><section class="drawer-card precheck-supplement-card" id="detailSupplementCard" hidden><div class="drawer-card-title"><strong>补充排课要求</strong></div><div class="precheck-supplement-list" id="detailSupplementList"></div></section></div>
+    </div>
+  </aside>
+  <section class="create-order-page" id="createOrderPage" role="dialog" aria-modal="true" aria-label="新增1V1排课单" hidden>
+    <form id="createOrderForm">
+      <div class="create-order-header"><strong>新增1V1排课单</strong><button type="button" class="create-close" id="closeCreateOrder" aria-label="关闭">×</button></div>
+      <div class="create-order-body">
+        <div class="create-student-grid">
+          <div class="create-student-item"><span class="create-label">学生姓名</span><span class="create-colon">:</span><input class="student-name-input" type="text" value="授课反馈产品验收" readonly></div><div></div><div></div>
+          <div class="create-student-item"><span class="create-label">英文名</span><span class="create-colon">:</span><span>--</span></div><div class="create-student-item"><span class="create-label">性别</span><span class="create-colon">:</span><span>男</span></div><div class="create-student-item"><span class="create-label">在读年级</span><span class="create-colon">:</span><span>8年级</span></div>
+          <div class="create-student-item"><span class="create-label">出生日期</span><span class="create-colon">:</span><span>--</span></div><div class="create-student-item"><span class="create-label">登记年龄</span><span class="create-colon">:</span><span>--</span></div><div class="create-student-item"><span class="create-label">意向国家</span><span class="create-colon">:</span><span>--</span></div>
+          <div class="create-student-item"><span class="create-label">学生手机</span><span class="create-colon">:</span><span>138****9993</span></div><div class="create-student-item"><span class="create-label">学生微信</span><span class="create-colon">:</span><span>Z****2</span></div><div class="create-student-item"><span class="create-label">学生邮箱</span><span class="create-colon">:</span><span></span></div>
+          <div class="create-student-item"><span class="create-label">在读学校</span><span class="create-colon">:</span><span>上海市建平中学</span></div><div></div><div></div>
+        </div>
+
+        <section class="create-course-section"><h2>课程信息</h2><div class="course-package-line"><span>选择课时包</span><select aria-label="选择课时包"><option>英联邦-英联邦学科-ALEVEL-1v1</option></select><span class="create-gold-tag">★ 金牌</span></div>
+          <div class="course-hours-summary"><div><span>购买课时</span><strong>600</strong></div><div><span>已排课时</span><strong>120.5</strong></div><div><span>已上课时</span><strong>202.5</strong></div><div><span>可排课时</span><strong>277</strong></div></div>
+          <div class="included-heading"><span>包含课程</span><span>班级所需课时: 20</span><button type="button" class="create-blue-btn" id="addCourseButton">添加课程</button></div>
+          <div class="create-course-table-scroll"><table class="create-course-table"><colgroup><col style="width:204px"><col style="width:133px"><col style="width:133px"><col style="width:162px"><col style="width:162px"><col style="width:162px"><col style="width:133px"><col style="width:108px"><col style="width:108px"><col style="width:144px"><col style="width:144px"><col style="width:146px"><col style="width:54px"></colgroup><thead><tr><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>学生水平</th><th>期望成绩</th><th>授课模式</th><th>历史授课老师</th><th>校区</th><th>课时</th><th>当前授课老师</th><th>老师时间是否已沟通</th><th>操作</th></tr></thead><tbody>
+            <tr><td>商务</td><td>OCR</td><td>AS</td><td><select class="create-cell-select" aria-label="商务模块"><option>P1</option></select></td><td><select class="create-cell-select" aria-label="商务学生水平"><option>先修/同步-B及以上</option></select></td><td><select class="create-cell-select" aria-label="商务期望成绩"><option>先修/同步-B及以上</option></select></td><td>线上</td><td class="truncate">李春玲、成兴玲...</td><td>/</td><td><span class="hours-stepper"><button type="button" data-hour-step="-1">−</button><input type="text" value="10.0" aria-label="商务课时"><button type="button" data-hour-step="1">+</button></span></td><td><input class="teacher-input" value="无" aria-label="商务当前授课老师"></td><td><select class="create-cell-select" aria-label="商务老师时间是否已沟通"><option>是</option><option>否</option></select></td><td><button type="button" class="remove-course" aria-label="删除商务课程">−</button></td></tr>
+            <tr><td>会计</td><td>EDX</td><td>AS</td><td>/</td><td><select class="create-cell-select" aria-label="会计学生水平"><option>先修/同步-B及以上</option></select></td><td><select class="create-cell-select" aria-label="会计期望成绩"><option>先修/同步-B及以上</option></select></td><td>线下</td><td>李春玲</td><td><select class="create-cell-select" aria-label="会计校区"><option>舜元中心</option></select></td><td><span class="hours-stepper"><button type="button" data-hour-step="-1">−</button><input type="text" value="10.0" aria-label="会计课时"><button type="button" data-hour-step="1">+</button></span></td><td><input class="teacher-input" value="无" aria-label="会计当前授课老师"></td><td><select class="create-cell-select" aria-label="会计老师时间是否已沟通"><option>是</option><option>否</option></select></td><td><button type="button" class="remove-course" aria-label="删除会计课程">−</button></td></tr>
+          </tbody></table></div>
+        </section>
+
+        <div class="create-date-row"><label><span class="required">*</span> 开课日期<span class="create-colon">:</span><span class="date-control"><span>▦</span><input type="text" value="2026-11-02" aria-label="开课日期"></span></label><label><span class="required">*</span> 结课日期<span class="create-colon">:</span><span class="date-control"><span>▦</span><input type="text" value="2026-11-30" aria-label="结课日期"></span></label></div>
+        <div class="create-type-row"><label><span class="required">*</span> 排课类型<span class="create-colon">:</span><select aria-label="排课类型"><option>此科目新排</option></select></label></div>
+        <div class="create-time-row"><span class="required">*</span> 时间要求<span class="create-colon">:</span><label><input type="radio" name="timeRequirement" checked>模糊排课</label><label><input type="radio" name="timeRequirement">精准排课</label></div>
+        <div class="create-requirement"><textarea id="createRequirement" maxlength="500" aria-label="排课要求">测试排课单</textarea><span id="createRequirementCount">5/500</span></div>
+        <section class="create-other-section"><h2>其他信息</h2></section>
+      </div>
+      <div class="create-order-footer"><button type="button" class="create-cancel" id="cancelCreateOrder">取消</button><button type="submit" class="create-submit">申请</button></div>
+    </form>
+  </section>
+  <button type="button" class="ai-precheck-fab" id="aiPrecheckFab" aria-label="查看AI排课提示" title="AI排课提示" hidden><img src="ai-avatar-v3-20261105.png" alt="" aria-hidden="true"><span class="ai-fab-dot" id="aiPrecheckDot" hidden></span></button>
+  <div class="ai-precheck-backdrop" id="aiPrecheckBackdrop" hidden></div>
+  <aside class="ai-precheck-drawer" id="aiPrecheckDrawer" role="dialog" aria-modal="true" aria-label="AI排课提示" hidden>
+    <div class="ai-precheck-header"><button type="button" id="closeAiPrecheck" aria-label="关闭AI排课提示">×</button><div><strong>AI排课提示</strong></div></div>
+    <div class="ai-precheck-loading" id="aiPrecheckLoading" role="status" aria-live="polite" hidden><div class="ai-precheck-loading-card"><span class="ai-precheck-loading-icon" aria-hidden="true">✦</span><strong id="aiPrecheckLoadingText">AI正在分析排课要求</strong><div class="ai-precheck-progress" aria-hidden="true"><span></span></div><button type="button" id="deferAiPrecheck" hidden>稍后查看</button></div></div>
+    <div class="ai-precheck-body" id="aiPrecheckBody">
+      <section class="ai-precheck-left" aria-label="排课单信息">
+        <div class="ai-precheck-card ai-precheck-order-card"><h2>当前排课单</h2><div class="ai-precheck-order-switch"><strong id="aiPrecheckOrderName"></strong><button type="button" id="aiPrecheckOrderToggle" aria-label="切换待确认排课单" aria-haspopup="listbox" aria-expanded="false" aria-controls="aiPrecheckOrderMenu">⌄</button><div class="ai-precheck-order-menu" id="aiPrecheckOrderMenu" role="listbox" aria-label="待确认排课单" hidden></div></div></div>
+        <div class="ai-precheck-card"><h2>学生信息</h2><div class="ai-precheck-student" id="aiPrecheckStudent"></div></div>
+        <div class="ai-precheck-card"><h2>课程信息</h2><div class="ai-precheck-table-wrap course-table-wrap"><table class="drawer-course-table"><thead><tr><th>课程项</th><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>授课模式</th><th>校区</th><th>课时</th><th>历史授课老师</th><th>当前授课老师</th></tr></thead><tbody id="aiPrecheckCourses"></tbody></table></div></div>
+        <div class="ai-precheck-card"><h2>排课单详情</h2><div class="ai-precheck-summary" id="aiPrecheckSummary"></div></div>
+      </section>
+      <section class="ai-precheck-right" aria-label="AI分析结果"><div class="ai-precheck-right-scroll"><div class="ai-precheck-card ai-precheck-issues"><div class="ai-precheck-result-heading"><h2>AI分析结果</h2><span>待确认</span></div><div class="ai-precheck-issue-text" id="aiPrecheckIssueList"></div><p class="ai-precheck-help">请一次性回答所有待确认内容。原排课单信息可在左侧对照查看。</p><div class="ai-precheck-reply"><label for="aiPrecheckReply">补充说明</label><textarea id="aiPrecheckReply" maxlength="1000" placeholder="请填写对待确认问题的回复"></textarea><span id="aiPrecheckReplyCount">0/1000</span><p id="aiPrecheckReplyError" role="alert" hidden>请先填写补充说明</p></div></div></div><div class="ai-precheck-footer"><button type="button" id="dismissAiPrecheck">稍后处理</button><button type="button" class="ai-precheck-submit" id="submitAiPrecheckReply">提交回复</button></div></section>
+    </div>
+    <div class="ai-precheck-success-view" id="aiPrecheckSuccess" hidden><div class="ai-precheck-success-card"><span class="ai-precheck-success-icon" aria-hidden="true">✓</span><h2>排课要求分析完成</h2><p>当前排课单暂无待确认问题。</p><button type="button" id="closeAiPrecheckSuccess">关闭</button></div></div>
+  </aside>
+  <script data-bundled-from="flow-demo-order.js">
+window.smartSchedulingV3DemoOrder = {
+  submission: {
+    student: '授课反馈产品验收',
+    start: '2026-11-02',
+    end: '2026-11-18',
+    type: '此科目新排',
+    time: '模糊排课',
+    requirement: '商务与会计按教师和学生的可排时间安排课程，每周尽量各排1—2节。',
+    courses: [
+      { name: '商务', board: 'OCR', grade: 'AS', module: 'P1', mode: '线上', campus: '/', hours: '10', historicalTeacher: '李春玲(VA100859)', currentTeacher: '--', teacherDiscussed: '是' },
+      { name: '会计', board: 'EDX', grade: 'AS', module: '/', mode: '线下', campus: '舜元中心', hours: '10', historicalTeacher: '李春玲(VA100859)', currentTeacher: '--', teacherDiscussed: '是' }
+    ]
+  },
+  supplements: [
+    { time: '2026-11-04 10:00:00', text: '商务优先周二上课，会计优先周四上课；如教师时间不匹配，可在其他可排时段安排。' }
+  ]
+};
+
+</script>
+  <script data-bundled-from="app.js">
+const orders = [
+  {id:1,course:'授课反馈产品验收-英联邦学科-ALEVEL-商务&会计-1v1-新增',created:'2026-11-02 11:16:55',type:'1V1排课单',attribute:'新增排课单',handler:'李春玲',status:'处理中',finished:'--',applicant:'李春玲',start:'2026-11-05'},
+  {id:2,course:'自动匹配班主任-04-英联邦学科-ALEVEL-会计-1v1-新增',created:'2026-10-28 18:01:50',type:'1V1排课单',attribute:'新增排课单',handler:'李春玲',status:'已完成',finished:'2026-10-28 18:10:25',applicant:'李春玲',start:'2026-10-30'},
+  {id:3,course:'自动匹配班主任-03-英联邦学科-ALEVEL-商务-1v1-新增',created:'2026-10-28 15:50:33',type:'1V1排课单',attribute:'新增排课单',handler:'李春玲',status:'已完成',finished:'2026-10-28 15:51:29',applicant:'李春玲',start:'2026-10-30'},
+  {id:4,course:'自动匹配班主任-02-英联邦学科-ALEVEL-商务-1v1-新增',created:'2026-10-28 14:28:41',type:'1V1排课单',attribute:'新增排课单',handler:'李春玲',status:'已完成',finished:'2026-10-28 14:31:05',applicant:'李春玲',start:'2026-10-30'},
+  {id:5,course:'自动匹配班主任-01-英联邦学科-ALEVEL-商务-1v1-新增',created:'2026-10-28 10:25:39',type:'1V1排课单',attribute:'新增排课单',handler:'李春玲',status:'已完成',finished:'2026-10-28 11:13:26',applicant:'李春玲',start:'2026-10-30'},
+  {id:6,course:'帮答测试008-英联邦学科-ALEVEL-会计-1v1-新增',created:'2026-10-26 14:55:30',type:'1V1排课单',attribute:'新增排课单',handler:'李春玲',status:'已完成',finished:'2026-10-27 11:04:29',applicant:'李春玲',start:'2026-10-29'},
+  {id:7,course:'王发发-英联邦学科-ALEVEL-数学-1v3-新增',created:'2026-10-26 11:16:19',type:'自组班排课单',attribute:'新增排课单',handler:'李春玲',status:'已驳回',finished:'2026-10-29 13:36:21',applicant:'李春玲',start:'2026-11-01'},
+  {id:8,course:'授课反馈产品验收-英联邦学科-ALEVEL-会计-1v1-新增',created:'2026-10-20 15:00:58',type:'1V1排课单',attribute:'新增排课单',handler:'李春玲',status:'已完成',finished:'2026-10-20 15:06:29',applicant:'李春玲',start:'2026-10-24'},
+  {id:9,course:'授课反馈产品验收-英联邦学科-ALEVEL-会计-1v1-新增',created:'2026-10-20 13:07:55',type:'1V1排课单',attribute:'新增排课单',handler:'李春玲',status:'已完成',finished:'2026-10-20 13:15:14',applicant:'李春玲',start:'2026-10-24'},
+  {id:10,course:'授课反馈产品验收-英联邦学科-ALEVEL-商务-1v1-新增',created:'2026-10-20 13:04:37',type:'1V1排课单',attribute:'新增排课单',handler:'李春玲',status:'已驳回',finished:'2026-10-22 18:04:18',applicant:'李春玲',action:'重新申请',start:'2026-10-24'}
+];
+Object.assign(orders[0],window.smartSchedulingV3DemoOrder);
+// 首页十条按设计稿录入；其余页使用同结构的演示记录，便于检验分页交互。
+const allOrders=orders.concat(Array.from({length:2014},(_,i)=>({...orders[(i+1)%orders.length],id:i+11})));
+const demoOrderStorageKey='teacher-scheduling-v3-full-flow-orders';
+function loadDemoOrders(){
+  try{
+    const current=JSON.parse(localStorage.getItem(demoOrderStorageKey)||'null');
+    const saved=Array.isArray(current)?current:JSON.parse(localStorage.getItem('teacher-scheduling-v3-consultant-orders')||'[]');
+    const valid=Array.isArray(saved)?saved.filter(order=>order&&Number.isInteger(order.id)&&order.submission&&Array.isArray(order.supplements)):[];
+    if(!Array.isArray(current))localStorage.setItem(demoOrderStorageKey,JSON.stringify(valid));
+    return valid;
+  }catch{return []}
+}
+allOrders.unshift(...loadDemoOrders());
+try{
+  const prefix='#flow-return=';
+  if(location.hash.startsWith(prefix)){
+    const returned=JSON.parse(decodeURIComponent(location.hash.slice(prefix.length)));
+    if(returned?.submission&&Number.isInteger(returned.id)&&!allOrders.some(order=>order.id===returned.id))allOrders.unshift(returned);
+  }
+}catch{}
+let nextOrderId=Math.max(...allOrders.map(order=>order.id))+1;
+function saveDemoOrders(){
+  try{localStorage.setItem(demoOrderStorageKey,JSON.stringify(allOrders.filter(order=>order.submission)))}catch{}
+}
+const state={tab:'mine',page:1,size:10,filters:{},currentOrderId:null};
+const $=id=>document.getElementById(id);
+const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let toastTimer;
+function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2500)}
+function readFilters(){state.filters={course:$('courseFilter').value.trim().toLowerCase(),type:$('typeFilter').value,status:$('statusFilter').value,createdFrom:$('createdFrom').value,createdTo:$('createdTo').value,startFrom:$('startFrom').value,startTo:$('startTo').value}}
+function filtered(){const f=state.filters;return allOrders.filter(o=>{const created=o.created.slice(0,10);return (!f.course||o.course.toLowerCase().includes(f.course))&&(!f.type||o.type===f.type)&&(!f.status||o.status===f.status)&&(!f.createdFrom||created>=f.createdFrom)&&(!f.createdTo||created<=f.createdTo)&&(!f.startFrom||o.start>=f.startFrom)&&(!f.startTo||o.start<=f.startTo)})}
+function renderList(){const rows=filtered(),size=state.size,pageCount=Math.max(1,Math.ceil(rows.length/size));state.page=Math.min(Math.max(1,state.page),pageCount);const shown=rows.slice((state.page-1)*size,state.page*size);$('orderRows').innerHTML=shown.length?shown.map(o=>`<tr><td><a href="?order=${o.id}" data-order="${o.id}" title="${esc(o.course)}">${esc(o.course)}</a></td><td>${esc(o.created)}</td><td>${esc(o.type)}</td><td>${esc(o.attribute)}</td><td>${esc(o.handler)}</td><td>${esc(o.status)}</td><td>${esc(o.finished)}</td><td>${esc(o.applicant)}</td><td>${o.action?`<a href="#" data-action="${o.id}">${esc(o.action)}</a>`:''}</td><td></td></tr>`).join(''):`<tr><td colspan="10" style="height:90px;color:#8c98a9">暂无符合条件的排课单</td></tr>`;$('totalCount').textContent=Object.keys(state.filters).some(k=>state.filters[k])?`共 ${rows.length} 条`:`共 ${allOrders.length} 条`;$('prevPage').disabled=state.page===1;$('nextPage').disabled=state.page===pageCount;$('jumpPage').value=state.page;$('jumpPage').max=pageCount;const numbers=$('pageNumbers');if(!Object.keys(state.filters).some(k=>state.filters[k])&&size===10){numbers.innerHTML=[1,2,3,4,5,6,'…',pageCount].map(n=>n==='…'?'<span>…</span>':`<button class="${state.page===n?'active':''}" data-page="${n}">${n}</button>`).join('')}else{numbers.innerHTML=Array.from({length:pageCount},(_,i)=>`<button class="${state.page===i+1?'active':''}" data-page="${i+1}">${i+1}</button>`).join('')}}
+function studentInfo(order){
+  if(order.submission)return [
+    ['学生编号','VA100078710'],['姓名',order.submission.student],['英文名','--'],['性别','男'],
+    ['在读年级','8年级'],['出生日期','--'],['登记年龄','--'],['意向国家','--'],
+    ['学生手机','138****9993'],['学生微信','Z****2'],['学生邮箱','--'],['在读学校','上海市建平中学']
+  ];
+  if(order.id===1)return [
+    ['学生编号','VA100078710'],['姓名','授课反馈产品验收'],['英文名','--'],['性别','男'],
+    ['在读年级','8年级'],['出生日期','--'],['登记年龄','--'],['意向国家','--'],
+    ['学生手机','--'],['学生微信','--'],['学生邮箱','--'],['在读学校','上海市建平中学']
+  ];
+  return [['学生编号','--'],['姓名',order.course.split('-')[0]],['英文名','--'],['性别','--'],['在读年级','--'],['出生日期','--'],['登记年龄','--'],['意向国家','--'],['学生手机','--'],['学生微信','--'],['学生邮箱','--'],['在读学校','--']];
+}
+function courseInfo(order){
+  if(order.submission)return order.submission.courses.map(course=>[
+    'ALEVEL','1v1',course.name,course.board,course.grade,course.module||'--',course.mode,course.campus,
+    course.hours,course.historicalTeacher||'--',course.currentTeacher||'--',course.teacherDiscussed||'--','先修'
+  ]);
+  if(order.id===1)return [
+    ['ALEVEL','1v1','商务','OCR','AS','P1','线上','--','10','李春玲 (VA100859)','--','是','先修'],
+    ['ALEVEL','1v1','会计','EDX','AS','--','线下','舜元中心','10','李春玲 (VA100859)','--','是','先修']
+  ];
+  const subject=order.course.includes('数学')?'数学':order.course.includes('会计')?'会计':'商务';
+  return [['ALEVEL',order.type==='自组班排课单'?'1v3':'1v1',subject,'--','--','--','线下','--','--','--','--','--','--']];
+}
+function detailFields(order){
+  if(order.submission)return [
+    ['排课单状态',order.status],['开课日期',order.submission.start],
+    ['结课日期',order.submission.end],['时间要求',order.submission.time],
+    ['排课类型',order.submission.type],['要求备注',order.submission.requirement||'--'],
+    ['目前校内进度/需要听的知识点','--'],['预计/已报名考试时间','--'],
+    ['课程备注','--'],['学习目的','--'],['家庭与学习关系','--'],
+    ['偏好上课风格','--'],['性别偏好','--'],['学生学情介绍','--'],['凭证','--']
+  ];
+  const isFirst=order.id===1;
+  return [
+    ['排课单状态',isFirst?'待分配':order.status],['开课日期',isFirst?'2026-11-02':order.start],
+    ['结课日期',isFirst?'2026-11-18':'--'],['时间要求',isFirst?'模糊排课':'--'],
+    ['排课类型',isFirst?'此科目新排':'--'],['要求备注',isFirst?'时间要求字段':'--'],
+    ['目前校内进度/需要听的知识点',isFirst?'校内进度字段':'--'],
+    ['预计/已报名考试时间',isFirst?'2026-11-02':'--'],
+    ['课程备注',isFirst?'课程备注字段':'--'],['学习目的','--'],['家庭与学习关系','--'],
+    ['偏好上课风格',isFirst?'<span class="blue-tag">风趣幽默</span>':'--',true],
+    ['性别偏好',isFirst?'都可以':'--'],['学生学情介绍','--'],['凭证','--']
+  ];
+}
+function renderAiDetection(order){
+  const card=$('detailAiCard');
+  card.hidden=!order.submission&&!order.supplements?.length&&order.precheckIssues===undefined;
+  if(card.hidden)return;
+  const status=$('detailAiStatus');
+  const action=$('detailAiAction');
+  const supplemented=Boolean(order.supplements?.length);
+  const passed=supplemented||order.precheckIssues!==undefined&&!order.precheckIssues?.length;
+  const pending=!passed&&Boolean(order.precheckIssues?.length);
+  status.textContent=passed?'检测通过':pending?'需补充排课要求':'正在检测';
+  status.className=`ai-detection-status ${passed?'is-pass':pending?'is-pending':'is-loading'}`;
+  action.hidden=!pending;
+}
+function showList(push=true){
+  if(push)history.pushState({},'',location.pathname);
+  state.currentOrderId=null;
+  $('detailBackdrop').hidden=true;
+  $('orderDrawer').hidden=true;
+  document.body.style.overflow='';
+}
+function showDetail(id,push=true){
+  const order=allOrders.find(o=>o.id===Number(id));
+  if(!order){showList(false);return}
+  state.currentOrderId=order.id;
+  $('handoffEducator').hidden=!order.submission;
+  if(push)history.pushState({order:id},'',`?order=${id}`);
+  $('drawerTitle').textContent=order.type==='自组班排课单'?'自组班排课单详情':'1V1排课单详情';
+  $('studentFields').innerHTML=studentInfo(order).map(([label,value])=>`<div class="student-field"><div class="student-field-label">${esc(label)}</div><div class="student-field-value">${esc(value)}</div></div>`).join('');
+  $('detailCourses').innerHTML=courseInfo(order).map(row=>`<tr>${row.map(value=>`<td title="${esc(value)}">${esc(value)}</td>`).join('')}</tr>`).join('');
+  $('detailOrderInfo').innerHTML=detailFields(order).map(([label,value,raw],index)=>`<div class="order-info-field ${index>=4?'wide':''}"><span class="order-info-label">${esc(label)}</span><span class="order-info-colon">:</span><span class="order-info-value">${raw?value:esc(value)}</span></div>`).join('');
+  renderAiDetection(order);
+  const supplements=order.supplements||[];
+  $('detailSupplementCard').hidden=supplements.length===0;
+  $('detailSupplementList').innerHTML=supplements.map(item=>`<div class="precheck-supplement-item"><div class="precheck-supplement-meta">补充时间：${esc(item.time)}</div><div class="precheck-supplement-content">${esc(item.text)}</div></div>`).join('');
+  $('detailBackdrop').hidden=false;
+  $('orderDrawer').hidden=false;
+  document.body.style.overflow='hidden';
+  $('closeOrderDrawer').focus();
+}
+document.querySelectorAll('.tab').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(tab=>{tab.classList.toggle('current',tab===button);tab.setAttribute('aria-selected',tab===button)});state.tab=button.dataset.tab;state.page=1;renderList()}));
+$('applyFilters').onclick=()=>{readFilters();state.page=1;renderList()};$('resetFilters').onclick=()=>{document.querySelectorAll('.filters input').forEach(input=>{input.value='';if(input.id!=='courseFilter')input.type='text'});document.querySelectorAll('.filters select').forEach(select=>select.value='');readFilters();state.page=1;renderList()};$('pageSize').onchange=()=>{state.size=Number($('pageSize').value);state.page=1;renderList()};$('prevPage').onclick=()=>{state.page--;renderList()};$('nextPage').onclick=()=>{state.page++;renderList()};$('jumpPage').onchange=()=>{state.page=Number($('jumpPage').value)||1;renderList()};$('pageNumbers').onclick=e=>{const button=e.target.closest('[data-page]');if(button){state.page=Number(button.dataset.page);renderList()}};$('orderRows').onclick=e=>{const order=e.target.closest('[data-order]');if(order){e.preventDefault();showDetail(order.dataset.order);return}const action=e.target.closest('[data-action]');if(action){e.preventDefault();toast('重新申请入口将在后续页面中补充')}};document.querySelector('.table-settings').onclick=()=>toast('表格设置入口示意');window.addEventListener('popstate',()=>{const id=new URLSearchParams(location.search).get('order');if(id)showDetail(id,false);else showList(false)});readFilters();const initialOrder=new URLSearchParams(location.search).get('order');renderList();if(initialOrder)showDetail(initialOrder,false);
+
+$('closeOrderDrawer').onclick=()=>showList();
+function educatorWorkspaceHref(order){
+  return order?.submission?`educator-v3-20261105.html#flow-order=${encodeURIComponent(JSON.stringify(order))}`:'educator-v3-20261105.html';
+}
+$('educatorWorkspaceTab').onclick=event=>{
+  const order=allOrders.find(item=>item.id===state.currentOrderId&&item.submission)||allOrders.find(item=>item.submission);
+  if(order?.submission){event.preventDefault();location.href=educatorWorkspaceHref(order)}
+};
+$('handoffEducator').onclick=()=>{
+  const order=allOrders.find(item=>item.id===state.currentOrderId);
+  if(!order?.submission)return;
+  location.href=educatorWorkspaceHref(order);
+};
+$('detailBackdrop').onclick=()=>showList();
+$('decryptButton').onclick=()=>toast('学生信息解密入口示意');
+$('detailAiAction').onclick=()=>{if(state.currentOrderId!==null)openAiPrecheck(state.currentOrderId)};
+window.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('orderDrawer').hidden)showList()});
+
+function openCreateOrder(){
+  $('createOrderPage').hidden=false;
+  document.body.style.overflow='hidden';
+  $('closeCreateOrder').focus();
+}
+function closeCreateOrder(){
+  $('createOrderPage').hidden=true;
+  document.body.style.overflow=$('orderDrawer').hidden?'':'hidden';
+}
+$('createOrder').onclick=openCreateOrder;
+$('closeCreateOrder').onclick=closeCreateOrder;
+$('cancelCreateOrder').onclick=closeCreateOrder;
+$('createOrderForm').onsubmit=event=>{
+  event.preventDefault();
+  const submitted=readCreateOrder();
+  const order=createDemoOrder(submitted);
+  closeAiPrecheck();
+  closeCreateOrder();
+  showList(false);
+  ['courseFilter','typeFilter','statusFilter','createdFrom','createdTo','startFrom','startTo'].forEach(id=>$(id).value='');
+  readFilters();state.page=1;renderList();
+  openAiPrecheckLoading(order);
+  setTimeout(()=>{
+    if(order.precheckIssues===undefined&&activeAnalysisOrderId===order.id&&!$('aiPrecheckDrawer').hidden&&$('aiPrecheckDrawer').dataset.mode==='loading'){
+      $('aiPrecheckLoadingText').textContent='AI正在分析排课要求，可稍后查看';
+      $('deferAiPrecheck').hidden=false;
+    }
+  },60000);
+  setTimeout(()=>{
+    const issues=demoPrecheckIssues(submitted);
+    order.precheckIssues=issues;
+    saveDemoOrders();
+    if(state.currentOrderId===order.id)renderAiDetection(order);
+    if(activeAnalysisOrderId===order.id&&!$('aiPrecheckDrawer').hidden&&$('aiPrecheckDrawer').dataset.mode==='loading'){
+      activeAnalysisOrderId=null;
+      if(issues.length){setAiPrecheckMode('issues');refreshAiPrecheckList(order.id)}
+      else{
+        renderAiPrecheck(order,'');
+        setAiPrecheckMode('success');
+        updateAiPrecheckFab();
+      }
+    }else updateAiPrecheckFab();
+  },/超时|延迟返回/.test(submitted.requirement)?90000:1600);
+};
+$('createRequirement').oninput=event=>{
+  $('createRequirementCount').textContent=`${event.target.value.length}/500`;
+};
+document.querySelectorAll('[data-hour-step]').forEach(button=>button.addEventListener('click',()=>{
+  const input=button.parentElement.querySelector('input');
+  input.value=Math.max(0,Number(input.value||0)+Number(button.dataset.hourStep)).toFixed(1);
+}));
+window.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&!$('createOrderPage').hidden){
+    event.stopPropagation();
+    closeCreateOrder();
+  }
+});
+
+let activePrecheckOrderId=null;
+let activeAnalysisOrderId=null;
+const precheckDrafts=new Map();
+function setAiPrecheckMode(mode){
+  $('aiPrecheckDrawer').dataset.mode=mode;
+  $('aiPrecheckLoading').hidden=mode!=='loading';
+  $('aiPrecheckBody').hidden=mode!=='issues';
+  $('aiPrecheckSuccess').hidden=mode!=='success';
+  $('closeAiPrecheck').hidden=mode==='loading';
+}
+function openAiPrecheckLoading(order){
+  activeAnalysisOrderId=order.id;
+  $('aiPrecheckLoadingText').textContent='AI正在分析排课要求';
+  $('deferAiPrecheck').hidden=true;
+  setAiPrecheckMode('loading');
+  $('aiPrecheckBackdrop').hidden=false;
+  $('aiPrecheckDrawer').hidden=false;
+  document.body.style.overflow='hidden';
+}
+function currentTimestamp(){
+  const now=new Date(),pad=n=>String(n).padStart(2,'0');
+  return `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+}
+function createDemoOrder(submission){
+  const order={
+    id:nextOrderId++,
+    course:`${submission.student}-英联邦学科-ALEVEL-${submission.courses.map(course=>course.name).join('&')}-1v1-新增`,
+    created:currentTimestamp(),type:'1V1排课单',attribute:'新增排课单',handler:'李春玲',
+    status:'处理中',finished:'--',applicant:'李春玲',start:submission.start,submission,supplements:[]
+  };
+  allOrders.unshift(order);
+  saveDemoOrders();
+  return order;
+}
+function readCreateOrder(){
+  const form=$('createOrderForm');
+  const dates=form.querySelectorAll('.create-date-row input');
+  const rows=[...form.querySelectorAll('.create-course-table tbody tr')];
+  return {
+    student:form.querySelector('.student-name-input').value.trim(),
+    package:form.querySelector('.course-package-line select').value,
+    start:dates[0].value.trim(),end:dates[1].value.trim(),
+    type:form.querySelector('.create-type-row select').value,
+    time:form.querySelector('input[name="timeRequirement"]:checked').parentElement.textContent.trim(),
+    requirement:$('createRequirement').value.trim(),
+    courses:rows.map(row=>{
+      const cells=row.querySelectorAll('td');
+      return {
+        name:cells[0].textContent.trim(),board:cells[1].textContent.trim(),grade:cells[2].textContent.trim(),
+        module:cells[3].querySelector('select')?.value||cells[3].textContent.trim(),
+        mode:cells[6].textContent.trim(),historicalTeacher:cells[7].textContent.trim(),
+        campus:cells[8].querySelector('select')?.value||cells[8].textContent.trim(),
+        hours:cells[9].querySelector('input').value,currentTeacher:cells[10].querySelector('input')?.value||'--',
+        teacherDiscussed:cells[11].querySelector('select').value
+      };
+    })
+  };
+}
+function demoPrecheckIssues(order){
+  // 原型用截图中的占位要求展示“提交成功后异步发现问题”的场景。
+  if(/测试|报错|超时|延迟返回/.test(order.requirement)||order.requirement.length<6){
+    return '1、排课要求中的“'+(order.requirement||'空白内容')+'”未说明具体上课安排。请确认是否按开结课日期均匀排课；若有固定、仅限或不可排时段，请一次性补充。';
+  }
+  return '';
+}
+function renderAiPrecheck(order,issues){
+  $('aiPrecheckOrderName').textContent=order.course;
+  $('aiPrecheckStudent').innerHTML=studentInfo(order).filter(([label])=>['学生编号','姓名','在读年级'].includes(label)).map(([label,value])=>`<div><span>${esc(label==='姓名'?'学生姓名':label)}</span><strong>${esc(value)}</strong></div>`).join('');
+  $('aiPrecheckCourses').innerHTML=courseInfo(order).map(row=>`<tr>${[0,2,3,4,5,6,7,8,9,10].map(index=>`<td title="${esc(row[index])}">${esc(row[index])}</td>`).join('')}</tr>`).join('');
+  $('aiPrecheckSummary').innerHTML=detailFields(order).map(([label,value,raw])=>`<div class="${label==='要求备注'?'wide is-requirement':''}"><span>${esc(label)}</span><strong>${raw?value:esc(value)}</strong></div>`).join('');
+  const numbered=/^\s*(?:\d+|[一二三四五六七八九十]+)[、.．]/;
+  const issueText=Array.isArray(issues)?issues.map((issue,index)=>numbered.test(String(issue))?String(issue).trim():`${index+1}、${String(issue).trim()}`).join('\n'):String(issues||'').trim();
+  $('aiPrecheckIssueList').textContent=issueText?(numbered.test(issueText)?issueText:`1、${issueText}`):'';
+  $('aiPrecheckReply').value=precheckDrafts.get(order.id)||'';
+  $('aiPrecheckReplyCount').textContent=`${$('aiPrecheckReply').value.length}/1000`;
+  $('aiPrecheckReplyError').hidden=true;
+}
+function pendingAiPrecheckOrders(){
+  return allOrders.filter(order=>order.submission&&order.precheckIssues?.length&&!order.supplements?.length);
+}
+function updateAiPrecheckFab(){
+  const pending=pendingAiPrecheckOrders();
+  $('aiPrecheckFab').hidden=pending.length===0;
+  $('aiPrecheckDot').hidden=pending.length===0;
+  $('aiPrecheckFab').setAttribute('aria-label',pending.length?`查看AI排课提示，${pending.length}张排课单待确认`:'AI排课提示，暂无待确认排课单');
+  return pending;
+}
+function closeAiPrecheckOrderMenu(){
+  $('aiPrecheckOrderMenu').hidden=true;
+  $('aiPrecheckOrderToggle').setAttribute('aria-expanded','false');
+}
+function renderAiPrecheckOrderMenu(pending){
+  const menu=$('aiPrecheckOrderMenu');
+  menu.replaceChildren();
+  pending.forEach(order=>{
+    const button=document.createElement('button');
+    button.type='button';button.dataset.orderId=order.id;button.setAttribute('role','option');button.setAttribute('aria-selected',String(order.id===activePrecheckOrderId));
+    const name=document.createElement('span');name.textContent=order.course;
+    const status=document.createElement('em');status.textContent='待确认';
+    button.append(name,status);menu.append(button);
+  });
+  $('aiPrecheckOrderToggle').disabled=pending.length===0;
+  $('aiPrecheckOrderToggle').setAttribute('aria-label',`切换待确认排课单，当前有${pending.length}张`);
+}
+function refreshAiPrecheckList(preferredOrderId=activePrecheckOrderId){
+  const pending=updateAiPrecheckFab();
+  const selected=pending.find(order=>order.id===Number(preferredOrderId))||pending[0];
+  if(!selected){activePrecheckOrderId=null;closeAiPrecheck();return 0}
+  activePrecheckOrderId=selected.id;
+  renderAiPrecheckOrderMenu(pending);
+  closeAiPrecheckOrderMenu();
+  renderAiPrecheck(selected,selected.precheckIssues);
+  return pending.length;
+}
+function openAiPrecheck(preferredOrderId=null){
+  if(!refreshAiPrecheckList(preferredOrderId)){toast('暂无待确认的排课单');return}
+  activeAnalysisOrderId=null;
+  setAiPrecheckMode('issues');
+  $('aiPrecheckBackdrop').hidden=false;
+  $('aiPrecheckDrawer').hidden=false;
+  document.body.style.overflow='hidden';
+  $('closeAiPrecheck').focus();
+}
+function closeAiPrecheck(){
+  activeAnalysisOrderId=null;
+  closeAiPrecheckOrderMenu();
+  $('aiPrecheckBackdrop').hidden=true;
+  $('aiPrecheckDrawer').hidden=true;
+  if($('createOrderPage').hidden&&$('orderDrawer').hidden)document.body.style.overflow='';
+}
+$('aiPrecheckFab').onclick=()=>openAiPrecheck();
+$('closeAiPrecheck').onclick=()=>{if($('aiPrecheckDrawer').dataset.mode!=='loading')closeAiPrecheck()};
+$('aiPrecheckBackdrop').onclick=()=>{if($('aiPrecheckDrawer').dataset.mode!=='loading')closeAiPrecheck()};
+$('deferAiPrecheck').onclick=closeAiPrecheck;
+$('dismissAiPrecheck').onclick=closeAiPrecheck;
+$('closeAiPrecheckSuccess').onclick=closeAiPrecheck;
+$('aiPrecheckOrderToggle').onclick=()=>{const opening=$('aiPrecheckOrderMenu').hidden;$('aiPrecheckOrderMenu').hidden=!opening;$('aiPrecheckOrderToggle').setAttribute('aria-expanded',String(opening))};
+$('aiPrecheckOrderMenu').onclick=event=>{const option=event.target.closest('[data-order-id]');if(option)refreshAiPrecheckList(option.dataset.orderId)};
+document.addEventListener('click',event=>{if(!event.target.closest('.ai-precheck-order-switch'))closeAiPrecheckOrderMenu()});
+$('aiPrecheckReply').oninput=event=>{
+  if(activePrecheckOrderId!==null)precheckDrafts.set(activePrecheckOrderId,event.target.value);
+  $('aiPrecheckReplyCount').textContent=`${event.target.value.length}/1000`;
+  $('aiPrecheckReplyError').hidden=true;
+};
+$('submitAiPrecheckReply').onclick=()=>{
+  const text=$('aiPrecheckReply').value.trim();
+  if(!text){$('aiPrecheckReplyError').hidden=false;$('aiPrecheckReply').focus();return}
+  const order=allOrders.find(item=>item.id===activePrecheckOrderId);
+  if(!order)return;
+  order.supplements.push({time:currentTimestamp(),text});
+  saveDemoOrders();
+  if(state.currentOrderId===order.id){
+    renderAiDetection(order);
+    $('detailSupplementCard').hidden=false;
+    $('detailSupplementList').innerHTML=order.supplements.map(item=>`<div class="precheck-supplement-item"><div class="precheck-supplement-meta">补充时间：${esc(item.time)}</div><div class="precheck-supplement-content">${esc(item.text)}</div></div>`).join('');
+  }
+  precheckDrafts.delete(order.id);
+  refreshAiPrecheckList();
+  toast('补充内容已保存，可在排课单详情中查看');
+};
+window.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('aiPrecheckDrawer').hidden&&$('aiPrecheckDrawer').dataset.mode!=='loading'){if(!$('aiPrecheckOrderMenu').hidden)closeAiPrecheckOrderMenu();else closeAiPrecheck()}});
+refreshAiPrecheckList();
+
+</script>
+</body>
+</html>
