@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>智能排课 V2.2｜教师推荐流程</title><style>
+    :root{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;color:#203047;background:#f5f7fb;font-size:14px;line-height:1.65}
+    *{box-sizing:border-box} body{margin:0} main{max-width:1240px;margin:auto;padding:30px 22px 80px}
+    h1{font-size:27px;margin:0 0 6px;color:#14253d} h2{font-size:21px;margin:44px 0 8px;color:#183b6c} h3{font-size:16px;margin:0 0 7px;color:#17385e}
+    p{margin:5px 0} .lead{color:#53677f;margin-bottom:14px}.pill{display:inline-block;background:#e9f1ff;color:#245d9f;border-radius:99px;padding:2px 9px;font-size:12px;margin-right:5px}
+    nav{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 28px} nav a{padding:7px 12px;border-radius:7px;background:#fff;border:1px solid #d8e2ef;color:#2363a4;text-decoration:none}
+    .note{background:#fff;border-left:4px solid #427dc1;padding:10px 14px;margin:14px 0;color:#40546d}
+    .flow{position:relative;padding-left:0}.step{display:grid;grid-template-columns:218px minmax(0,1fr);gap:16px;position:relative;margin:0 0 28px;break-inside:avoid}
+    .step:not(:last-child)::after{content:"↓";position:absolute;top:100%;left:93px;height:27px;color:#6288b4;font-size:21px;font-weight:700;text-align:center;width:30px}
+    .step.parallel-a::after{content:"∥";color:#2f75b7;font-size:18px}
+    .node{background:#e8f0fb;border:1px solid #bed3ed;border-radius:10px;padding:13px 14px;align-self:start;color:#174476;min-height:82px}
+    .node .num{display:block;font-size:12px;color:#5a789b}.node strong{font-size:16px;line-height:1.4;display:block}
+    .body{background:#fff;border:1px solid #d8e3f0;border-radius:10px;padding:14px 17px;box-shadow:0 2px 8px #1e416108}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .key{font-size:12px;font-weight:700;color:#527299;letter-spacing:.04em;margin:0 0 4px}.val{margin:0;color:#23364d}
+    ul,ol{margin:4px 0 0;padding-left:20px} li{margin:2px 0} code{font-family:Consolas,monospace;background:#f0f4fa;padding:1px 4px;border-radius:3px;white-space:normal}
+    .formula{background:#f2f6fc;border-left:3px solid #67a0d9;margin:9px 0;padding:8px 10px;font-family:Consolas,"Microsoft YaHei",sans-serif;overflow-wrap:anywhere}
+    .branch{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:9px}.branch>div{border:1px solid #d5e3f2;background:#f8fbff;border-radius:7px;padding:8px 10px}
+    .branch .yes{border-left:3px solid #2c8f70}.branch .no{border-left:3px solid #cc8850}
+    .sub{color:#4d627b}.warn{color:#a34c25;font-weight:600}.ok{color:#146b5e;font-weight:600}
+    .section-intro{margin-bottom:18px;color:#566a82} .mini-table{border-collapse:collapse;width:100%;margin-top:6px}.mini-table th,.mini-table td{border-bottom:1px solid #e0e8f2;text-align:left;padding:6px 8px;vertical-align:top}.mini-table th{background:#f2f6fb;color:#315579;font-weight:600}
+    footer{margin-top:38px;border-top:1px solid #d9e3ef;padding-top:12px;color:#607189}
+    @media(max-width:760px){main{padding:20px 12px}.step{grid-template-columns:1fr;gap:7px;margin-bottom:26px}.step:not(:last-child)::after{left:16px}.node{min-height:0}.grid,.grid.two,.branch{grid-template-columns:1fr}h1{font-size:22px}}
+    @media print{:root{background:#fff}main{max-width:none;padding:8mm}.body{box-shadow:none}.step{break-inside:avoid}nav{display:none}h2{break-before:page}}
+  </style></head><body><main><header><h1>智能排课 V2.2｜教师推荐流程</h1><p class="lead">从教师架构规则命中到资格筛选、50% 准入、覆盖度比较和选师重算。左侧展示步骤，右侧说明输入、计算和输出。</p><span class="pill">仅配置架构可入围</span><span class="pill">教师自身 50% 门槛</span><span class="pill">逐档比较覆盖度</span></header><section id="teacher-flow">
+    <h2>二、教师推荐子流程</h2>
+    <p class="section-intro">配置决定哪些组织架构可以参与，50% 检查的是教师自身剩余可排量；师生交集计算覆盖度。低优先级档位只有覆盖度严格高于最近保留档位时才展示。直接指定老师跳过推荐排序，但仍做硬冲突检查。</p>
+    <div class="flow">
+      <article class="step"><div class="node"><span class="num">教师 1</span><strong>命中架构规则</strong></div><div class="body grid">
+        <div><p class="key">输入</p><p class="val">课程项、授课模式、线下／OMO 授课校区或线上排课单发起人架构、已保存的有效配置版本。</p></div>
+        <div><p class="key">规则／校验</p><p class="val">每个大规则是一张卡片：点击“新增教师排课规则”填写名称并多选课程项；大规则只编辑基本信息。卡片内的线下／OMO和线上模块分别新增多条小规则，每条小规则单独编辑、保存和删除。卡片不展示状态标签。一个小规则可适用于多个校区或发起人架构；校区选项读取校区字典，当前原型包含舜元、南山、望京、海淀、苏悦、时代、长安国际、福田等校区。同一场景只能命中一条小规则。教师架构按顺序配置；同一优先级可多选架构，并共用审批开关及文案。默认包含下级架构及全部岗位类型；保存时校验课程项归属、场景重复、架构交叉及“排课需审批”的提示文案，通过后立即生效。</p></div>
+        <div><p class="key">输出</p><p class="val">命中时仅配置架构可入围；未命中时进入兜底。已配置但无人入围时不得转兜底。</p></div>
+      </div></article>
+      <article class="step"><div class="node"><span class="num">教师 2</span><strong>资格与兜底筛选</strong></div><div class="body grid">
+        <div><p class="key">输入</p><p class="val">课程项、科目、考试局、年级、模块及教务确认的授课模式、级别、试听、诊断、自组班、学生水平、性别、风格、岗位要求。</p></div>
+        <div><p class="key">规则</p><p class="val">先排除不满足任教资格和明确硬要求的老师。无架构规则时，线下／OMO再按授课校区、线上按授课模式筛选；后续同样执行 50% 门槛与覆盖排序并取前 4 位。</p></div>
+        <div><p class="key">输出</p><p class="val">按档位的资格候选池，或单组兜底候选池；记录筛退原因。</p></div>
+      </div></article>
+      <article class="step"><div class="node"><span class="num">教师 3</span><strong>确定统一评估窗口</strong></div><div class="body grid two">
+        <div><p class="key">明确结束日期</p><p class="val">所有老师使用该科已确认策略的有效开始日至结束日，单科日期优先于排课单兜底日期。</p></div>
+        <div><p class="key">排完为止</p><p class="val">按学生侧计划估计完成日，再追加后两个完整自然周作顺延备选；无法估计时标数据不足。顺延不是硬截止。</p></div>
+      </div></article>
+      <article class="step"><div class="node"><span class="num">教师 4</span><strong>批量读取老师日程</strong></div><div class="body grid">
+        <div><p class="key">输入</p><p class="val">评估窗口、老师已有课、休假、不可排时间及剩余课量。</p></div>
+        <div><p class="key">规则／计算</p><p class="val">逐条按实际日期换算到学生上课时区，真实时间按绝对区间判断冲突；老师制度课量沿用制度时区。学生候选只建一次，老师日程可按日期和时段索引。</p></div>
+        <div><p class="key">输出</p><p class="val">各档位老师的可比较日程与剩余课量，不使用系统写入时偏移的北京时间。</p></div>
+      </div></article>
+      <article class="step"><div class="node"><span class="num">教师 5</span><strong>教师自身 50% 门槛</strong></div><div class="body grid">
+        <div><p class="key">输入</p><p class="val">该科尚需逻辑课节数 N、每位老师自身空闲与剩余课量。</p></div>
+        <div><p class="key">计算</p><p class="val">按课节时长计算教师自身剩余可排课节数 A，尚不与学生时段求交；只保留 A≥向上取整(N÷2) 的老师。N=15 时，A=7 剔除，A=8 才继续。</p></div>
+        <div><p class="key">输出</p><p class="val">通过低成本准入的老师；此门槛不能证明师生实际可排达到 50%。</p></div>
+      </div></article>
+      <article class="step"><div class="node"><span class="num">教师 6</span><strong>计算师生覆盖度</strong></div><div class="body grid">
+        <div><p class="key">输入</p><p class="val">通过门槛的老师、学生候选时段、固定任务、周期和日／周上限。</p></div>
+        <div><p class="key">计算</p><p class="val">求每位老师在师生真实交集及所有单科硬约束下最多可排节数 C，覆盖度=C÷N；C=0 不推荐。固定任务单独核验，只做单科上界，不为每人跑多科联合求解。</p></div>
+        <div><p class="key">输出</p><p class="val">覆盖度、原预计范围和两周顺延区贡献、关键周期缺口与筛退原因。</p></div>
+      </div></article>
+      <article class="step"><div class="node"><span class="num">教师 7</span><strong>逐档比较并取前四</strong></div><div class="body grid">
+        <div><p class="key">首个有效档</p><p class="val">按覆盖度降序取最多 4 位；档内最高达到 80% 立即停止，不再检索低优先级架构。</p></div>
+        <div><p class="key">后续档位</p><p class="val">若最近保留档最高不足 80%，继续向下。只保留个人覆盖度严格高于最近保留档最高值的老师，每档最多 4 位；整档不达标则跳过，比较基准不变。</p></div>
+        <div><p class="key">输出</p><p class="val">每档最多 4 位、多档可并列；任一保留档最高达到 80% 或查完最后一档即停止。无人入围显示“暂无可用教师”。</p></div>
+      </div></article>
+      <article class="step"><div class="node"><span class="num">教师 8</span><strong>审批提示与选师重算</strong></div><div class="body grid">
+        <div><p class="key">展示</p><p class="val">教师卡片按保留架构优先级和档内覆盖度排列，不显示档位摘要；姓名后显示排课状态。若所属架构要求审批，“选择该老师”按钮右上角显示橙色提醒角标，悬浮显示该档自定义审批文案。原型在没有需审批老师时，仅用首位推荐老师展示标明“示例”的角标，不改变真实审批判断。</p></div>
+        <div><p class="key">选定后</p><p class="val">重新读取老师最新日程与配置版本，重新求师生交集及本周期预计范围；旧覆盖度不作正式排课承诺。</p></div>
+        <div><p class="key">异常</p><p class="val">已配置规则但无可用老师时不可放宽架构；教务修改老师要求并重新推荐，或另行处理指定老师。</p></div>
+      </div></article>
+    </div>
+  </section><footer>完整端到端流程见《智能排课 V2.2 完整规则流程图》；业务规则以《智能排课 V2.2 完整方案与算法规则》为准。</footer></main></body></html>
