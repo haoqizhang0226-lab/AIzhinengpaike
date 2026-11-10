@@ -443,7 +443,7 @@
     frame.className='smart-consult-teacher-frame';
     frame.id='consultTeacherFrame';
     frame.title='售前咨单选择老师';
-    frame.src='教务端/index.html#flow-order='+encodeURIComponent(JSON.stringify(payload));
+    frame.src='../教务端/index.html#flow-order='+encodeURIComponent(JSON.stringify(payload));
     byId('consultDrawerBody').replaceChildren(frame);
     byId('consultDrawerFoot').innerHTML='';
     byId('consultBackdrop').hidden=false;

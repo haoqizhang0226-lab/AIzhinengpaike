@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>智慧排课原型｜入口导航</title>
+  <style>
+    :root{font-family:Inter,"Microsoft YaHei","PingFang SC",Arial,sans-serif;background:#eef3fa;color:#233650}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center}
+    .shell{width:min(860px,92vw);padding:48px 32px}
+    .brand{display:flex;align-items:center;gap:14px;margin-bottom:34px}
+    .brand-mark{height:52px;width:52px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(145deg,#215fd6,#6aa4f8);box-shadow:0 4px 14px rgba(34,99,215,.22);font-size:24px;font-weight:850;color:#fff}
+    .brand h1{margin:0;font-size:24px;letter-spacing:-.02em;color:#17365d}
+    .brand p{margin:3px 0 0;font-size:13px;color:#7186a2}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    @media (max-width:640px){.grid{grid-template-columns:1fr}}
+    a.portal{display:block;padding:30px 28px;border-radius:16px;background:#fff;border:1px solid #dbe6f3;text-decoration:none;box-shadow:0 3px 14px rgba(23,63,111,.06);transition:.18s}
+    a.portal:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(23,63,111,.13);border-color:#a9c8f6}
+    .portal .tag{display:inline-block;padding:4px 11px;border-radius:999px;font-size:11px;font-weight:750;margin-bottom:14px}
+    .portal.sales .tag{background:#e8f1fd;color:#1d5cc4}
+    .portal.jiaowu .tag{background:#e9f7ef;color:#22885d}
+    .portal h2{margin:0 0 8px;font-size:19px;color:#17365d}
+    .portal p{margin:0;font-size:13px;color:#6d8098;line-height:1.7}
+    .portal .arrow{display:inline-block;margin-top:16px;font-weight:800;font-size:13px;color:#2168df}
+    .note{margin-top:26px;font-size:12px;color:#8b9bb1;line-height:1.8}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand">
+      <div class="brand-mark">课</div>
+      <div>
+        <h1>智慧排课原型</h1>
+        <p>智能排课 V3.2 · 从发起到处理 · 完整流程演示</p>
+      </div>
+    </div>
+    <div class="grid">
+      <a class="portal sales" href="sales/index.html">
+        <span class="tag">销售端</span>
+        <h2>销售工作台 · 顾问发起</h2>
+        <p>提交智能咨单（售前咨单）、发起正式排课、跟进排课单进度与教务反馈。</p>
+        <span class="arrow">进入 →</span>
+      </a>
+      <a class="portal jiaowu" href="教务端/index.html">
+        <span class="tag">教务端</span>
+        <h2>教务工作台 · 排课处理</h2>
+        <p>确认排课策略、选择老师、执行排课并回传结果，含教师排课管理。</p>
+        <span class="arrow">进入 →</span>
+      </a>
+    </div>
+    <p class="note">演示数据保存在浏览器本地存储（localStorage）；两端页面顶部也有「销售工作台 / 教务工作台」页签可互相切换。</p>
+  </main>
+</body>
+</html>
