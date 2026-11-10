@@ -1,0 +1,159 @@
+/* Shared control scale for the sales and educator workbenches. */
+:root {
+  --workbench-font: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+  --workbench-text: 13px;
+  --workbench-small: 12px;
+  --workbench-heading: 15px;
+  --workbench-field-height: 34px;
+  --workbench-button-height: 36px;
+}
+body.sales-workspace,
+body.educator-workspace,
+body.teacher-management-workspace {
+  font-family: var(--workbench-font);
+  font-size: var(--workbench-text);
+  line-height: 1.5;
+}
+body.sales-workspace button,
+body.sales-workspace input,
+body.sales-workspace select,
+body.sales-workspace textarea,
+body.educator-workspace button,
+body.educator-workspace input,
+body.educator-workspace select,
+body.educator-workspace textarea,
+body.teacher-management-workspace button,
+body.teacher-management-workspace input,
+body.teacher-management-workspace select,
+body.teacher-management-workspace textarea {
+  font-family: inherit;
+}
+
+/* Workbench frame and navigation */
+.sales-workspace .sidebar { width: 164px; }
+.sales-workspace .workspace { margin-left: 164px; }
+.sales-workspace .brand { height: 64px; }
+.sales-workspace .side-menu { height: calc(100% - 64px); }
+.sales-workspace .side-item,
+.sales-workspace .side-sub,
+.educator-workspace .legacy-nav div,
+.educator-workspace .legacy-nav > button,
+.educator-workspace .legacy-nav .legacy-submenu button { font-size: 13px; }
+.sales-workspace .topbar,
+.educator-workspace .legacy-topbar,
+body.educator-workspace.formal-page-active .legacy-topbar { height: 48px; }
+.sales-workspace .top-left,
+.educator-workspace .legacy-topbar h1 { font-size: 15px; }
+.sales-workspace .top-right,
+.educator-workspace .legacy-topbar > div { font-size: 13px; }
+.sales-workspace .workspace-tab,
+.educator-workspace .workspace-tab { font-size: 13px; }
+
+/* Sales workbench: list, details, new order, and AI prompt */
+.sales-workspace .tab,
+.sales-workspace .filter-group,
+.sales-workspace .order-drawer,
+.sales-workspace .create-order-page,
+.sales-workspace .ai-precheck-drawer { font-size: var(--workbench-text); }
+.sales-workspace .btn,
+.sales-workspace .detail-back,
+.sales-workspace .handoff-educator,
+.sales-workspace .create-blue-btn,
+.sales-workspace .create-order-footer button,
+.sales-workspace .ai-precheck-footer button {
+  min-height: var(--workbench-button-height);
+  height: var(--workbench-button-height);
+  padding: 0 14px;
+  font-size: var(--workbench-text);
+}
+.sales-workspace .filter-group input,
+.sales-workspace .filter-group select,
+.sales-workspace .date-range,
+.sales-workspace .ai-precheck-order-switch select,
+.sales-workspace .student-name-input,
+.sales-workspace .course-package-line select,
+.sales-workspace .create-cell-select,
+.sales-workspace .teacher-input,
+.sales-workspace .date-control,
+.sales-workspace .create-type-row select {
+  height: var(--workbench-field-height);
+  font-size: var(--workbench-text);
+}
+.sales-workspace .date-range input,
+.sales-workspace .date-range input[type="date"],
+.sales-workspace .date-control input { height: 30px; font-size: var(--workbench-small); }
+.sales-workspace .course-package-line { height: 38px; }
+.sales-workspace .filter-group select { background-position: calc(100% - 17px) 15px, calc(100% - 12px) 15px; }
+.sales-workspace .date-range { width: 224px; }
+.sales-workspace .date-range input { width: 84px; }
+.sales-workspace .order-table,
+.sales-workspace .drawer-course-table,
+.sales-workspace .create-course-table,
+.sales-workspace .ai-precheck-table-wrap .drawer-course-table { font-size: var(--workbench-small); }
+.sales-workspace .order-table th { height: 42px; }
+.sales-workspace .order-table td { height: 40px; }
+.sales-workspace .order-drawer-header strong,
+.sales-workspace .student-card-header strong,
+.sales-workspace .drawer-card-title strong,
+.sales-workspace .create-order-header strong,
+.sales-workspace .ai-precheck-card h2 { font-size: var(--workbench-heading); font-weight: 700; }
+.sales-workspace .student-field-label,
+.sales-workspace .order-info-label,
+.sales-workspace .create-label { color: #536780; font-size: var(--workbench-text); }
+.sales-workspace .student-field-value,
+.sales-workspace .order-info-value,
+.sales-workspace .create-student-item { font-size: var(--workbench-text); }
+.sales-workspace .create-order-body h2,
+.sales-workspace .ai-precheck-card h3 { font-size: 14px; }
+.sales-workspace .create-requirement textarea,
+.sales-workspace .ai-precheck-reply textarea { font-size: var(--workbench-text); }
+.sales-workspace .pagination { font-size: var(--workbench-small); }
+.sales-workspace .pagination button,
+.sales-workspace .pagination select,
+.sales-workspace .pagination input { min-height: 30px; font-size: var(--workbench-small); }
+.sales-workspace .ai-precheck-reply label { font-size: 14px; }
+
+/* Educator workbench: detail, flow drawers, and formal scheduling */
+.educator-workspace .legacy-app,
+.educator-workspace .formal-schedule-page,
+.educator-workspace .formal-dialog-window { font-size: var(--workbench-text); }
+.educator-workspace .legacy-card-title,
+.educator-workspace .content-card-header strong,
+.educator-workspace .formal-workspace-head h2 { font-size: var(--workbench-heading); }
+.educator-workspace .legacy-fields label,
+.educator-workspace .legacy-status-grid label,
+.educator-workspace .legacy-detail-lines span { font-size: var(--workbench-text); }
+.educator-workspace .legacy-table-wrap th,
+.educator-workspace .legacy-table-wrap td { font-size: var(--workbench-small); }
+.educator-workspace .legacy-fixed-actions button,
+.educator-workspace #modalBackdrop.flow-drawer-backdrop .wizard-footer .btn,
+.educator-workspace .formal-dialog-window > footer button {
+  min-height: var(--workbench-button-height);
+  font-size: var(--workbench-text);
+}
+.educator-workspace .teacher-management-page,
+body.educator-workspace.formal-page-active .formal-schedule-page { min-height: calc(100vh - 48px); }
+.educator-workspace .teacher-management-page { height: calc(100vh - 48px); }
+.educator-workspace .formal-schedule-page .formal-toolbar button,
+.educator-workspace .formal-head-actions button,
+.educator-workspace .formal-schedule-page .formal-actions button,
+.educator-workspace .formal-filter-actions button,
+.educator-workspace .formal-schedule-tabs button,
+.educator-workspace .formal-fixed-footer button {
+  min-height: var(--workbench-field-height);
+  font-size: var(--workbench-small);
+}
+.educator-workspace .formal-schedule-page .formal-bottom-filters input,
+.educator-workspace .formal-schedule-page .formal-bottom-filters select {
+  height: var(--workbench-field-height);
+  font-size: var(--workbench-small);
+}
+
+/* Teacher management is embedded in the educator workbench. */
+.teacher-management-workspace .button { height: var(--workbench-button-height); font-size: var(--workbench-text); }
+.teacher-management-workspace .course-tab { height: var(--workbench-field-height); font-size: var(--workbench-text); }
+
+@media (max-width: 1160px) {
+  .sales-workspace .sidebar { width: 150px; }
+  .sales-workspace .workspace { margin-left: 150px; }
+}
