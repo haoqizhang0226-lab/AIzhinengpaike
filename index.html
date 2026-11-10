@@ -3,247 +3,91 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>智能排课V3.2完整流程｜顾问发起</title>
-  <script>if(new URLSearchParams(location.search).has('embed-consult'))document.documentElement.classList.add('embedded-consult');</script>
+  <title>智能排课V3.2完整流程｜教务处理</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="detail-drawer.css">
-  <link rel="stylesheet" href="package-order.css">
-  <link rel="stylesheet" href="create-order.css">
-  <link rel="stylesheet" href="precheck.css">
+  <link rel="stylesheet" href="formal-schedule.css">
+  <link rel="stylesheet" href="legacy-pages.css">
+  <link rel="stylesheet" href="strategy-layer.css">
+  <link rel="stylesheet" href="formal-layout-v7.css">
+  <link rel="stylesheet" href="end-mode-demo.css">
+  <link rel="stylesheet" href="formal-lesson-card.css">
+  <link rel="stylesheet" href="drawer-flow.css">
+  <link rel="stylesheet" href="readability.css">
+  <link rel="stylesheet" href="teacher-schedule-drawer.css">
+  <link rel="stylesheet" href="teacher-approval-tip.css">
+  <link rel="stylesheet" href="teacher-management.css">
+  <link rel="stylesheet" href="educator-consult.css">
+  <link rel="stylesheet" href="supplement-reference.css">
+  <link rel="stylesheet" href="order-home-actions.css">
+  <link rel="stylesheet" href="strategy-reference.css">
+  <link rel="stylesheet" href="teacher-selection-reference.css">
+  <link rel="stylesheet" href="formal-lesson-reference.css">
+  <link rel="stylesheet" href="requirement-conversation.css">
   <link rel="stylesheet" href="flow-integration.css">
-  <link rel="stylesheet" href="workspace-tabs.css">
-  <link rel="stylesheet" href="workspace-unified.css">
-  <link rel="stylesheet" href="smart-consult.css">
-  <link rel="stylesheet" href="create-order-legacy-extras.css">
-  <link rel="stylesheet" href="self-class.css">
-  <link rel="stylesheet" href="embedded-consult.css">
-  <link rel="stylesheet" href="consult-list-v32.css">
+  <link rel="stylesheet" href="teacher-direct-v32.css">
+  <link rel="stylesheet" href="../workspace-tabs.css">
+  <link rel="stylesheet" href="../workspace-unified.css">
+  <link rel="stylesheet" href="consult-preview.css">
+  <link rel="stylesheet" href="teacher-selection-layout-v32.css">
+  <link rel="stylesheet" href="package-order.css">
+  <link rel="stylesheet" href="educator-consult-link.css">
 </head>
-<body class="sales-workspace">
-  <aside class="sidebar" aria-label="左侧导航">
-    <div class="brand"><div class="brand-mark">A</div><div class="brand-words"><strong>VISION ACADEMY</strong><span>惟 寻 国 际 教 育</span></div></div>
-    <nav class="side-menu">
-      <div class="side-item"><span class="side-icon">⌂</span>销售首页</div>
-      <div class="side-item"><span class="side-icon">♙</span>客户管理<span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">◉</span>TMK管理<span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">♧</span>客户微信管理<span class="side-arrow">⌄</span></div>
-      <div class="side-item open"><span class="side-icon">▤</span>订单管理<span class="side-arrow">⌃</span></div>
-      <div class="side-sub dark">我的订单</div>
-      <div class="side-sub dark">信息表 <b class="small-badge">14</b></div>
-      <div class="side-item"><span class="side-icon">▣</span>审批管理<span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">◇</span>优惠券<span class="side-arrow">⌄</span></div>
-      <div class="side-item open"><span class="side-icon">◈</span>教务管理<span class="side-arrow">⌃</span></div>
-      <div class="side-sub active" id="myScheduleNav" role="button" tabindex="0">我的排课</div>
-      <div class="side-sub" id="smartConsultNav" role="button" tabindex="0">售前咨单</div>
-      <div class="side-sub" id="myClassesNav" role="button" tabindex="0">我的班级</div>
-      <div class="side-sub">课表查询</div>
-      <div class="side-item"><span class="side-icon">◇</span>会员中心 <b class="small-badge">99+</b><span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">▧</span>电话外呼配置<span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">▣</span>业绩管理<span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">▧</span>排班信息<span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">♧</span>线索自动分配<span class="side-arrow">⌄</span></div>
-      <div class="side-item"><span class="side-icon">⚙</span>活动配置<span class="side-arrow">⌄</span></div>
-    </nav>
-    <span class="side-collapse">☷</span>
-  </aside>
-
-  <div class="workspace">
-    <header class="topbar">
-      <div class="top-left"><span class="refresh" aria-hidden="true">⟳</span><nav class="workspace-tabs" aria-label="工作台切换"><a class="workspace-tab active" href="index.html" aria-current="page">销售工作台</a><a class="workspace-tab" id="educatorWorkspaceTab" href="教务端/index.html">教务工作台</a></nav></div>
-      <div class="top-announcement"><span class="bell-blue">♟</span><strong>今日您有 <em>0</em> 个客户生日</strong><span class="ann-sep">|</span><strong>当日首课 <em>0</em> 人 · 一周内首课 <em>0</em> 人</strong><span class="ann-sep">|</span><strong>线索量： A: 795 B: 263（不受助分配 28、影响分配 235）</strong></div>
-      <div class="top-right"><span class="orange-app">薪心</span><span class="top-icon with-count">♧<b>99+</b></span><span class="top-icon with-count">⇩<b>0</b></span><span class="top-icon with-count">⇧<b>0</b></span><span class="top-avatar">A</span><span>李春玲</span><a href="#" class="logout" onclick="return false">退出</a></div>
-    </header>
-
-    <main class="main-area">
-      <section class="list-panel" id="listPanel">
-        <div class="tabs" role="tablist"><button class="tab current" data-tab="mine" role="tab" aria-selected="true">我发起的排课单</button><button class="tab" data-tab="student" role="tab" aria-selected="false">学生排课单</button></div>
-        <div class="filters">
-          <label class="filter-group course-filter"><span>课程</span><input id="courseFilter" type="text" placeholder="课程" autocomplete="off"></label>
-          <label class="filter-group"><span>排课单类型</span><select id="typeFilter"><option value="">请选择</option><option>1V1排课单</option><option>自组班排课单</option></select></label>
-          <label class="filter-group"><span>排课单状态</span><select id="statusFilter"><option value="">请选择</option><option>处理中</option><option>已完成</option><option>已驳回</option></select></label>
-          <label class="filter-group date-filter"><span>发起时间</span><span class="date-range"><span class="calendar-icon">▦</span><input id="createdFrom" type="text" placeholder="开始日期" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"><span class="date-to">至</span><input id="createdTo" type="text" placeholder="结束日期" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"></span></label>
-          <label class="filter-group date-filter"><span>开课时间</span><span class="date-range"><span class="calendar-icon">▦</span><input id="startFrom" type="text" placeholder="开始日期" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"><span class="date-to">至</span><input id="startTo" type="text" placeholder="结束日期" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"></span></label>
-          <div class="filter-actions"><button class="btn plain" id="resetFilters">重置</button><button class="btn primary" id="applyFilters">查询</button></div>
-        </div>
-        <div class="list-toolbar"><button class="btn primary create-btn" id="createOrder">发起排课单</button></div>
-        <div class="table-scroll"><table class="order-table"><colgroup><col class="col-course"><col class="col-created"><col class="col-type"><col class="col-attribute"><col class="col-handler"><col class="col-status"><col class="col-finished"><col class="col-applicant"><col class="col-action"><col class="col-settings"></colgroup><thead><tr><th>排课课程</th><th>发起时间</th><th>排课单类型</th><th>排课单属性</th><th>处理人名称</th><th>排课单状态</th><th>完成时间</th><th>申请人名称</th><th>操作</th><th><button class="table-settings" aria-label="表格设置">☷</button></th></tr></thead><tbody id="orderRows"></tbody></table></div>
-        <div class="pagination"><button class="page-arrow" id="prevPage" aria-label="上一页">‹</button><div id="pageNumbers" class="page-numbers"></div><button class="page-arrow" id="nextPage" aria-label="下一页">›</button><select id="pageSize"><option value="10">10条/页</option><option value="20">20条/页</option><option value="50">50条/页</option></select><span id="totalCount">共 2024 条</span><span class="jump-label">前往</span><input type="number" id="jumpPage" min="1" value="1"><span>页</span></div>
-      </section>
-      <section class="smart-consult-panel" id="smartConsultPanel" aria-label="售前咨单" hidden>
-        <header class="smart-consult-heading"><div><span>销售工作台 / 售前咨单</span><h1>售前咨单</h1></div></header>
-        <div class="smart-consult-card">
-          <div class="smart-consult-filters">
-            <label>方案名称<input id="consultPlanFilter" type="search" placeholder="请输入方案名称" autocomplete="off"></label>
-            <label class="sales-only">客户信息<input id="consultCustomerFilter" type="search" placeholder="请输入客户姓名或客户编号" autocomplete="off"></label>
-            <label>当前状态<select id="consultStatusFilter"><option value="">全部</option><option value="待分配">待分配</option><option value="处理中">处理中</option><option value="已完成">已完成</option><option value="已驳回">已驳回</option></select></label>
-            <label class="educator-only">发起人角色<select id="consultRoleFilter"><option value="">全部</option><option value="销售顾问">销售顾问</option><option value="学管师">学管师</option></select></label>
-            <label class="educator-only">发起人<input id="consultInitiatorFilter" type="search" placeholder="姓名或工号" autocomplete="off"></label>
-            <label class="educator-only">处理人<input id="consultHandlerFilter" type="search" placeholder="姓名或工号" autocomplete="off"></label>
-            <label>发起时间<span class="smart-consult-date"><input id="consultFromFilter" type="date" aria-label="发起时间开始日期"><span>至</span><input id="consultToFilter" type="date" aria-label="发起时间结束日期"></span></label>
-            <label class="educator-only">处理时间<span class="smart-consult-date"><input id="consultHandledFromFilter" type="date" aria-label="处理时间开始日期"><span>至</span><input id="consultHandledToFilter" type="date" aria-label="处理时间结束日期"></span></label>
-            <label>是否发起正式排课<select id="consultLinkedFilter"><option value="">全部</option><option value="yes">是</option><option value="no">否</option></select></label>
-            <div class="smart-consult-filter-actions"><button type="button" class="btn plain" id="consultReset">重置</button><button type="button" class="btn primary" id="consultSearch">查询</button></div>
+<body class="educator-workspace">
+  <div class="legacy-app">
+    <aside class="legacy-sidebar">
+      <div class="legacy-brand"><div class="legacy-mark">A</div><div><strong>VISION ACADEMY</strong><span>惟寻国际教育</span></div></div>
+      <nav class="legacy-nav" aria-label="主菜单"><button type="button" class="active" id="scheduleMenu">▣ 我的排课单</button><button type="button" id="consultMenu">▤ 售前咨单</button><div>□ 班级管理</div><div>⌂ 教室资源</div><button type="button" class="legacy-parent-menu" id="teacherMenu" aria-expanded="false">♙ 教师管理 <span aria-hidden="true">⌄</span></button><div class="legacy-submenu" id="teacherSubmenu" hidden><button type="button" id="teacherScheduleMenu">教师排课管理</button></div><div>▧ 课次明细</div></nav>
+    </aside>
+    <main class="legacy-main">
+      <header class="legacy-topbar"><nav class="workspace-tabs" aria-label="工作台切换"><a class="workspace-tab" id="salesWorkspaceTab" href="../index.html">销售工作台</a><a class="workspace-tab active" href="index.html" aria-current="page">教务工作台</a></nav><div><span>通知 0</span><span class="legacy-avatar">李</span><span>李春玲</span><button>退出</button></div></header>
+      <section id="orderPage" class="legacy-detail">
+        <div class="legacy-page"><div class="legacy-crumb">排课单详情</div><div class="legacy-crumb"><span>‹ 返回</span><strong>1V1排课单</strong></div>
+          <div class="legacy-layout">
+            <div class="legacy-left-column">
+            <section class="legacy-card"><div class="legacy-card-title">学员信息</div><div class="legacy-fields">
+              <div><label>班级名称</label><strong>托福听说读写组合排课-1v1</strong></div><div><label>班级编号</label><strong>TOEFL-20260901-001</strong></div><div><label>班课班主任</label><strong>无</strong></div><div><label>学生姓名</label><strong>托福组合排课测试学生</strong></div><div><label>性别</label><strong>男</strong></div><div><label>学生手机</label><strong>13899999993</strong></div><div><label>学生微信</label><strong>Z222222</strong></div><div><label>在读学校</label><strong>上海市建平中学</strong></div>
+            </div></section>
+            <section class="legacy-card educator-consult-card"><div class="legacy-card-title">售前咨单</div><div id="educatorConsultCardBody" class="educator-consult-card-body">正在加载售前咨单…</div><div class="educator-consult-card-actions"><button id="educatorConsultAssociate" type="button">关联售前咨单</button></div></section>
+            </div>
+            <section class="legacy-card"><div class="legacy-card-title"><span>排课单详情</span><em>处理中</em></div><div class="legacy-status-grid"><div><label>排课单状态</label><strong>处理中</strong></div><div><label>排课单属性</label><strong>新增排课单</strong></div><div><label>发起人</label><strong>李春玲</strong></div></div>
+              <div id="flowPackageClasses" class="flow-package-classes" hidden></div><div id="flowCourseGroups" class="flow-course-groups" hidden></div><div class="legacy-table-wrap"><table><thead><tr><th>课程项</th><th>班型</th><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>授课模式</th><th>校区</th><th>课时</th><th>历史授课老师</th><th>当前授课老师</th><th>老师时间是否已沟通</th><th>目前成绩</th><th>期望成绩</th><th>退排历史授课老师</th></tr></thead><tbody>
+                <tr><td>托福</td><td>1v1</td><td>写作</td><td>--</td><td>--</td><td>--</td><td>线下</td><td>雅仕校区</td><td>30</td><td>荷超(VA000144)<br>崔昕瑜(VA001736)<br>郑扬扬(VA000755)</td><td>郑扬扬(VA000755)</td><td>否</td><td>15</td><td>25</td><td>--</td></tr>
+                <tr><td>托福</td><td>1v1</td><td>听力</td><td>--</td><td>--</td><td>--</td><td>线下</td><td>雅仕校区</td><td>30</td><td>崔昕瑜(VA001736)<br>王紫(VA001968)<br>夏红微(VA002413)</td><td>王紫(VA001968)</td><td>否</td><td>15</td><td>25</td><td>--</td></tr>
+                <tr><td>托福</td><td>1v1</td><td>口语</td><td>--</td><td>--</td><td>--</td><td>线下</td><td>雅仕校区</td><td>30</td><td>王紫(VA001968)<br>姜雪竹(VA002901)</td><td>王紫(VA001968)</td><td>否</td><td>15</td><td>25</td><td>--</td></tr>
+                <tr><td>托福</td><td>1v1</td><td>阅读</td><td>--</td><td>--</td><td>--</td><td>线下</td><td>雅仕校区</td><td>30</td><td>崔昕瑜(VA001736)<br>杨红艳(VA001642)<br>姜雪竹(VA002901)</td><td>郑扬扬(VA000755)</td><td>否</td><td>15</td><td>225</td><td>--</td></tr>
+              </tbody></table></div>
+              <div class="legacy-detail-lines"><div><span>开课日期</span><strong>2026-09-01　结课日期：2026-12-30</strong></div><div><span>排课类型</span><strong>新增排课</strong></div><div><span>时间要求</span><strong>复杂组合排课</strong></div><div><span>目前校内进度/需要听的知识点</span><strong>托福听说读写同步提升</strong></div><div><span>预计/已报名考试时间</span><strong>待确认</strong></div><div><span>偏好上课风格</span><strong>无特殊要求</strong></div><div><span>性格偏好</span><strong>都可以</strong></div><div><span>排课要求</span><strong id="orderRequirementText"></strong></div></div>
+              <div class="flow-supplements" id="flowSupplements" hidden></div>
+            </section>
           </div>
-          <div class="smart-consult-tabs educator-only" id="consultTabs" role="tablist" aria-label="售前咨单分组"><button type="button" class="active" role="tab" aria-selected="true" data-consult-tab="all">全部</button><button type="button" role="tab" aria-selected="false" data-consult-tab="pending">待分配</button><button type="button" role="tab" aria-selected="false" data-consult-tab="assigned">已分配</button><button type="button" role="tab" aria-selected="false" data-consult-tab="mine">我的</button></div>
-          <div class="smart-consult-toolbar"><button type="button" class="btn primary" id="consultCreate">＋ 新增售前咨单</button></div>
-          <div class="smart-consult-table-wrap"><table class="smart-consult-table"><thead><tr><th>方案名称</th><th>客户信息</th><th class="sales-only">课程</th><th>总课时</th><th>发起人</th><th class="educator-only">发起人角色</th><th>发起时间</th><th>当前状态</th><th>处理人</th><th>完成时间</th><th>是否发起正式排课</th><th>操作</th></tr></thead><tbody id="consultRows"></tbody></table></div>
-          <div class="smart-consult-count" id="consultCount"></div>
         </div>
+        <div class="legacy-fixed-actions"><div><strong>驳回排课单</strong><textarea placeholder="请输入驳回原因"></textarea><button class="reject-button" type="button">驳 回</button></div><div><button class="legacy-primary" id="startScheduling" type="button"><span class="smart-sparkle" aria-hidden="true">✦</span>智能排课</button><button class="legacy-manual" type="button">人工排课</button></div></div>
       </section>
-      <section class="self-class-panel" id="myClassesPanel" aria-label="我的班级" hidden>
-        <div class="self-class-tabs" role="tablist"><button class="active" type="button">全部班级</button><button type="button">班级列表</button><button type="button">我的班级学生</button><button type="button">我的前测</button></div>
-        <div class="self-class-filters">
-          <label>班级名称<input id="selfClassNameFilter" placeholder="请输入班级名称关键词"></label><label>授课教师<input id="selfClassTeacherFilter" placeholder="请输入授课教师姓名或工号"></label><label>班级空位<select id="selfClassVacancyFilter"><option value="">请选择班级空位</option><option>有空位</option><option>已满</option></select></label><label>归属学校<select id="selfClassSchoolFilter"><option value="">请选择归属学校</option><option>惟寻上海</option><option>惟寻江苏</option></select></label><label>校区<select id="selfClassCampusFilter"><option value="">请选择</option><option>雅仕校区</option><option>舜元中心</option></select></label><label>班级类型<select id="selfClassTypeFilter"><option value="">请选择</option><option>1v1</option><option>自组班</option><option>预设班</option></select></label><label>课程日期<span class="self-class-date-range"><input id="selfClassFromFilter" type="date"><span>至</span><input id="selfClassToFilter" type="date"></span></label>
-          <div class="self-class-filter-actions"><button type="button" id="selfClassAdvanced">高级筛选 ﹀</button><span></span><button type="button" id="selfClassReset" class="btn plain">重置</button><button type="button" id="selfClassSearch" class="btn primary">查询</button></div>
-        </div>
-        <div class="self-class-toolbar"><button type="button" class="btn primary" id="selfClassCreate">新增自组班</button></div>
-        <div class="self-class-table-scroll"><table class="self-class-table"><thead><tr><th>班级名称</th><th>班级编号</th><th>班级类型</th><th>班级状态</th><th>报名状态</th><th>班型</th><th>课时数</th><th>班课价格</th><th>授课教师</th><th>班级分享链接</th><th>已报名人数</th><th>操作</th></tr></thead><tbody id="selfClassRows"></tbody></table></div><div class="self-class-pagination"><button type="button" id="selfClassPrev">‹</button><span id="selfClassPageNumber">1</span><button type="button" id="selfClassNext">›</button><select id="selfClassPageSize"><option>10条/页</option><option>20条/页</option></select><span id="selfClassCount">共 19 条</span></div>
-      </section>
-      <section class="detail-panel" id="detailPanel" hidden></section>
+      <section id="resultPage" class="formal-schedule-page" hidden></section>
+      <section id="teacherManagementPage" class="teacher-management-page" hidden aria-label="教师排课管理"><iframe id="teacherManagementFrame" title="教师排课管理" src="teacher-priority-management.html?embedded=1" loading="lazy"></iframe></section>
+      <section id="educatorConsultPage" class="educator-consult-page" hidden aria-label="售前咨单"><iframe id="educatorConsultFrame" title="售前咨单" src="../index.html?embed-consult=1#smart-consult"></iframe></section>
     </main>
   </div>
+  <div class="educator-consult-link-backdrop" id="educatorConsultLinkBackdrop" hidden></div>
+  <section class="educator-consult-link-modal" id="educatorConsultLinkModal" role="dialog" aria-modal="true" aria-labelledby="educatorConsultLinkTitle" hidden><header><h2 id="educatorConsultLinkTitle">关联售前咨单</h2><button id="educatorConsultLinkClose" type="button" aria-label="关闭">×</button></header><div class="educator-consult-link-body"><label>方案名称<input id="educatorConsultLinkSearch" type="search" placeholder="搜索售前咨单方案"></label><div id="educatorConsultLinkChoices" class="educator-consult-link-choices"></div><p id="educatorConsultLinkError" class="educator-consult-link-error" hidden></p></div><footer><button id="educatorConsultLinkCancel" type="button">取消</button><button id="educatorConsultLinkConfirm" type="button" class="primary">确认关联</button></footer></section>
+  <div class="educator-consult-view-backdrop" id="educatorConsultViewBackdrop" hidden></div>
+  <section class="educator-consult-view-modal" id="educatorConsultViewModal" role="dialog" aria-modal="true" aria-labelledby="educatorConsultViewTitle" hidden><header><h2 id="educatorConsultViewTitle">售前咨单</h2><button type="button" id="educatorConsultViewClose" aria-label="关闭售前咨单弹窗">×</button></header><div class="educator-consult-view-body" id="educatorConsultViewBody"></div><footer><button type="button" id="educatorConsultViewDone">关闭</button></footer></section>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <section class="wizard" role="dialog" aria-modal="true" aria-labelledby="wizardTitle">
+      <header class="wizard-header"><div class="wizard-title"><span class="wizard-icon">✦</span><strong id="wizardTitle">补充排课要求</strong></div><button type="button" id="viewFlowRequirements" class="flow-view-requirements" hidden>查看排课要求</button><button class="icon-button" id="closeWizard" aria-label="关闭">×</button></header>
+      <div class="wizard-body" id="wizardBody"></div>
+      <div class="loading-backdrop" id="loadingBackdrop" hidden><div class="loading-card" role="status" aria-live="polite"><span class="loading-orbit">✦</span><strong id="loadingTitle">正在处理</strong><p id="loadingDescription"></p><div class="loading-progress"><i></i></div></div></div>
+      <footer class="wizard-footer" id="wizardFooter"></footer>
+    </section>
+    <div class="flow-requirements-overlay" id="flowRequirementsOverlay" hidden><section class="flow-requirements-dialog" role="dialog" aria-modal="true" aria-labelledby="flowRequirementsTitle"><header><strong id="flowRequirementsTitle">完整排课要求</strong><button type="button" id="closeFlowRequirements" aria-label="关闭排课要求">×</button></header><div class="flow-requirements-content" id="flowRequirementsContent"></div><footer class="teacher-direct-strategy-footer"><button type="button" class="btn btn-primary" data-edit-strategy-from-teachers>编辑排课策略</button></footer></section></div>
+  </div>
+  <div class="teacher-load-backdrop" id="teacherLoadBackdrop" hidden></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <div class="smart-consult-backdrop" id="consultBackdrop" hidden></div>
-  <aside class="smart-consult-drawer" id="consultDrawer" role="dialog" aria-modal="true" aria-labelledby="consultDrawerTitle" hidden>
-    <header class="smart-consult-drawer-head"><h2 id="consultDrawerTitle">查看售前咨单</h2><div class="smart-consult-drawer-head-actions"><button type="button" id="consultClose" aria-label="关闭">×</button></div></header>
-    <div class="smart-consult-drawer-body" id="consultDrawerBody"></div>
-    <footer class="smart-consult-drawer-foot" id="consultDrawerFoot"></footer>
-  </aside>
-  <div class="smart-consult-associate-backdrop" id="consultAssociateBackdrop" hidden></div>
-  <section class="smart-consult-associate-modal" id="consultAssociateModal" role="dialog" aria-modal="true" aria-labelledby="consultAssociateTitle" hidden>
-    <header><h2 id="consultAssociateTitle">关联正式排课</h2><button type="button" id="consultAssociateClose" aria-label="关闭关联正式排课弹窗">×</button></header>
-    <div class="smart-consult-associate-body"><label>排课单名称<input id="consultAssociateSearch" type="search" placeholder="搜索排课单名称"></label><div id="consultAssociateOrders" class="smart-consult-associate-orders"></div></div>
-    <footer><button type="button" id="consultAssociateCancel">取消</button><button type="button" id="consultAssociateConfirm" class="primary">确认关联</button></footer>
-  </section>
-  <div class="smart-consult-course-backdrop" id="consultCourseBackdrop" hidden></div>
-  <section class="smart-consult-course-modal" id="consultCourseModal" role="dialog" aria-modal="true" aria-labelledby="consultCourseModalTitle" hidden>
-    <header><h2 id="consultCourseModalTitle">添加课程</h2><button type="button" id="consultCourseClose" aria-label="关闭添加课程弹窗">×</button></header>
-    <div class="smart-consult-course-modal-body">
-      <div class="smart-consult-course-filters">
-        <label>科目<select id="consultCourseSubjectFilter"><option value="">请选择科目</option></select></label>
-        <label>考试局<select id="consultCourseBoardFilter"><option value="">请选择考试局</option></select></label>
-        <label>年级<select id="consultCourseGradeFilter"><option value="">请选择年级</option></select></label>
-        <label>授课模式<select id="consultCourseModeFilter"><option value="">请选择授课模式</option></select></label>
-      </div>
-      <div class="smart-consult-course-filter-actions"><button type="button" id="consultCourseReset">重置</button><button type="button" class="primary" id="consultCourseSearch">查询</button></div>
-      <h3>课程列表</h3>
-      <div class="smart-consult-course-list-scroll"><table class="smart-consult-course-list-table"><thead><tr><th><input id="consultCourseSelectPage" type="checkbox" aria-label="选择本页全部课程"></th><th>科目名称</th><th>考试局</th><th>年级</th><th>授课模式</th></tr></thead><tbody id="consultCourseResults"></tbody></table></div>
-      <div class="smart-consult-course-pager"><button type="button" id="consultCoursePrev" aria-label="上一页">‹</button><span id="consultCoursePages"></span><button type="button" id="consultCourseNext" aria-label="下一页">›</button><span>10条/页</span><span id="consultCourseCount"></span></div>
-      <h3>已选课程（<span id="consultCourseSelectedCount">0</span>）</h3>
-      <div class="smart-consult-course-list-scroll"><table class="smart-consult-course-list-table smart-consult-course-selected-table"><thead><tr><th>科目名称</th><th>考试局</th><th>年级</th><th>授课模式</th><th>操作</th></tr></thead><tbody id="consultCourseSelected"></tbody></table></div>
-    </div>
-    <footer><button type="button" id="consultCourseCancel">取消</button><button type="button" class="primary" id="consultCourseConfirm">确认添加</button></footer>
-  </section>
-  <div class="detail-backdrop" id="detailBackdrop" hidden></div>
-  <aside class="order-drawer" id="orderDrawer" role="dialog" aria-modal="true" aria-label="排课单详情" hidden>
-    <div class="order-drawer-header"><button class="order-drawer-close" id="closeOrderDrawer" aria-label="关闭排课单详情">×</button><strong id="drawerTitle">1V1排课单详情</strong></div>
-    <div class="order-drawer-body">
-      <div class="order-drawer-side">
-        <section class="student-card"><div class="student-card-header"><strong>学生信息</strong><button type="button" class="decrypt-button" id="decryptButton">♙解密</button></div><div class="student-card-fields" id="studentFields"></div></section>
-        <section class="order-consult-card" aria-label="售前咨单"><div class="order-consult-header"><strong>售前咨单</strong></div><div class="order-consult-body" id="orderConsultBody"></div><div class="order-consult-actions" id="orderConsultActions"><button type="button" id="orderConsultLinkButton">关联售前咨单</button></div></section>
-      </div>
-      <div class="order-drawer-main"><section class="drawer-card course-card"><div class="drawer-card-title"><strong>课程信息</strong><span class="gold-badge">★ 金牌</span></div><div class="order-package-summary" id="detailPackages" hidden></div><div class="course-table-wrap" id="detailCourseTable"><table class="drawer-course-table"><colgroup><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:188px"><col style="width:145px"><col style="width:72px"><col style="width:160px"></colgroup><thead><tr><th>课程项</th><th>班型</th><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>授课模式</th><th>校区</th><th>课时</th><th>历史授课老师</th><th>当前授课老师</th><th>老师时间<br>是否已沟通</th><th>学生成绩</th></tr></thead><tbody id="detailCourses"></tbody></table></div></section><section class="drawer-card order-info-card"><div class="drawer-card-title"><strong>排课单详情</strong></div><div class="order-info-grid" id="detailOrderInfo"></div></section></div>
-    </div>
-  </aside>
-  <div class="order-consult-modal-backdrop" id="orderConsultModalBackdrop" hidden></div>
-  <section class="order-consult-modal" id="orderConsultModal" role="dialog" aria-modal="true" aria-labelledby="orderConsultModalTitle" hidden>
-    <header><h2 id="orderConsultModalTitle">售前咨单</h2><button type="button" id="orderConsultModalClose" aria-label="关闭售前咨单弹窗">×</button></header>
-    <div class="order-consult-modal-content" id="orderConsultModalContent"></div>
-    <footer id="orderConsultModalFooter"></footer>
-  </section>
-  <section class="create-order-page" id="createOrderPage" role="dialog" aria-modal="true" aria-label="新增1V1排课单" hidden>
-    <form id="createOrderForm">
-      <div class="create-order-header"><strong>新增1V1排课单</strong><button type="button" class="create-close" id="closeCreateOrder" aria-label="关闭">×</button></div>
-      <div class="create-order-body">
-        <section class="create-student-section">
-          <h2>学生信息</h2>
-          <div class="create-student-picker"><label for="createStudentSearch"><span class="required">*</span> 选择学生</label><div class="create-student-search"><input class="student-name-input" id="createStudentSearch" type="text" autocomplete="off" placeholder="输入姓名或编号搜索学生" required><div id="createStudentSuggestions" class="create-student-suggestions" hidden></div></div></div>
-          <div class="create-student-grid" id="createStudentDetails">
-            <div class="create-student-item"><span class="create-label">英文名</span><strong data-student-field="english">--</strong></div>
-            <div class="create-student-item"><span class="create-label">性别</span><strong data-student-field="gender">男</strong></div>
-            <div class="create-student-item"><span class="create-label">在读年级</span><strong data-student-field="grade">8年级</strong></div>
-            <div class="create-student-item"><span class="create-label">出生日期</span><strong data-student-field="birthday">--</strong></div>
-            <div class="create-student-item"><span class="create-label">登记年龄</span><strong data-student-field="age">--</strong></div>
-            <div class="create-student-item"><span class="create-label">意向国家</span><strong data-student-field="country">--</strong></div>
-            <div class="create-student-item"><span class="create-label">学生手机</span><strong data-student-field="phone">138****9993</strong></div>
-            <div class="create-student-item"><span class="create-label">学生微信</span><strong data-student-field="wechat">Z****2</strong></div>
-            <div class="create-student-item"><span class="create-label">学生邮箱</span><strong data-student-field="email">--</strong></div>
-            <div class="create-student-item"><span class="create-label">在读学校</span><strong data-student-field="school">上海市建平中学</strong></div>
-          </div>
-        </section>
-
-        <section class="create-course-section"><h2>课程信息</h2><div class="create-course-awaiting-student" id="createCourseAwaitingStudent">请先选择学生</div><div id="createCourseGroups"><div class="create-course-package" data-package-group><div class="course-package-line"><span>选择课时包</span><select aria-label="选择课时包"><option value="">请选择课时包</option></select><span class="create-gold-tag">★ 金牌</span><span class="package-total-hours">班级所需总课时：<strong data-package-total>0</strong></span><button type="button" class="create-blue-btn" data-add-package-course>添加课程</button><button type="button" class="create-remove-package" data-remove-package hidden>移除课时包</button><div class="course-hours-summary"><div><span>购买课时</span><strong>600</strong></div><div><span>已排课时</span><strong>120.5</strong></div><div><span>已上课时</span><strong>202.5</strong></div><div><span>可排课时</span><strong>277</strong></div><div class="course-needed-summary"><span>排课所需课时</span><strong data-package-needed>20</strong></div></div></div>
-          <div class="create-course-table-scroll"><table class="create-course-table"><colgroup><col style="width:204px"><col style="width:133px"><col style="width:133px"><col style="width:162px"><col style="width:162px"><col style="width:162px"><col style="width:133px"><col style="width:108px"><col style="width:108px"><col style="width:144px"><col style="width:144px"><col style="width:146px"><col style="width:54px"></colgroup><thead><tr><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>学生水平</th><th>期望成绩</th><th>授课模式</th><th>历史授课老师</th><th>校区</th><th>课时</th><th>当前授课老师</th><th>老师时间是否已沟通</th><th>操作</th></tr></thead><tbody>
-            <tr><td>商务</td><td>OCR</td><td>AS</td><td><select class="create-cell-select" aria-label="商务模块"><option>P1</option></select></td><td><select class="create-cell-select" aria-label="商务学生水平"><option>先修/同步-B及以上</option></select></td><td><select class="create-cell-select" aria-label="商务期望成绩"><option>先修/同步-B及以上</option></select></td><td>线上</td><td class="truncate">李春玲、成兴玲...</td><td>/</td><td><span class="hours-stepper"><button type="button" data-hour-step="-1">−</button><input type="text" value="10.0" aria-label="商务课时"><button type="button" data-hour-step="1">+</button></span></td><td><input class="teacher-input" value="无" aria-label="商务当前授课老师"></td><td><select class="create-cell-select" aria-label="商务老师时间是否已沟通"><option>是</option><option>否</option></select></td><td><button type="button" class="remove-course" aria-label="删除商务课程">−</button></td></tr>
-            <tr><td>会计</td><td>EDX</td><td>AS</td><td>/</td><td><select class="create-cell-select" aria-label="会计学生水平"><option>先修/同步-B及以上</option></select></td><td><select class="create-cell-select" aria-label="会计期望成绩"><option>先修/同步-B及以上</option></select></td><td>线下</td><td>李春玲</td><td><select class="create-cell-select" aria-label="会计校区"><option>舜元中心</option></select></td><td><span class="hours-stepper"><button type="button" data-hour-step="-1">−</button><input type="text" value="10.0" aria-label="会计课时"><button type="button" data-hour-step="1">+</button></span></td><td><input class="teacher-input" value="无" aria-label="会计当前授课老师"></td><td><select class="create-cell-select" aria-label="会计老师时间是否已沟通"><option>是</option><option>否</option></select></td><td><button type="button" class="remove-course" aria-label="删除会计课程">−</button></td></tr>
-          </tbody></table></div></div></div><button type="button" class="create-add-package" id="createAddPackage">＋ 添加课时包</button>
-        </section>
-
-        <section class="create-scheduling-section"><h2>排课要求</h2><div class="create-scheduling-grid">
-          <div class="create-schedule-primary-row"><label class="create-start-field"><span class="required">*</span>开课日期：<span class="date-control"><input id="createStartDate" type="date" aria-label="开课日期" required></span></label><div class="create-end-mode-field"><span class="create-end-mode-label"><span class="required">*</span>结课日期：</span><div class="create-end-mode-switch" role="group" aria-label="结课日期"><button type="button" data-create-end-mode="FINISH_ALL" class="is-active" aria-pressed="true">排完全部课程结束</button><button type="button" data-create-end-mode="SPECIFIED_DATE" aria-pressed="false">指定结课日期</button></div><input id="createEndMode" type="hidden" value="FINISH_ALL"></div><div class="create-end-date-row" id="createEndDateRow" hidden><label><span class="date-control"><input id="createEndDate" type="date" aria-label="指定结课日期"></span></label></div><div class="create-type-row"><label><span class="required">*</span>排课类型：<select aria-label="排课类型" required><option value="">请选择排课类型</option><option>此科目新排</option></select></label></div></div>
-          <div class="create-time-row"><span class="required">*</span> 时间要求<span class="create-colon">:</span><label><input type="radio" name="timeRequirement" value="vague" checked>模糊排课</label><label><input type="radio" name="timeRequirement" value="precise">精准排课</label></div>
-          <div class="create-precise-options" id="createPreciseOptions" hidden><div class="create-precise-line"><span>星期：</span><div class="create-precise-checks"><label><input type="checkbox" name="createPreciseWeekday" value="0">星期日</label><label><input type="checkbox" name="createPreciseWeekday" value="1">星期一</label><label><input type="checkbox" name="createPreciseWeekday" value="2">星期二</label><label><input type="checkbox" name="createPreciseWeekday" value="3">星期三</label><label><input type="checkbox" name="createPreciseWeekday" value="4">星期四</label><label><input type="checkbox" name="createPreciseWeekday" value="5">星期五</label><label><input type="checkbox" name="createPreciseWeekday" value="6">星期六</label></div></div><div class="create-precise-line"><span><span class="required">*</span> 上课时间：</span><div class="create-precise-checks"><label><input type="checkbox" name="createPreciseSlot" value="08:20-10:20">08:20-10:20</label><label><input type="checkbox" name="createPreciseSlot" value="10:30-12:30">10:30-12:30</label><label><input type="checkbox" name="createPreciseSlot" value="13:30-15:30">13:30-15:30</label><label><input type="checkbox" name="createPreciseSlot" value="16:00-18:00">16:00-18:00</label><label><input type="checkbox" name="createPreciseSlot" value="18:30-20:30">18:30-20:30</label></div></div><div class="create-precise-notice">ⓘ 排课最小单位为15分钟，排课时长需要为15分钟的整数倍。</div><div class="create-custom-time-rows" id="createCustomTimeRows"></div><button type="button" class="create-add-custom-time" id="createAddCustomTime">⊕ 其它时间</button></div>
-          <div class="create-requirement"><label for="createRequirement">要求备注</label><textarea id="createRequirement" maxlength="500" aria-label="排课要求" placeholder="请输入模糊排课详情"></textarea><span id="createRequirementCount">0/500</span></div>
-          <div class="create-other-field full create-requirement-attachment"><label class="create-voucher-drop" id="createRequirementAttachmentDrop" for="createRequirementAttachmentInput"><span class="create-voucher-icon">☁</span><span>将文件拖拽到此处，或 <em>点击上传</em></span><small>支持 JPG、PNG、BMP，最多 20 个文件，单个文件不超过 20MB</small></label><input id="createRequirementAttachmentInput" type="file" accept=".jpg,.jpeg,.png,.bmp,image/jpeg,image/png,image/bmp" multiple hidden><div id="createRequirementAttachmentList" class="create-voucher-list"></div></div>
-          <div class="create-scheduling-extra">
-          <div class="create-other-field full"><span class="create-other-label"><span class="required">*</span> 老师风格</span><div class="create-choice-list" id="createTeacherStyles">
-            <label><input type="checkbox" value="风趣幽默">风趣幽默</label><label><input type="checkbox" value="可全英文">可全英文</label><label><input type="checkbox" value="热情活泼">热情活泼</label><label><input type="checkbox" value="严格严肃">严格严肃</label><label><input type="checkbox" value="循序善诱">循序善诱</label><label><input type="checkbox" value="疑难专家">疑难专家</label><label><input type="checkbox" value="生动形象">生动形象</label><label><input type="checkbox" value="温柔耐心">温柔耐心</label><label><input type="checkbox" value="雷厉风行">雷厉风行</label><label><input type="checkbox" value="其他">其他</label>
-          </div></div>
-          <div class="create-other-field"><span class="create-other-label"><span class="required">*</span> 老师性别</span><div class="create-choice-list"><label><input type="radio" name="createTeacherGender" value="男老师">男老师</label><label><input type="radio" name="createTeacherGender" value="女老师">女老师</label><label><input type="radio" name="createTeacherGender" value="都可以">都可以</label></div></div>
-          <label class="create-other-field full"><span class="create-other-label"><span class="required">*</span> 目前校内进度/需要听的知识点</span><span class="create-other-textarea"><textarea id="createProgress" maxlength="500" placeholder="请输入学生目前校内进度和需要学习的知识点"></textarea><small data-counter-for="createProgress">0/500</small></span></label>
-          </div>
-        </div></section>
-        <section class="create-other-section"><h2>其他信息</h2><div class="create-other-grid">
-          <label class="create-other-field"><span class="create-other-label">预计/已报名考试时间</span><input id="createExamDate" type="date" aria-label="预计或已报名考试时间"></label>
-          <div class="create-other-field"><span class="create-other-label">学习目的</span><div class="create-choice-list" id="createStudyPurposes"><label><input type="checkbox" value="兴趣引导">兴趣引导</label><label><input type="checkbox" value="校内备考">校内备考</label><label><input type="checkbox" value="国际备考">国际备考</label><label><input type="checkbox" value="竞赛先修">竞赛先修</label></div></div>
-          <div class="create-other-field"><span class="create-other-label">家庭与学习关系</span><div class="create-choice-list"><label><input type="radio" name="createFamilyRelation" value="父母主导">父母主导</label><label><input type="radio" name="createFamilyRelation" value="学生主导">学生主导</label><label><input type="radio" name="createFamilyRelation" value="共同协商">共同协商</label><label><input type="radio" name="createFamilyRelation" value="其他">其他</label></div></div>
-          <label class="create-other-field full"><span class="create-other-label">课程备注</span><span class="create-other-textarea"><textarea id="createCourseNote" maxlength="500" placeholder="请输入课程备注"></textarea><small data-counter-for="createCourseNote">0/500</small></span></label>
-          <div class="create-other-field full"><span class="create-other-label">凭证</span><label class="create-voucher-drop" id="createVoucherDrop" for="createVoucherInput"><span class="create-voucher-icon">☁</span><span>将文件拖拽到此处，或 <em>点击上传</em></span><small>支持 JPG、PNG、BMP，最多 20 个文件，单个文件不超过 20MB</small></label><input id="createVoucherInput" type="file" accept=".jpg,.jpeg,.png,.bmp,image/jpeg,image/png,image/bmp" multiple hidden><div id="createVoucherList" class="create-voucher-list"></div></div>
-        </div></section>
-      </div>
-      <div class="create-order-footer"><button type="button" class="create-cancel" id="cancelCreateOrder">取消</button><button type="submit" class="create-submit">申请</button></div>
-    </form>
-  </section>
-  <div class="create-course-picker-backdrop" id="createCoursePickerBackdrop" hidden></div>
-  <section class="create-course-picker" id="createCoursePicker" role="dialog" aria-modal="true" aria-label="添加课程" hidden>
-    <header><strong>添加课程</strong><button type="button" id="createCoursePickerClose" aria-label="关闭添加课程">×</button></header>
-    <div class="create-course-picker-body"><p id="createCoursePickerPackage"></p><div class="create-course-picker-filters">
-      <label>科目<select id="createCourseSubjectFilter"><option value="">全部科目</option></select></label>
-      <label>考试局<select id="createCourseBoardFilter"><option value="">全部考试局</option></select></label>
-      <label>年级<select id="createCourseGradeFilter"><option value="">全部年级</option></select></label>
-      <label>授课模式<select id="createCourseModeFilter"><option value="">全部授课模式</option></select></label>
-    </div><div class="create-course-picker-table-wrap"><table><thead><tr><th>选择</th><th>科目</th><th>考试局</th><th>年级</th><th>授课模式</th></tr></thead><tbody id="createCoursePickerRows"></tbody></table></div><p id="createCoursePickerSelected">已选 0 门课程</p></div>
-    <footer><button type="button" id="createCoursePickerCancel">取消</button><button type="button" class="primary" id="createCoursePickerConfirm">确认添加</button></footer>
-  </section>
-  <button type="button" class="ai-precheck-fab" id="aiPrecheckFab" aria-label="查看AI排课提示" title="AI排课提示" hidden><img src="ai-dialog-avatar.png" alt="" aria-hidden="true"><span class="ai-fab-dot" id="aiPrecheckDot" hidden></span></button>
-  <div class="ai-precheck-backdrop" id="aiPrecheckBackdrop" hidden></div>
-  <aside class="ai-precheck-drawer" id="aiPrecheckDrawer" role="dialog" aria-modal="true" aria-label="AI排课提示" hidden>
-    <div class="ai-precheck-header"><button type="button" id="closeAiPrecheck" aria-label="关闭AI排课提示">×</button><div><strong>AI排课提示</strong></div><select id="aiPrecheckDraftSwitch" aria-label="切换待提交排课单" hidden></select></div>
-    <div class="ai-precheck-loading" id="aiPrecheckLoading" role="status" aria-live="polite" hidden><div class="ai-precheck-loading-card"><span class="ai-precheck-loading-icon" aria-hidden="true">✦</span><strong id="aiPrecheckLoadingText">AI正在分析排课要求</strong><div class="ai-precheck-progress" aria-hidden="true"><span></span></div><button type="button" id="deferAiPrecheck" hidden>稍后查看</button></div></div>
-    <div class="ai-precheck-body" id="aiPrecheckBody">
-      <section class="ai-precheck-left" aria-label="排课单信息">
-        <div class="ai-precheck-card"><h2>学生信息</h2><div class="ai-precheck-student" id="aiPrecheckStudent"></div></div>
-        <div class="ai-precheck-card"><h2>课程信息</h2><div class="ai-precheck-table-wrap course-table-wrap"><table class="drawer-course-table"><thead><tr><th>课程项</th><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>授课模式</th><th>校区</th><th>课时</th><th>历史授课老师</th><th>当前授课老师</th></tr></thead><tbody id="aiPrecheckCourses"></tbody></table></div></div>
-        <div class="ai-precheck-card"><h2>排课单详情</h2><div class="ai-precheck-summary" id="aiPrecheckSummary"></div></div>
-      </section>
-      <section class="ai-precheck-right" aria-label="AI分析结果"><div class="ai-precheck-right-scroll"><div class="ai-precheck-card ai-precheck-issues"><div class="ai-precheck-result-heading"><h2>AI分析结果</h2><span>待确认</span></div><div class="ai-precheck-issue-text" id="aiPrecheckIssueList"></div><p class="ai-precheck-help">请一次性回答所有待确认内容，补充后再提交排课。</p><div class="ai-precheck-reply"><label for="aiPrecheckReply">补充说明</label><textarea id="aiPrecheckReply" maxlength="1000" placeholder="请填写对待确认问题的回复"></textarea><span id="aiPrecheckReplyCount">0/1000</span><p id="aiPrecheckReplyError" role="alert" hidden>请先填写补充说明</p></div></div></div><div class="ai-precheck-footer"><button type="button" id="dismissAiPrecheck">取消</button><button type="button" class="ai-precheck-submit" id="submitAiPrecheckReply">提交排课</button></div></section>
-    </div>
-    <div class="ai-precheck-success-view" id="aiPrecheckSuccess" hidden><div class="ai-precheck-success-card"><span class="ai-precheck-success-icon" aria-hidden="true">✓</span><h2>排课单提交成功</h2><p>AI分析通过，排课单已发起。</p><button type="button" id="closeAiPrecheckSuccess">关闭</button></div></div>
-  </aside>
-  <section class="self-class-wizard" id="selfClassWizard" role="dialog" aria-modal="true" aria-labelledby="selfClassWizardTitle" hidden>
-    <header><strong id="selfClassWizardTitle">创建自组班</strong><button type="button" id="selfClassClose" aria-label="关闭">×</button></header>
-    <div class="self-class-steps" id="selfClassSteps"></div>
-    <div class="self-class-wizard-body" id="selfClassWizardBody"></div>
-    <footer><button type="button" id="selfClassBack" class="btn plain">上一步</button><span></span><button type="button" id="selfClassCancel" class="btn plain">取消</button><button type="button" id="selfClassNextStep" class="btn primary">下一步</button></footer>
-  </section>
-  <div class="self-class-ai-backdrop" id="selfClassAiBackdrop" hidden></div>
-  <aside class="self-class-ai-drawer" id="selfClassAiDrawer" role="dialog" aria-modal="true" aria-label="AI排课提示" hidden><header><strong>AI排课提示</strong><button type="button" id="selfClassAiClose" aria-label="关闭">×</button></header><div id="selfClassAiContent"></div></aside>
-  <div class="self-class-course-backdrop" id="selfClassCourseBackdrop" hidden></div><section class="self-class-course-modal" id="selfClassCourseModal" role="dialog" aria-modal="true" aria-label="添加课程" hidden><header><strong>添加课程</strong><button type="button" id="selfClassCourseClose" aria-label="关闭">×</button></header><div class="self-class-course-body" id="selfClassCourseBody"></div><footer><button type="button" class="btn plain" id="selfClassCourseCancel">取消</button><button type="button" class="btn primary" id="selfClassCourseConfirm">确认添加</button></footer></section>
-  <script src="flow-demo-order.js"></script>
+  <script src="teacher-schedule-export.js"></script>
+  <script src="teacher-priority-recommendation.js"></script>
+  <script src="teacher-management.js"></script>
+  <script src="../flow-demo-order.js"></script>
   <script src="app.js"></script>
-  <script src="create-order-groups.js"></script>
-  <script src="create-order-form.js"></script>
-  <script src="smart-consult.js"></script>
-  <script src="self-class.js"></script>
 </body>
 </html>
