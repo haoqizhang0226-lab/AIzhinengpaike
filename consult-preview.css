@@ -1,0 +1,5 @@
+/* Reuse the educator teacher selector inside the sales consultation drawer. */
+body.consult-preview-mode .legacy-app{display:none}
+body.consult-preview-mode #modalBackdrop.flow-drawer-backdrop{position:fixed;inset:0;background:#f5f8fc}
+body.consult-preview-mode #modalBackdrop.flow-drawer-backdrop .wizard[data-step="3"]{width:100vw;max-width:none;height:100vh;height:100dvh;box-shadow:none;animation:none}
+body.consult-preview-mode .teacher-direct-toolbar{margin-top:0}

@@ -1,0 +1,33 @@
+/* V3.2: enter teacher selection directly after strategy analysis. */
+.wizard[data-step="3"] .teacher-direct-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 12px;padding:17px 19px;border:1px solid #e5eef9;border-radius:10px;background:#fff;box-shadow:0 3px 15px rgba(28,70,121,.05)}
+.wizard[data-step="3"] .teacher-direct-toolbar>div:first-child{display:flex;flex-direction:column;gap:5px}
+.wizard[data-step="3"] .teacher-direct-toolbar strong{color:#193b62;font-size:15px}
+.wizard[data-step="3"] .teacher-direct-toolbar small{color:#788da8;font-size:11px}
+.wizard[data-step="3"] .teacher-direct-toolbar-actions{display:flex;gap:8px;flex-wrap:wrap}
+.wizard[data-step="3"] .teacher-direct-toolbar-actions button{min-height:32px;padding:0 12px;border:1px solid #c8dcf4;border-radius:5px;background:#fff;color:#3a78c2;font-size:12px;font-weight:600;cursor:pointer}
+.wizard[data-step="3"] .teacher-direct-toolbar-actions button:hover{background:#f1f7ff}
+.wizard[data-step="3"] .teacher-direct-toolbar-actions button:last-child{border-color:#cfc7ff;background:#f5f1ff;color:#6858b4}
+.wizard[data-step="3"] .teacher-direct-course-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:7px;flex:none}
+.wizard[data-step="3"] .teacher-direct-course-actions .teacher-requirement-toggle{margin:0}
+.wizard[data-step="3"] .teacher-direct-course-actions button[data-teacher-designate]{border-color:#cfc7ff;color:#6557b2}
+.wizard[data-step="3"] .teacher-direct-course-actions button[data-teacher-designate]:hover{background:#f5f1ff}
+.flow-requirements-dialog:has(.teacher-direct-strategy-review){width:min(1000px,100%);max-height:calc(100dvh - 44px)}
+.flow-requirements-content:has(.teacher-direct-strategy-review){padding:18px 20px 0;background:#f5faff}
+#modalBackdrop.flow-drawer-backdrop .wizard.teacher-direct-strategy-review[data-step="2"]{display:block;width:100%;height:auto;max-height:none;overflow:visible;border:0;border-radius:0;background:transparent;box-shadow:none;animation:none}
+.teacher-direct-strategy-review .strategy-global-card{margin-bottom:25px!important}
+.teacher-direct-strategy-review .content-card:last-child{margin-bottom:18px!important}
+.teacher-direct-strategy-footer{display:none;justify-content:flex-end;gap:8px;min-height:62px;align-items:center;padding:10px 20px;border-top:1px solid #e5edf6;background:#fff}
+.flow-requirements-dialog:has(.teacher-direct-strategy-review) .teacher-direct-strategy-footer{display:flex}
+.teacher-direct-strategy-footer .btn{min-height:35px}
+.flow-requirements-content .teacher-direct-review-actions{display:flex;justify-content:flex-end;gap:8px;margin:10px 0 4px}
+.flow-requirements-content .teacher-direct-review-actions .btn{min-height:32px}
+.flow-requirements-content .teacher-direct-strategy-course h3{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.flow-requirements-content .teacher-direct-strategy-course h3 small{display:flex;align-items:center;gap:5px;color:#7890ab;font-size:11px;font-weight:500}
+.flow-requirements-content .teacher-direct-strategy-course .structure-body{padding:12px;border:1px solid #e4edf8;border-radius:6px;background:#fbfdff}
+.flow-requirements-content .teacher-direct-strategy-course .structured-segment{margin-bottom:10px}
+.flow-requirements-content #teacherDirectSupplement{width:100%;min-height:115px;padding:11px;border:1px solid #cbdced;border-radius:5px;resize:vertical;color:#243c5c;font:inherit}
+.flow-requirements-content .teacher-direct-designation h3:not(:first-child){margin-top:18px}
+.flow-requirements-content .teacher-direct-designation .teacher-list{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.flow-requirements-content .teacher-direct-designation label{display:flex;align-items:center;gap:12px;margin-top:17px;color:#446181}
+.flow-requirements-content #teacherDirectName{flex:1;min-width:0;height:35px;padding:0 10px;border:1px solid #cbdced;border-radius:5px;color:#233d60}
+@media(max-width:880px){.wizard[data-step="3"] .teacher-direct-toolbar{align-items:flex-start;flex-direction:column}.wizard[data-step="3"] .teacher-direct-course-actions{width:100%;justify-content:flex-end}.wizard[data-step="3"] .content-card-header{flex-wrap:wrap}}

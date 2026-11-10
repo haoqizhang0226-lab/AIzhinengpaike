@@ -1,0 +1,7 @@
+html.embedded-consult,
+html.embedded-consult body { min-height: 100%; }
+html.embedded-consult .sidebar,
+html.embedded-consult .topbar { display: none !important; }
+html.embedded-consult .workspace { margin-left: 0 !important; min-height: 100vh; }
+html.embedded-consult .main-area { padding: 12px 16px 24px !important; min-height: 100vh; }
+html.embedded-consult .smart-consult-panel { min-height: calc(100vh - 36px); }

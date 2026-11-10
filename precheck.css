@@ -79,3 +79,17 @@
 .ai-precheck-footer{padding:12px 18px}.ai-precheck-success-view{flex:1;min-height:0;display:grid;place-items:center;padding:22px;background:#f3f8fc}.ai-precheck-success-card{text-align:center;width:min(380px,100%);padding:32px 25px;border:1px solid #dce7f5;border-radius:10px;background:#fff;box-shadow:0 14px 34px #274a8018}.ai-precheck-success-icon{margin:0 auto 17px;width:44px;height:44px;font-size:26px}.ai-precheck-success-card h2{margin:0;color:#18375c;font-size:17px}.ai-precheck-success-card p{margin:11px 0 0;color:#748a9e;line-height:1.6}.ai-precheck-success-card button{margin-top:20px;padding:8px 18px;border:1px solid #2b7be8;border-radius:6px;background:#2b7be8;color:#fff}
 @media(max-width:900px){.ai-precheck-drawer{width:100vw}.ai-precheck-body{grid-template-columns:minmax(0,1fr) minmax(330px,.82fr)}}
 @media(max-width:700px){.ai-precheck-body{display:block;overflow:auto}.ai-precheck-left,.ai-precheck-right-scroll{overflow:visible}.ai-precheck-right{border-left:0;border-top:1px solid #e3eaf3}.ai-precheck-student,.ai-precheck-summary{grid-template-columns:1fr}.ai-precheck-footer{position:sticky;bottom:0}}
+.ai-precheck-header #aiPrecheckDraftSwitch{margin-left:auto;max-width:min(440px,48vw);height:34px;padding:0 10px;border:1px solid #d0ddec;border-radius:5px;background:#fff;color:#36506c;font-size:12px}
+.ai-precheck-header #aiPrecheckDraftSwitch[hidden]{display:none}
+.ai-precheck-drawer{width:min(1780px,calc(100vw - 28px))}
+.ai-precheck-body{grid-template-columns:minmax(0,66fr) minmax(350px,34fr)}
+.ai-precheck-table-wrap.course-table-wrap{height:auto;max-height:none;overflow:visible}
+.ai-precheck-table-wrap .drawer-course-table{width:100%;min-width:0;table-layout:fixed}
+.ai-precheck-table-wrap .drawer-course-table th,
+.ai-precheck-table-wrap .drawer-course-table td{
+  height:auto;min-height:39px;padding:8px 5px;white-space:normal;
+  overflow:visible;text-overflow:clip;overflow-wrap:anywhere;
+  word-break:break-word;line-height:1.5;vertical-align:middle
+}
+@media(max-width:900px){.ai-precheck-drawer{width:100vw}.ai-precheck-body{grid-template-columns:minmax(0,1fr) minmax(310px,.58fr)}}
+@media(max-width:700px){.ai-precheck-body{display:block}}

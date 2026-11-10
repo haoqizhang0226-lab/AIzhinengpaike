@@ -1,0 +1,3 @@
+.educator-consult-page { height: calc(100vh - 44px); min-height: 620px; background: #f3f6fb; }
+.educator-consult-page iframe { display: block; width: 100%; height: 100%; border: 0; background: #f3f6fb; }
+body.formal-page-active #consultMenu::before { content: '▤'; font-size: 16px; }

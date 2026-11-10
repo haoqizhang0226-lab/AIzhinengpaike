@@ -10,14 +10,19 @@
 .create-colon{color:#525861}
 .student-name-input{width:162px;height:26px;border:1px solid #d6dfec;border-radius:3px;color:#69717e;padding:0 10px;background:#fff;font-size:11px}
 .create-course-section{padding-top:20px}
+.create-course-package{padding:13px 14px 16px;margin-bottom:14px;border:1px solid #dce6f2;border-radius:5px;background:#fbfdff}
+.create-add-package{height:30px;padding:0 14px;border:1px dashed #8ab9f6;border-radius:3px;background:#f1f7ff;color:#2876d5;font-size:11px;cursor:pointer}
+.create-remove-package{margin-left:auto;padding:4px 9px;border:0;background:transparent;color:#d55e67;font-size:11px;cursor:pointer}
+.create-all-hours{text-align:right;margin-top:9px;color:#65778c;font-size:11px}
+.create-all-hours strong{font-size:14px;color:#256dcb}
 .create-order-body h2{font-size:13px;margin:0 0 10px;font-weight:700;color:#373b42}
-.course-package-line{display:flex;align-items:center;gap:15px;height:30px;color:#70747c}
-.course-package-line select{width:226px;height:26px;border:1px solid #d9e0e9;border-radius:3px;background:#fff;color:#e39716;padding:0 12px;font-size:11px}
+.course-package-line{display:flex;align-items:center;flex-wrap:wrap;gap:10px;min-height:30px;color:#70747c}
+.course-package-line select{width:290px;height:26px;border:1px solid #d9e0e9;border-radius:3px;background:#fff;color:#e39716;padding:0 12px;font-size:11px}
 .create-gold-tag{background:#eaa02c;color:#fff;border-radius:10px;font-weight:700;height:20px;padding:2px 11px;font-size:10px}
-.course-hours-summary{height:81px;margin-top:21px;background:#eaf3ff;border-radius:4px;display:flex;align-items:center;padding:0 0 0 10px}
-.course-hours-summary>div{width:117px;height:52px;border-right:1px solid #bfcde0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#70747b}
+.course-hours-summary{height:26px;margin:0;padding:0 4px;background:#eaf3ff;border-radius:3px;display:inline-flex;align-items:center;flex:none;white-space:nowrap}
+.course-hours-summary>div{height:18px;border-right:1px solid #c6d6e9;display:inline-flex;align-items:center;gap:5px;padding:0 9px;color:#61758d;font-size:10px}
 .course-hours-summary>div:last-child{border-right:0}
-.course-hours-summary strong{font-size:17px;color:#363a42}
+.course-hours-summary strong{font-size:11px;color:#29496e}
 .included-heading{height:54px;display:flex;align-items:center;gap:246px;color:#61666e}
 .included-heading .create-blue-btn{margin-left:auto}
 .create-blue-btn{height:26px;border:1px solid #3488f6;border-radius:2px;background:#3488f6;color:#fff;padding:0 14px;font-size:11px}
@@ -35,7 +40,14 @@
 .hours-stepper input{height:24px;width:40px;border:0;border-left:1px solid #e3e7ee;border-right:1px solid #e3e7ee;text-align:center;color:#545b66;font-size:11px}
 .remove-course{border:1px solid #a9caff;border-radius:50%;width:20px;height:20px;line-height:16px;padding:0;background:#eaf3ff;color:#3788f9;font-size:17px}
 .create-date-row{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:16px;height:35px}
-.create-date-row label,.create-type-row label{display:flex;align-items:center;gap:7px;color:#656a72}
+.create-date-row label,.create-end-mode-field,.create-end-date-row label,.create-type-row label{display:flex;align-items:center;gap:7px;color:#656a72}
+.create-end-mode-switch{display:flex;width:280px;height:33px;border:1px solid #4b91fb;border-radius:5px;overflow:hidden}
+.create-end-mode-switch button{flex:1;min-width:0;padding:0 7px;border:0;background:#fff;color:#3d86e9;font-size:12px;white-space:nowrap;cursor:pointer}
+.create-end-mode-switch button+button{border-left:1px solid #4b91fb}
+.create-end-mode-switch button.is-active{background:#3686ed;color:#fff;font-weight:700}
+.create-end-mode-switch button:focus-visible{outline:2px solid #185bd4;outline-offset:-2px}
+.create-end-date-row{height:35px;display:flex;align-items:center;margin-top:6px}
+.create-end-date-row[hidden]{display:none}
 .required{color:#fa666b}
 .date-control{height:29px;width:198px;border:1px solid #d7e0ec;border-radius:3px;display:flex;align-items:center;gap:7px;padding:0 9px;color:#bac4d1}
 .date-control input{width:152px;height:25px;border:0;outline:none;color:#6a7078;font-size:11px}
@@ -55,4 +67,40 @@
 .create-cancel{border:1px solid #d8e0ec;background:#fff;color:#687383}
 .create-submit{border:1px solid #3487f3;background:#3487f3;color:#fff}
 .create-order-footer button:hover,.create-blue-btn:hover{filter:brightness(.97)}
+.create-course-picker-backdrop{position:fixed;inset:0;z-index:60;background:rgba(18,35,59,.42)}
+.create-course-picker{position:fixed;z-index:61;left:50%;top:50%;transform:translate(-50%,-50%);width:min(820px,calc(100vw - 32px));max-height:calc(100vh - 32px);display:flex;flex-direction:column;border:1px solid #dce5f0;border-radius:5px;background:#fff;box-shadow:0 16px 48px rgba(17,43,73,.22);color:#28415f}
+.create-course-picker[hidden],.create-course-picker-backdrop[hidden]{display:none}
+.create-course-picker header,.create-course-picker footer{flex:none;display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid #e0e8f2}
+.create-course-picker header strong{font-size:14px}.create-course-picker header button{border:0;background:none;color:#8c9cad;font-size:22px;cursor:pointer}
+.create-course-picker footer{justify-content:flex-end;gap:9px;border-top:1px solid #e0e8f2;border-bottom:0}
+.create-course-picker footer button{height:29px;padding:0 14px;border:1px solid #d2dce9;border-radius:3px;background:#fff;color:#5c718a;font-size:11px;cursor:pointer}
+.create-course-picker footer button.primary{border-color:#3588f2;background:#3588f2;color:#fff}
+.create-course-picker-body{overflow:auto;padding:17px 22px;font-size:11px}
+.create-course-picker-body>p:first-child{margin:0 0 16px;color:#52739b}
+.create-course-picker-filters{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.create-course-picker-filters label{display:flex;flex-direction:column;gap:7px;color:#5b6f86}
+.create-course-picker-filters select{height:29px;padding:0 7px;border:1px solid #d5dfeb;border-radius:3px;background:#fff;color:#4c6280;font-size:11px}
+.create-course-picker-table-wrap{max-height:360px;overflow:auto}
+.create-course-picker table{width:100%;border-collapse:collapse;table-layout:fixed}
+.create-course-picker th,.create-course-picker td{height:34px;border:1px solid #e2eaf2;padding:5px 9px;text-align:center}
+.create-course-picker th{background:#f6f9fd;color:#3c5571}
+.create-course-picker th:first-child{width:65px}
+.create-course-picker tbody tr:nth-child(even){background:#f8fafc}
+.create-course-picker #createCoursePickerSelected{color:#607b99}
+.create-consult-import{margin:16px 0 14px;border:1px solid #cfe1fb;border-radius:5px;background:#f7fbff;color:#234568;font-size:12px}
+.create-consult-import[hidden]{display:none}
+.create-consult-import-title{display:flex;align-items:center;gap:12px;padding:10px 13px;border-bottom:1px solid #dce9f9}
+.create-consult-import-title strong{font-size:13px;color:#1d63bf}
+.create-consult-import-title span{color:#6d8098}
+.create-consult-import-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px}
+.create-consult-import-row{display:flex;align-items:center;gap:9px;min-width:0;padding:9px 11px;border:1px solid #dce7f5;border-radius:4px;background:#fff;cursor:pointer}
+.create-consult-import-row:has(input:checked){border-color:#4b90ed;background:#eef6ff}
+.create-consult-import-row.is-disabled{opacity:.66;cursor:not-allowed}
+.create-consult-import-row input{accent-color:#3285f3;flex:none}
+.create-consult-import-row span{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+.create-consult-import-row b{font-weight:600}
+.create-consult-import-row small{color:#6e8198;overflow-wrap:anywhere}
+.create-consult-import-row em{flex:none;font-style:normal;color:#387bc9;font-size:11px}
+.create-consult-import-row.is-disabled em{color:#8798a9}
+@media(max-width:800px){.create-consult-import-list{grid-template-columns:1fr}}
 @media(max-width:1500px){.create-course-table{min-width:1750px}.included-heading{gap:150px}.create-order-body{padding-right:26px}}
