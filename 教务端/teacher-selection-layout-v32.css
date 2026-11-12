@@ -1,0 +1,67 @@
+/* V3.2 教务选师布局及全屏居中的辅助弹窗。 */
+body.educator-workspace:not(.consult-preview-mode) #modalBackdrop.flow-drawer-backdrop .wizard[data-step="3"] {
+  width: min(1520px, calc(100vw - 24px));
+}
+
+body.educator-workspace:not(.consult-preview-mode) #modalBackdrop.flow-drawer-backdrop .wizard[data-step="3"] .candidate-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* 查看要求、查看策略、补充要求和指定老师均相对于整个页面居中。 */
+body.educator-workspace:not(.consult-preview-mode) #flowRequirementsOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  padding: 24px;
+}
+
+body.educator-workspace:not(.consult-preview-mode) #flowRequirementsOverlay .flow-requirements-dialog:has(.teacher-direct-strategy-review) {
+  width: min(1160px, 100%);
+  max-height: calc(100dvh - 48px);
+}
+
+/* 从查看策略进入编辑时，编辑表单也显示为居中弹窗。 */
+body.educator-workspace:not(.consult-preview-mode) #modalBackdrop.flow-drawer-backdrop.strategy-edit-modal {
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+body.educator-workspace:not(.consult-preview-mode) #modalBackdrop.flow-drawer-backdrop.strategy-edit-modal > .wizard[data-step="2"] {
+  width: min(1300px, 100%);
+  height: min(920px, calc(100dvh - 48px));
+  max-height: calc(100dvh - 48px);
+  border: 1px solid #e5edf6;
+  border-radius: 12px;
+  box-shadow: 0 26px 70px rgba(18, 32, 57, .25);
+  animation: none;
+}
+
+@media (max-width: 1100px) {
+  body.educator-workspace:not(.consult-preview-mode) #modalBackdrop.flow-drawer-backdrop .wizard[data-step="3"] .candidate-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  body.educator-workspace:not(.consult-preview-mode) #modalBackdrop.flow-drawer-backdrop .wizard[data-step="3"] {
+    width: 100vw;
+  }
+
+  body.educator-workspace:not(.consult-preview-mode) #modalBackdrop.flow-drawer-backdrop .wizard[data-step="3"] .candidate-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.educator-workspace:not(.consult-preview-mode) #flowRequirementsOverlay {
+    padding: 10px;
+  }
+
+  body.educator-workspace:not(.consult-preview-mode) #modalBackdrop.flow-drawer-backdrop.strategy-edit-modal {
+    padding: 10px;
+  }
+
+  body.educator-workspace:not(.consult-preview-mode) #modalBackdrop.flow-drawer-backdrop.strategy-edit-modal > .wizard[data-step="2"] {
+    height: calc(100dvh - 20px);
+    max-height: calc(100dvh - 20px);
+  }
+}

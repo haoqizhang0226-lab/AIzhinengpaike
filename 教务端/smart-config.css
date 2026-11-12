@@ -1,0 +1,41 @@
+/* ===== 智能排课配置：教师推荐白名单 ===== */
+.smart-config-page { min-height: calc(100vh - 44px); padding: 20px 26px 40px; background: #f3f6fb; color: #1d344f; font-size: 13px; box-sizing: border-box; }
+.smart-config-crumb { margin-bottom: 16px; color: #8b9bb1; font-size: 12px; }
+.smart-config-crumb span { padding: 0 7px; color: #b7c3d1; }
+.smart-config-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
+.smart-config-heading h1 { margin: 0 0 7px; color: #17365d; font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+.smart-config-heading p { margin: 0; color: #7186a2; font-size: 12px; line-height: 1.55; }
+.smart-config-primary { flex: none; height: 34px; padding: 0 15px; border: 1px solid #2168df; border-radius: 6px; background: #2168df; color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 10px #1d68e20f; }
+.smart-config-primary:hover { background: #155bd1; }
+.smart-config-card { border: 1px solid #dfe7f2; border-radius: 8px; background: #fff; box-shadow: 0 3px 12px #1f335c0a; overflow: hidden; }
+.smart-config-filters { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; padding: 15px 18px; border-bottom: 1px solid #e9eef5; }
+.smart-config-filters label { display: inline-flex; align-items: center; gap: 8px; color: #5b6f88; font-size: 12px; white-space: nowrap; }
+.smart-config-filters input, .smart-config-filters select { height: 32px; padding: 0 10px; border: 1px solid #cfdbe9; border-radius: 5px; background: #fff; color: #2c445f; font: inherit; font-size: 12px; }
+.smart-config-filters input[type="search"] { width: 190px; }
+.smart-config-filters button { height: 32px; padding: 0 14px; border: 1px solid #cbd9ed; border-radius: 5px; background: #fff; color: #486483; font-size: 12px; cursor: pointer; }
+.smart-config-filters button:first-of-type { border-color: #2168df; background: #2168df; color: #fff; }
+.smart-config-table-wrap { overflow-x: auto; }
+.smart-config-table { width: 100%; min-width: 980px; border-collapse: collapse; font-size: 12px; }
+.smart-config-table th { height: 42px; padding: 0 14px; border-bottom: 1px solid #e5ebf3; background: #f8fbff; color: #3c5572; font-size: 12px; font-weight: 600; text-align: left; white-space: nowrap; }
+.smart-config-table td { height: 46px; padding: 0 14px; border-bottom: 1px solid #eef2f7; color: #2c445f; white-space: nowrap; }
+.smart-config-table tbody tr:last-child td { border-bottom: 0; }
+.smart-config-table tbody tr:hover td { background: #fafcff; }
+.smart-config-priority { display: inline-block; min-width: 30px; padding: 2px 7px; border-radius: 3px; font-size: 11px; text-align: center; }
+.smart-config-priority.high { background: #fff1ee; color: #c4563a; }
+.smart-config-priority.medium { background: #fff6e6; color: #a8761d; }
+.smart-config-priority.low { background: #eef4ff; color: #3c6bb5; }
+.smart-config-status { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; }
+.smart-config-status::before { content: ''; width: 7px; height: 7px; border-radius: 50%; }
+.smart-config-status.on { color: #2f8a4c; }
+.smart-config-status.on::before { background: #43b268; }
+.smart-config-status.off { color: #8b97a8; }
+.smart-config-status.off::before { background: #b9c3d0; }
+.smart-config-link { padding: 0 6px; border: 0; background: transparent; color: #2168df; font: inherit; font-size: 12px; cursor: pointer; }
+.smart-config-link:hover { text-decoration: underline; }
+.smart-config-link + .smart-config-link { border-left: 1px solid #dde5ef; }
+.smart-config-pager { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-top: 1px solid #eef2f7; color: #7a8ba1; font-size: 12px; }
+.smart-config-page-num { color: #486483; }
+@media (max-width: 900px) {
+  .smart-config-page { padding: 16px; }
+  .smart-config-heading { align-items: flex-start; flex-direction: column; }
+}

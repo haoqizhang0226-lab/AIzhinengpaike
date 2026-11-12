@@ -12,13 +12,14 @@
     historicalTeacher:'李春玲',currentTeacher:'',teacherDiscussed:'是',studentResult:'先修'
   });
   const seeds = [
-    {id:'ZD20261106001',customerNo:'VA100078710',customerName:'授课反馈产品验收',advisorName:'李春玲',created:'2026-11-06 10:26:08',initiator:'李春玲',status:'待分配',start:'2026-11-08',end:'2026-12-30',requirement:'两门课程尽量交叉安排，先确认学生和老师共同可用的时间。',linkedOrderIds:[1,8],courses:[defaultCourse('商务',10,'线上'),defaultCourse('会计',10)]},
+    {id:'ZD20261106001',customerNo:'VA100078710',customerName:'授课反馈产品验收',advisorName:'李春玲',created:'2026-11-06 10:26:08',initiator:'李春玲',status:'待分配',start:'2026-11-08',end:'2026-12-30',requirement:'两门课程尽量交叉安排，先确认学生和老师共同可用的时间。',linkedOrderIds:[],courses:[defaultCourse('商务',10,'线上'),defaultCourse('会计',10)]},
     {id:'ZD20261105002',customerNo:'VA100086215',customerName:'陈同学',advisorName:'李春玲',created:'2026-11-05 16:12:35',completedAt:'2026-11-05 16:45:00',initiator:'李春玲',status:'已完成',start:'2026-11-09',end:'2026-12-15',requirement:'工作日晚上优先；每周安排两到三节。',linkedOrderIds:[2],courses:[defaultCourse('商务',16)]},
     {id:'ZD20261104003',customerNo:'VA100094332',customerName:'王同学',advisorName:'王若华',initiatorRole:'学管师',created:'2026-11-04 14:38:21',initiator:'王若华',status:'处理中',handlerName:'王若华',start:'2026-11-10',end:'2027-01-31',requirement:'优先沿用当前授课老师，课程分布尽量均匀。',linkedOrderIds:[],courses:[defaultCourse('会计',30)]},
     {id:'ZD20261102004',customerNo:'VA100073946',customerName:'张同学',advisorName:'李春玲',created:'2026-11-02 09:17:43',completedAt:'2026-11-02 10:06:00',initiator:'李春玲',status:'已完成',start:'2026-11-08',end:'2026-12-20',requirement:'周末优先排课，需避开周日晚上。',linkedOrderIds:[],courses:[defaultCourse('商务',20)]},
     {id:'ZD20261030005',customerNo:'',customerName:'赵同学',advisorName:'陈顾问',created:'2026-10-30 11:42:06',initiator:'陈顾问',status:'处理中',start:'2026-11-15',end:'2027-01-15',requirement:'先确认可上课的时段。',linkedOrderIds:[],courses:[defaultCourse('商务',12)]},
-    {id:'ZD20261028006',customerNo:'VA100084126',customerName:'',advisorName:'王若华',initiatorRole:'学管师',created:'2026-10-28 17:08:12',initiator:'王若华',status:'已驳回',start:'2026-11-20',end:'2026-12-20',requirement:'周二或周四排课。',linkedOrderIds:[],courses:[defaultCourse('会计',8)]},
-    {id:'ZD20261026007',customerNo:'',customerName:'',advisorName:'李春玲',created:'2026-10-26 09:25:31',initiator:'李春玲',status:'处理中',start:'2026-11-18',end:'2026-12-30',requirement:'待补充客户资料；优先周末。',linkedOrderIds:[],courses:[defaultCourse('商务',10)]}
+    {id:'ZD20261028006',customerNo:'VA100084126',customerName:'',advisorName:'王若华',initiatorRole:'学管师',created:'2026-10-28 17:08:12',initiator:'王若华',status:'已驳回',rejectReason:'客户资料未补全，且「周二或周四」未明确具体上课时段，请补充后重新提交。',start:'2026-11-20',end:'2026-12-20',requirement:'周二或周四排课。',linkedOrderIds:[],courses:[defaultCourse('会计',8)]},
+    {id:'ZD20261026007',customerNo:'',customerName:'',advisorName:'李春玲',created:'2026-10-26 09:25:31',initiator:'李春玲',status:'处理中',start:'2026-11-18',end:'2026-12-30',requirement:'待补充客户资料；优先周末。',linkedOrderIds:[],courses:[defaultCourse('商务',10)]},
+    {id:'ZD20261110008',customerNo:'VA100092578',customerName:'刘同学',advisorName:'李春玲',created:'2026-11-10 14:22:09',initiator:'李春玲',status:'已驳回',handlerName:'王若华',handledAt:'2026-11-10 15:08:36',rejectReason:'周六上午固定时段未与授课老师确认，且两门课程课时分配未说明，请确认后重新提交。',start:'2026-11-16',end:'2026-12-28',requirement:'希望固定周六上午上课，其余时段待与学生确认。',linkedOrderIds:[],courses:[defaultCourse('商务',10,'线上'),defaultCourse('会计',10)]}
   ];
   const catalogRows = [
     ['计算机','AQA','AS','线上'],['物理','AQA','AS','线下'],['心理','AQA','AS','线下'],
@@ -55,9 +56,11 @@
     const merged = {...seed,...item};
     if(merged.status==='已完结')merged.status='已完成';
     if(merged.status==='已撤回')merged.status='已驳回';
+    if(merged.status==='已驳回'&&!merged.rejectReason)merged.rejectReason='暂未填写驳回原因';
     merged.advisorName = merged.advisorName || merged.initiator || '';
     merged.initiatorRole = merged.initiatorRole === '学管师' ? '学管师' : '销售顾问';
     merged.linkedOrderIds = Array.isArray(merged.linkedOrderIds) ? merged.linkedOrderIds : (seed?.linkedOrderIds || []);
+    if (merged.status !== '已完成') merged.linkedOrderIds = [];
     merged.courses = Array.isArray(merged.courses) && merged.courses.length ? merged.courses : (seed?.courses || [defaultCourse('商务',Number(merged.hours) || 10)]);
     merged.preplanVersions = Array.isArray(merged.preplanVersions) ? merged.preplanVersions : [];
     return merged;
@@ -66,7 +69,6 @@
   const save = () => { try { localStorage.setItem(storageKey,JSON.stringify(consults)); } catch {} };
   let currentId = null;
   let drawerMode = 'view';
-  let activePreplanId = null;
   let linkedOrderId = null;
   let pendingConsultId = null;
   window.getPendingConsultId = () => pendingConsultId;
@@ -82,8 +84,22 @@
   let modalFilters = {subject:'',board:'',grade:'',mode:''};
   let associateConsultId = null;
   let associateOrderId = null;
+  let rejectConsultId = null;
   let filters = {plan:'',customer:'',from:'',to:'',status:'',role:'',initiator:'',handler:'',handledFrom:'',handledTo:'',linked:''};
   let activeConsultTab = 'all';
+  const selectedConsultIds = new Set();
+  let assignConsultIds = [];
+  let assignSelectedName = '';
+  const assignStaff = [
+    {name:'李春玲',no:'VA000811'},
+    {name:'王若华',no:'VA000812'},
+    {name:'刘敏',no:'VA000821'},
+    {name:'周晓雯',no:'VA000822'},
+    {name:'赵宇',no:'VA000823'},
+    {name:'孙倩',no:'VA000824'}
+  ];
+  const assignableStatus = status => status === '待分配' || status === '处理中';
+  const assignableTab = () => educatorMode && (activeConsultTab === 'all' || activeConsultTab === 'pending');
   let consultAnalysisDraft = null;
   let consultAnalysisSourceMode = 'create';
   let formCreating = false;
@@ -111,7 +127,7 @@
     const sameDay = consults.filter(other => (other.customerNo || other.customerName || other.id) === studentKey && (other.created || '').slice(0,10) === date)
       .sort((a,b) => (a.created || '').localeCompare(b.created || '') || String(a.id).localeCompare(String(b.id)));
     const number = String(Math.max(0,sameDay.findIndex(other => other.id === item.id)) + 1).padStart(2,'0');
-    return (item.customerName || item.customerNo || '未填写客户姓名') + '-' + (initiatorRole(item) === '学管师' ? '续排方案' : '售前咨单方案') + '-' + date + '（' + number + '）';
+    return (item.customerName || item.customerNo || '未填写客户姓名') + '-' + (initiatorRole(item) === '学管师' ? '续排方案' : '售前匹配方案') + '-' + date + '（' + number + '）';
   }
 
   function showSection(section) {
@@ -129,7 +145,32 @@
   }
   window.showSalesSection = showSection;
 
+  function syncAssignToolbar() {
+    const assignButton = byId('consultAssign');
+    if (assignButton) assignButton.disabled = selectedConsultIds.size === 0;
+    const selectAll = byId('consultSelectAll');
+    if (!selectAll) return;
+    const boxes = [...byId('consultRows').querySelectorAll('[data-consult-select]:not(:disabled)')];
+    const checked = boxes.filter(box => box.checked).length;
+    selectAll.checked = boxes.length > 0 && checked === boxes.length;
+    selectAll.indeterminate = checked > 0 && checked < boxes.length;
+    selectAll.disabled = boxes.length === 0;
+  }
+
   function renderConsults() {
+    const showAssign = assignableTab();
+    if (!showAssign) selectedConsultIds.clear();
+    const assignButton = byId('consultAssign');
+    if (assignButton) assignButton.hidden = !showAssign;
+    const table = byId('consultRows').closest('table');
+    const headRow = table.querySelector('thead tr');
+    let selectHead = headRow.querySelector('th.consult-select-column');
+    if (showAssign && !selectHead) {
+      headRow.insertAdjacentHTML('afterbegin','<th class="consult-select-column"><input type="checkbox" id="consultSelectAll" aria-label="全选当前列表中可分配的售前匹配"></th>');
+    } else if (!showAssign && selectHead) {
+      selectHead.remove();
+    }
+    table.classList.toggle('assignment-mode',showAssign);
     const rows = consults.filter(item => {
       const created = (item.created || '').slice(0,10);
       const customer = (item.customerNo + ' ' + item.customerName).toLowerCase();
@@ -153,9 +194,16 @@
         && (!filters.handledTo || (handled && handled <= filters.handledTo))
         && (!filters.linked || (filters.linked === 'yes') === linked);
     });
+    for (const id of [...selectedConsultIds]) {
+      if (!rows.some(item => item.id === id)) selectedConsultIds.delete(id);
+    }
     byId('consultRows').innerHTML = rows.length ? rows.map(item => {
       const linked = linkedOrders(item).length > 0;
-      return '<tr>' +
+      const selectCell = showAssign ? '<td class="consult-select-column"><input type="checkbox" data-consult-select="' + safe(item.id) + '"' +
+        (selectedConsultIds.has(item.id) ? ' checked' : '') +
+        (assignableStatus(item.status) ? '' : ' disabled title="仅待分配、处理中的售前匹配可分配"') +
+        ' aria-label="选择售前匹配 ' + safe(planNameFor(item)) + '"></td>' : '';
+      return '<tr>' + selectCell +
         '<td><span class="smart-consult-plan-name" title="' + safe(planNameFor(item)) + '">' + safe(planNameFor(item)) + '</span></td>' +
         '<td>' + safe(customerLabel(item)) + '</td>' +
         '<td class="sales-only"><span class="smart-consult-course" title="' + safe(courseLabel(item)) + '">' + safe(courseLabel(item)) + '</span></td>' +
@@ -164,18 +212,24 @@
         '<td>' + handlerLabel(item) + '</td><td>' + display(item.completedAt) + '</td>' +
         '<td>' + (linked ? '<button type="button" class="smart-consult-linked" data-consult-action="orders" data-consult-id="' + safe(item.id) + '">是</button>' : '否') + '</td>' +
         '<td><div class="smart-consult-operations">' +
-        '<button type="button" data-consult-action="view" data-consult-id="' + safe(item.id) + '">查看</button>' +
-        '<button type="button" data-consult-action="edit" data-consult-id="' + safe(item.id) + '"' + (['已完成','已驳回'].includes(item.status) ? '' : ' disabled') + '>修改</button>' +
-        '<button type="button" data-consult-action="withdraw" data-consult-id="' + safe(item.id) + '"' + (item.status === '待分配' ? '' : ' disabled') + '>撤回</button>' +
+        (educatorMode
+          ? '<button type="button" data-consult-action="view" data-consult-id="' + safe(item.id) + '">查看</button>' +
+            '<button type="button" data-consult-action="reconsult" data-consult-id="' + safe(item.id) + '">重新匹配</button>' +
+            (item.status === '已完成' ? '<button type="button" data-consult-action="associate" data-consult-id="' + safe(item.id) + '">关联正式排课</button>' : '')
+          : '<button type="button" data-consult-action="view" data-consult-id="' + safe(item.id) + '">查看</button>' +
+            '<button type="button" data-consult-action="reconsult" data-consult-id="' + safe(item.id) + '">重新匹配</button>' +
+            (item.status === '待分配' ? '<button type="button" data-consult-action="withdraw" data-consult-id="' + safe(item.id) + '">撤回</button>' : '') +
+            (item.status === '已完成' ? '<button type="button" data-consult-action="formal" data-consult-id="' + safe(item.id) + '">发起正式排课</button>' : '')) +
         '</div></td></tr>';
-    }).join('') : '<tr><td colspan="12" class="smart-consult-empty">暂无符合条件的售前咨单</td></tr>';
+    }).join('') : '<tr><td colspan="' + (showAssign ? 13 : 12) + '" class="smart-consult-empty">暂无符合条件的售前匹配</td></tr>';
     byId('consultCount').textContent = '共 ' + rows.length + ' 条';
+    syncAssignToolbar();
     if (educatorMode) sendConsultCatalog();
   }
 
   function courseTable(courses) {
-    const headings = ['课程体系','课程项','科目','班型','考试局','年级','模块','学生水平','授课模式','校区','课时','可指定授课老师'];
-    const keys = ['system','item','subject','classType','board','grade','module','studentLevel','mode','campus','hours','currentTeacher'];
+    const headings = ['课程体系','课程项','科目','考试局','年级','模块','学生水平','授课模式','校区','课时','可指定授课老师'];
+    const keys = ['system','item','subject','board','grade','module','studentLevel','mode','campus','hours','currentTeacher'];
     return '<div class="smart-consult-course-scroll"><table class="smart-consult-course-table"><thead><tr>' +
       headings.map(label => '<th>' + label + '</th>').join('') +
       '</tr></thead><tbody>' + (courses || []).map(course => '<tr>' + keys.map(key => '<td>' + display(course[key]) + '</td>').join('') + '</tr>').join('') +
@@ -195,7 +249,7 @@
       courseTable(group.courses) + '</section>').join('') || '<p class="smart-consult-empty">暂无课程</p>';
   }
 
-  function detailMarkup(item,{showPreplan=true,currentStatus=item.status,currentCompletedAt=item.completedAt,planChoices=[]}={}) {
+  function detailMarkup(item,{showPreplan=true,currentStatus=item.status,currentCompletedAt=item.completedAt}={}) {
     const formalOrders = linkedOrders(item);
     return '<div class="smart-consult-view-layout' + (showPreplan ? '' : ' compact') + '"><div class="smart-consult-view-sidebar"><section class="smart-consult-detail smart-consult-customer-sidebar"><h3>基础信息</h3><div class="smart-consult-detail-grid">' +
       '<div><small>客户姓名</small><strong>' + display(item.customerName ? item.customerName + (item.customerNo ? '（' + item.customerNo + '）' : '') : item.customerNo) + '</strong></div>' +
@@ -203,12 +257,11 @@
       '<div><small>' + (educatorMode ? (initiatorRole(item) === '学管师' ? '学管姓名' : '顾问姓名') : '发起人') + '</small><strong>' + initiatorName(item) + '</strong></div>' +
       '<div><small>发起时间</small><strong>' + display(item.created) + '</strong></div>' +
       '<div><small>当前状态</small><strong><span class="smart-consult-status ' + statusClass(currentStatus) + '">' + safe(currentStatus) + '</span></strong></div>' +
+      (currentStatus === '已驳回' ? '<div class="full smart-consult-reject-reason"><small>驳回原因</small><strong>' + display(item.rejectReason) + '</strong></div>' : '') +
       '<div><small>处理人</small><strong>' + handlerLabel({...item,status:currentStatus}) + '</strong></div>' +
       '<div><small>完成时间</small><strong>' + display(currentCompletedAt) + '</strong></div>' +
       '</div></section>' +
-      (showPreplan ? '<section class="smart-consult-detail smart-consult-plan-card"><div class="smart-consult-plan-block"><span class="smart-consult-plan-label">当前方案</span>' +
-      (planChoices.length ? '<select id="consultPlanSwitch" aria-label="切换预排方案">' + planChoices.map(choice => '<option value="' + safe(choice.id) + '"' + (choice.id === activePreplanId ? ' selected' : '') + '>' + safe(choice.label) + '</option>').join('') + '</select>' : '<strong>--</strong>') +
-      '</div><div class="smart-consult-plan-block"><span class="smart-consult-plan-label">正式排课单</span><div class="smart-consult-formal-orders">' + (formalOrders.length ? formalOrders.map(order => '<button type="button" data-consult-order-detail="' + safe(order.id) + '">' + safe(order.course || '排课单 ' + order.id) + '</button>').join('') : '--') + '</div></div></section>' : '') +
+      (showPreplan ? '<section class="smart-consult-detail smart-consult-plan-card"><div class="smart-consult-plan-block"><span class="smart-consult-plan-label">正式排课单</span><div class="smart-consult-formal-orders">' + (formalOrders.length ? formalOrders.map(order => '<button type="button" data-consult-order-detail="' + safe(order.id) + '">' + safe(order.course || '排课单 ' + order.id) + '</button>').join('') : '--') + '<button type="button" class="smart-consult-add-order" data-consult-add-order>＋ 添加</button></div></div></section>' : '') +
       '</div><div class="smart-consult-view-main">' +
       (showPreplan ? '<section class="smart-consult-detail smart-consult-detail-preplan">'+consultPreplanMarkup(item)+'</section>' : '') +
       '<section class="smart-consult-detail"><h3>课程信息</h3>' + groupedCourseTables(item.courses) +
@@ -225,13 +278,13 @@
 
   function formalOrderMarkup(order) {
     const orderFields = detailFields(order);
-    const headings = ['课程项','班型','科目','考试局','年级','模块','授课模式','校区','课时','历史授课老师','当前授课老师','老师时间是否已沟通','学生成绩'];
+    const headings = ['课程项','科目','考试局','年级','模块','授课模式','校区','课时','历史授课老师','当前授课老师','老师时间是否已沟通','学生成绩'];
     const firstCourse = courseInfo(order)[0] || [];
     const legacySystem = (order.course || '').split('-').find(part => /学科|课程|语言/.test(part)) || '课程包';
     const legacyPackage = [legacySystem,firstCourse[0],firstCourse[1]].filter(Boolean).join('-');
     const legacyTable = '<section class="detail-package-block smart-consult-grouped-table"><div class="detail-package-heading"><span class="detail-package-label">' + safe(legacyPackage) + '</span></div><div class="smart-consult-course-scroll"><table class="smart-consult-course-table"><thead><tr>' +
       headings.map(label => '<th>' + label + '</th>').join('') + '</tr></thead><tbody>' +
-      courseInfo(order).map(row => '<tr>' + row.map(value => '<td>' + display(value) + '</td>').join('') + '</tr>').join('') +
+      courseInfo(order).map(row => '<tr>' + row.filter((_,index) => index !== 1).map(value => '<td>' + display(value) + '</td>').join('') + '</tr>').join('') +
       '</tbody></table></div></section>';
     const packageTables = order.submission?.packages?.length
       ? order.submission.packages.map(packageCourseTable).join('') : legacyTable;
@@ -442,8 +495,8 @@
     const frame=document.createElement('iframe');
     frame.className='smart-consult-teacher-frame';
     frame.id='consultTeacherFrame';
-    frame.title='售前咨单选择老师';
-    frame.src='../教务端/index.html#flow-order='+encodeURIComponent(JSON.stringify(payload));
+    frame.title='售前匹配选择老师';
+    frame.src='教务端/index.html?v=20261110g#flow-order='+encodeURIComponent(JSON.stringify(payload));
     byId('consultDrawerBody').replaceChildren(frame);
     byId('consultDrawerFoot').innerHTML='';
     byId('consultBackdrop').hidden=false;
@@ -514,12 +567,14 @@
     return history;
   }
   function renderSelectedPreplan(item) {
-    const choices = preplanChoices(item);
-    if (!choices.some(choice => choice.id === activePreplanId)) activePreplanId = choices.at(-1)?.id || null;
-    const selected = choices.find(choice => choice.id === activePreplanId);
-    const shown = selected?.version ? {...item,...selected.version,status:'已完成'} : item;
-    byId('consultDrawerBody').innerHTML = detailMarkup(shown,{currentStatus:item.status,currentCompletedAt:item.completedAt,planChoices:choices});
+    ensureCurrentPreview(item);
+    byId('consultDrawerBody').innerHTML = detailMarkup(item,{currentStatus:item.status,currentCompletedAt:item.completedAt});
   }
+
+  const weekdayOf = date => {
+    const parsed = new Date((date || '') + 'T00:00:00');
+    return Number.isNaN(parsed.getTime()) ? '--' : scheduleWeekdays[parsed.getDay()];
+  };
 
   function consultPreplanMarkup(item) {
     const completed=item.status==='已完成';
@@ -537,12 +592,12 @@
       const endMinutes=startMinutes+Math.round(duration*60);
       const end=String(Math.floor(endMinutes/60)).padStart(2,'0')+':'+String(endMinutes%60).padStart(2,'0');
       const courseName=course.name||[course.system,course.item,course.subject,course.board,course.grade].filter(Boolean).join('-');
-      return '<tr><td>'+safe(lesson.date+' '+start+'—'+end)+'</td><td>'+display(courseName)+'</td><td>'+display(String(lesson.teacher||'').replace(/\([^)]*\)/,''))+'</td><td>'+display(course.mode)+'</td><td>'+safe(duration)+' 课时</td></tr>';
+      return '<tr><td>'+safe(lesson.date+' '+start+'—'+end)+'</td><td>'+display(weekdayOf(lesson.date))+'</td><td>'+display(courseName)+'</td><td>'+display(String(lesson.teacher||'').replace(/\([^)]*\)/,''))+'</td><td>'+display(course.mode)+'</td><td>'+safe(duration)+' 课时</td></tr>';
     }).join('');
     const endDate=consultEndMode(item)==='SPECIFIED_DATE'&&item.end?item.end:(lessons.at(-1)?.date||'--');
     return '<div class="smart-consult-preplan"><div class="smart-consult-preplan-heading"><h4>预排课表</h4><div class="smart-consult-preplan-actions"><button type="button" data-consult-export'+(lessons.length?'':' disabled')+'>导出预排课表</button></div></div>'+
       (completed?'<div class="smart-consult-preplan-dates"><span>开课日期：<strong>'+display(item.start)+'</strong></span><span>结课日期：<strong>'+display(endDate)+'</strong></span></div>':'')+
-      '<div class="smart-consult-preplan-table-wrap"><table class="smart-consult-preplan-table"><thead><tr><th>上课时间</th><th>课程</th><th>授课老师</th><th>授课模式</th><th>课节时长</th></tr></thead><tbody>'+(rows||'<tr><td colspan="5" class="smart-consult-preplan-empty">暂无预排课程</td></tr>')+'</tbody></table></div></div>';
+      '<div class="smart-consult-preplan-table-wrap"><table class="smart-consult-preplan-table"><thead><tr><th>上课时间</th><th>星期</th><th>课程</th><th>授课老师</th><th>授课模式</th><th>课节时长</th></tr></thead><tbody>'+(rows||'<tr><td colspan="6" class="smart-consult-preplan-empty">暂无预排课程</td></tr>')+'</tbody></table></div></div>';
   }
 
   function exportConsultPreplan() {
@@ -557,7 +612,7 @@
     const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
     const link=document.createElement('a');
     link.href=url;
-    link.download='售前咨单_预排课表_'+(currentId||'')+'.csv';
+    link.download='售前匹配_预排课表_'+(currentId||'')+'.csv';
     document.body.append(link);
     link.click();
     link.remove();
@@ -571,24 +626,31 @@
   function openDrawer(id,mode) {
     currentId = id;
     drawerMode = mode;
-    activePreplanId = null;
     byId('consultDrawer').classList.remove('teacher-mode','preplan-mode');
     linkedOrderId = null;
+    const creating = mode === 'create' || mode === 'reconsult' || mode === 'match';
     const item = current();
-    if (mode !== 'create' && !item) return;
-    const titles = {view:'查看售前咨单',edit:'修改售前咨单',create:'新增售前咨单',orders:'关联排课单'};
-    byId('consultDrawer').classList.toggle('create-mode',mode==='create');
+    if (!creating && !item) return;
+    const titles = {view:'查看售前匹配',edit:'修改售前匹配',create:'新增售前匹配',reconsult:'重新匹配',match:'重新匹配',orders:'关联排课单'};
+    byId('consultDrawer').classList.toggle('create-mode',creating);
     byId('consultDrawer').classList.toggle('detail-mode',mode==='view');
     byId('consultDrawer').classList.toggle('orders-mode',mode==='orders');
-    byId('consultDrawerTitle').innerHTML = mode==='create' ? '<span class="smart-consult-create-spark">✦</span><span>新增售前咨单</span><span class="smart-consult-create-ai">AI 智能辅助</span>' :
-      mode==='view' ? '<span>查看售前咨单</span>' : safe(titles[mode]);
-    byId('consultDrawerBody').innerHTML = mode === 'create' || mode === 'edit' ? formMarkup(item,mode === 'create') :
+    byId('consultDrawerTitle').innerHTML = creating ? '<span class="smart-consult-create-spark">✦</span><span>' + safe(titles[mode]) + '</span><span class="smart-consult-create-ai">AI 智能辅助</span>' :
+      mode==='view' ? '<span>查看售前匹配</span>' : safe(titles[mode]);
+    byId('consultDrawerBody').innerHTML = creating || mode === 'edit' ? formMarkup(item,creating) :
       mode === 'orders' ? linkedMarkup(item) : '';
     if (mode === 'view') renderSelectedPreplan(item);
-    byId('consultDrawerFoot').innerHTML = mode === 'create' || mode === 'edit' ?
-      '<button type="button" data-consult-footer="close">取消</button><button type="submit" form="consultForm" class="primary">' + (mode === 'create' ? '提交咨单' : '保存') + '</button>' :
-      '<button type="button" data-consult-footer="close">关闭</button>' +
-      (mode === 'view' && item.status === '已完成' ? '<button type="button" data-consult-footer="' + (educatorMode ? 'associate' : 'formal') + '" class="primary">' + (educatorMode ? '关联正式排课' : '发起正式排课') + '</button>' : '');
+    const educatorPending = educatorMode && mode === 'view' && item && assignableStatus(item.status);
+    byId('consultDrawerFoot').innerHTML = creating || mode === 'edit' ?
+      '<button type="button" data-consult-footer="close">取消</button><button type="submit" form="consultForm" class="primary">' + (creating ? '提交咨单' : '保存') + '</button>' :
+      educatorPending ?
+        '<button type="button" data-consult-footer="close">关闭</button>' +
+        '<button type="button" data-consult-footer="reject" class="danger">驳回</button>' +
+        '<span class="smart-consult-foot-spacer"></span>' +
+        '<button type="button" data-consult-footer="match" class="primary reconsult-submit">重新匹配</button>' :
+        '<button type="button" data-consult-footer="close">关闭</button>' +
+        (mode === 'view' && item.status === '已完成' ? '<button type="button" data-consult-footer="' + (educatorMode ? 'associate' : 'formal') + '" class="primary">' + (educatorMode ? '关联正式排课' : '发起正式排课') + '</button>' : '') +
+        (mode === 'view' ? '<button type="button" data-consult-footer="reconsult" class="primary reconsult-submit">重新匹配</button>' : '');
     byId('consultBackdrop').hidden = false;
     byId('consultDrawer').hidden = false;
     document.body.style.overflow = 'hidden';
@@ -603,7 +665,6 @@
     byId('consultBackdrop').hidden = true;
     byId('consultDrawer').hidden = true;
     currentId = null;
-    activePreplanId = null;
     document.body.style.overflow = '';
   }
 
@@ -743,7 +804,7 @@
   function startFormal(id) {
     const item = consults.find(row => row.id === id);
     if (!item) return;
-    if (item.status !== '已完成') { toast('仅已完成的方案可发起正式排课'); return; }
+    if (item.status !== '已完成') { toast('已完成的售前匹配才会有正式排课单'); return; }
     if (!item.customerName) { toast('请先补充客户姓名'); openDrawer(id,'edit'); return; }
     pendingConsultId = id;
     closeDrawer();
@@ -787,13 +848,14 @@
 
   function renderAssociateOrders() {
     const query = byId('consultAssociateSearch').value.trim().toLowerCase();
-    const choices = allOrders.filter(order => order.course && (!query || order.course.toLowerCase().includes(query))).slice(0,30);
+    const linked = consults.find(item => item.id === associateConsultId)?.linkedOrderIds || [];
+    const choices = allOrders.filter(order => order.course && !linked.some(id => Number(id) === Number(order.id)) && (!query || order.course.toLowerCase().includes(query))).slice(0,30);
     byId('consultAssociateOrders').innerHTML = choices.length ? choices.map(order =>
       '<label class="smart-consult-associate-option"><input type="radio" name="associateOrder" value="' + safe(order.id) + '"' + (order.id === associateOrderId ? ' checked' : '') + '><span>' + safe(order.course) + '</span></label>'
     ).join('') : '<p class="smart-consult-empty">未找到排课单</p>';
   }
-  function openAssociateModal(id) {
-    if (consults.find(item => item.id === id)?.status !== '已完成') { toast('仅已完成的方案可关联正式排课'); return; }
+  function openAssociateModal(id,skipStatusCheck=false) {
+    if (!skipStatusCheck && consults.find(item => item.id === id)?.status !== '已完成') { toast('已完成的售前匹配才会有正式排课单'); return; }
     associateConsultId = id;
     associateOrderId = null;
     byId('consultAssociateSearch').value = '';
@@ -808,9 +870,89 @@
     associateConsultId = null;
     associateOrderId = null;
   }
+  function renderAssignStaff() {
+    const box = byId('consultAssignStaff');
+    const keyword = (byId('consultAssignSearch').value || '').trim().toLowerCase();
+    const matched = assignStaff.filter(staff => (staff.name + ' ' + staff.no).toLowerCase().includes(keyword));
+    box.innerHTML = matched.length ? matched.map(staff =>
+      '<label class="smart-consult-associate-option"><input type="radio" name="assignStaff" value="' + safe(staff.name) + '"' +
+      (assignSelectedName === staff.name ? ' checked' : '') + '><span>' + safe(staff.name) + '（' + safe(staff.no) + '）</span></label>'
+    ).join('') : '<div class="smart-consult-assign-empty">未找到匹配的教务，请更换姓名或工号</div>';
+  }
+  function openAssignModal() {
+    const ids = [...selectedConsultIds].filter(id => {
+      const item = consults.find(row => row.id === id);
+      return item && assignableStatus(item.status);
+    });
+    if (!ids.length) { toast('请先勾选待分配或处理中的售前匹配'); return; }
+    assignConsultIds = ids;
+    assignSelectedName = '';
+    const names = ids.map(id => planNameFor(consults.find(row => row.id === id)));
+    byId('consultAssignSummary').textContent = '已选择 ' + ids.length + ' 条售前匹配：' + names.join('、');
+    byId('consultAssignSearch').value = '';
+    renderAssignStaff();
+    byId('consultAssignBackdrop').hidden = false;
+    byId('consultAssignModal').hidden = false;
+    byId('consultAssignSearch').focus();
+  }
+  function closeAssignModal() {
+    byId('consultAssignBackdrop').hidden = true;
+    byId('consultAssignModal').hidden = true;
+    assignConsultIds = [];
+    assignSelectedName = '';
+  }
+  function confirmAssign() {
+    if (!assignSelectedName) { toast('请先选择要分配的教务'); return; }
+    const staff = assignStaff.find(row => row.name === assignSelectedName);
+    if (!staff) { toast('请先选择要分配的教务'); return; }
+    const stamp = currentTimestamp();
+    let count = 0;
+    assignConsultIds.forEach(id => {
+      const item = consults.find(row => row.id === id);
+      if (!item || !assignableStatus(item.status)) return;
+      item.handlerName = staff.name;
+      item.handlerNo = staff.no;
+      item.handledAt = stamp;
+      item.assignedAt = stamp;
+      item.assignedBy = currentUserName;
+      if (item.status === '待分配') item.status = '处理中';
+      count += 1;
+    });
+    selectedConsultIds.clear();
+    closeAssignModal();
+    save(); renderConsults();
+    toast(count ? '已将 ' + count + ' 条售前匹配分配给 ' + staff.name : '没有可分配的售前匹配');
+  }
+  function openRejectModal(id) {
+    const item = consults.find(row => row.id === id);
+    if (!item || !assignableStatus(item.status)) { toast('当前状态不可驳回'); return; }
+    rejectConsultId = id;
+    byId('consultRejectReasonInput').value = '';
+    byId('consultRejectBackdrop').hidden = false;
+    byId('consultRejectModal').hidden = false;
+    byId('consultRejectReasonInput').focus();
+  }
+  function closeRejectModal() {
+    byId('consultRejectBackdrop').hidden = true;
+    byId('consultRejectModal').hidden = true;
+    rejectConsultId = null;
+  }
+  function confirmReject() {
+    const item = consults.find(row => row.id === rejectConsultId);
+    if (!item || !assignableStatus(item.status)) { closeRejectModal(); return; }
+    const reason = byId('consultRejectReasonInput').value.trim();
+    if (!reason) { toast('请填写驳回原因'); byId('consultRejectReasonInput').focus(); return; }
+    item.status = '已驳回';
+    item.rejectReason = reason;
+    item.handledAt = currentTimestamp();
+    selectedConsultIds.delete(item.id);
+    closeRejectModal();
+    if (!byId('consultDrawer').hidden) closeDrawer();
+    save(); renderConsults(); toast('售前匹配已驳回');
+  }
   function associateConsult(consultId,orderId,orderFromParent) {
     const item = consults.find(row => row.id === consultId);
-    if (!item || item.status !== '已完成') return false;
+    if (!item) return false;
     if (orderFromParent?.id && !allOrders.some(order => order.id === Number(orderFromParent.id))) allOrders.unshift(orderFromParent);
     const order = allOrders.find(row => row.id === Number(orderId));
     if (!order) return false;
@@ -821,7 +963,7 @@
     return true;
   }
 
-  // 排课单详情页与售前咨单共用同一份方案数据和关联关系。
+  // 排课单详情页与售前匹配共用同一份方案数据和关联关系。
   const consultSnapshot = item => {
     if (!item) return null;
     if (item.status === '已完成') ensureCurrentPreview(item);
@@ -869,6 +1011,7 @@
     const tab = event.target.closest('[data-consult-tab]');
     if (!tab) return;
     activeConsultTab = tab.dataset.consultTab;
+    selectedConsultIds.clear();
     byId('consultTabs').querySelectorAll('[data-consult-tab]').forEach(button => {
       const active = button === tab;
       button.classList.toggle('active',active);
@@ -876,6 +1019,31 @@
     });
     renderConsults();
   });
+  const consultTable = byId('consultRows').closest('table');
+  consultTable.addEventListener('change',event => {
+    const box = event.target.closest('[data-consult-select]');
+    if (event.target.id === 'consultSelectAll') {
+      const checked = event.target.checked;
+      byId('consultRows').querySelectorAll('[data-consult-select]:not(:disabled)').forEach(rowBox => {
+        rowBox.checked = checked;
+        if (checked) selectedConsultIds.add(rowBox.dataset.consultSelect);
+        else selectedConsultIds.delete(rowBox.dataset.consultSelect);
+      });
+      syncAssignToolbar();
+      return;
+    }
+    if (!box) return;
+    if (box.checked) selectedConsultIds.add(box.dataset.consultSelect);
+    else selectedConsultIds.delete(box.dataset.consultSelect);
+    syncAssignToolbar();
+  });
+  byId('consultAssign').addEventListener('click',openAssignModal);
+  byId('consultAssignSearch').addEventListener('input',renderAssignStaff);
+  byId('consultAssignStaff').addEventListener('change',event => {
+    if (event.target.name === 'assignStaff') assignSelectedName = event.target.value;
+  });
+  for (const id of ['consultAssignClose','consultAssignCancel','consultAssignBackdrop']) byId(id).addEventListener('click',closeAssignModal);
+  byId('consultAssignConfirm').addEventListener('click',confirmAssign);
   byId('consultRows').addEventListener('click',event => {
     const button = event.target.closest('[data-consult-action]');
     if (!button || button.disabled) return;
@@ -887,23 +1055,20 @@
       const item = consults.find(row => row.id === id);
       if (!item) return;
       if(item.status!=='待分配')return;
-      item.status = '已驳回';
-      item.handledAt = currentTimestamp();
-      save(); renderConsults(); toast('售前咨单已驳回');
-    } else openDrawer(id,action);
+      openRejectModal(id);
+    } else if (action === 'reconsult') openDrawer(id, educatorMode ? 'match' : 'reconsult');
+    else openDrawer(id,action);
   });
   byId('consultClose').addEventListener('click',closeDrawer);
   byId('consultBackdrop').addEventListener('click',closeDrawer);
-  byId('consultDrawerBody').addEventListener('change',event => {
-    if (event.target.id !== 'consultPlanSwitch' || drawerMode !== 'view') return;
-    activePreplanId = event.target.value;
-    renderSelectedPreplan(current());
-  });
   byId('consultDrawerFoot').addEventListener('click',event => {
     const button = event.target.closest('[data-consult-footer]');
     if (!button) return;
     if (button.dataset.consultFooter === 'formal') startFormal(currentId);
     else if (button.dataset.consultFooter === 'associate') openAssociateModal(currentId);
+    else if (button.dataset.consultFooter === 'reconsult') openDrawer(currentId, educatorMode ? 'match' : 'reconsult');
+    else if (button.dataset.consultFooter === 'reject') openRejectModal(currentId);
+    else if (button.dataset.consultFooter === 'match') openDrawer(currentId,'match');
     else if (button.dataset.consultFooter === 'submit-reply') {
       const reply=byId('consultIssueReply')?.value.trim()||'';
       if(!reply){toast('请补充待确认的排课要求');byId('consultIssueReply')?.focus();return;}
@@ -912,6 +1077,11 @@
     else closeDrawer();
   });
   for (const id of ['consultAssociateClose','consultAssociateCancel','consultAssociateBackdrop']) byId(id).addEventListener('click',closeAssociateModal);
+  for (const id of ['consultRejectClose','consultRejectCancel','consultRejectBackdrop']) byId(id).addEventListener('click',closeRejectModal);
+  byId('consultRejectConfirm').addEventListener('click',confirmReject);
+  byId('consultRejectReasonInput').addEventListener('keydown',event => {
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) confirmReject();
+  });
   byId('consultAssociateSearch').addEventListener('input',renderAssociateOrders);
   byId('consultAssociateOrders').addEventListener('change',event => {
     if (event.target.name === 'associateOrder') associateOrderId = Number(event.target.value);
@@ -944,6 +1114,7 @@
     }
   });
   byId('consultDrawerBody').addEventListener('click',event => {
+    if (event.target.closest('[data-consult-add-order]')) { openAssociateModal(currentId,true); return; }
     if (event.target.closest('[data-consult-export]')) { exportConsultPreplan(); return; }
     const formalOrderLink = event.target.closest('[data-consult-order-detail]');
     if (formalOrderLink) {
@@ -1154,7 +1325,7 @@
       teacherGender:form.querySelector('input[name="teacherGender"]:checked')?.value || '',
       progress:'',courses};
     consultAnalysisDraft=data;
-    consultAnalysisSourceMode=drawerMode;
+    consultAnalysisSourceMode=drawerMode==='reconsult'?'create':drawerMode;
     runConsultAnalysis();
   });
   window.addEventListener('message',event=>{
@@ -1187,14 +1358,12 @@
   });
   window.addEventListener('keydown',event => {
     if (event.key !== 'Escape') return;
-    if (!byId('consultAssociateModal').hidden) closeAssociateModal();
+    if (!byId('consultAssignModal').hidden) closeAssignModal();
+    else if (!byId('consultRejectModal').hidden) closeRejectModal();
+    else if (!byId('consultAssociateModal').hidden) closeAssociateModal();
     else if (!byId('consultCourseModal').hidden) closeCourseModal();
     else if (!byId('consultDrawer').hidden) closeDrawer();
   });
   renderConsults();
-  if (new URLSearchParams(location.search).has('embed-consult')) {
-    const heading = document.querySelector('.smart-consult-heading > div > span');
-    if (heading) heading.textContent = '教务工作台 / 售前咨单';
-  }
   if (location.hash === '#smart-consult') showSection('consult');
 })();

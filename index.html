@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>智能排课V3.2完整流程｜顾问发起</title>
+  <title>智慧排课V3.1｜顾问发起</title>
   <script>if(new URLSearchParams(location.search).has('embed-consult'))document.documentElement.classList.add('embedded-consult');</script>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="detail-drawer.css">
-  <link rel="stylesheet" href="package-order.css">
-  <link rel="stylesheet" href="create-order.css">
-  <link rel="stylesheet" href="precheck.css">
-  <link rel="stylesheet" href="flow-integration.css">
-  <link rel="stylesheet" href="workspace-tabs.css">
-  <link rel="stylesheet" href="workspace-unified.css">
-  <link rel="stylesheet" href="smart-consult.css">
-  <link rel="stylesheet" href="create-order-legacy-extras.css">
-  <link rel="stylesheet" href="self-class.css">
-  <link rel="stylesheet" href="embedded-consult.css">
-  <link rel="stylesheet" href="consult-list-v32.css">
+  <link rel="stylesheet" href="styles.css?v=20261110g">
+  <link rel="stylesheet" href="detail-drawer.css?v=20261110g">
+  <link rel="stylesheet" href="package-order.css?v=20261110g">
+  <link rel="stylesheet" href="create-order.css?v=20261110g">
+  <link rel="stylesheet" href="precheck.css?v=20261110g">
+  <link rel="stylesheet" href="flow-integration.css?v=20261110g">
+  <link rel="stylesheet" href="workspace-tabs.css?v=20261110g">
+  <link rel="stylesheet" href="workspace-unified.css?v=20261110g">
+  <link rel="stylesheet" href="smart-consult.css?v=20261110g">
+  <link rel="stylesheet" href="create-order-legacy-extras.css?v=20261110g">
+  <link rel="stylesheet" href="self-class.css?v=20261110g">
+  <link rel="stylesheet" href="embedded-consult.css?v=20261110g">
+  <link rel="stylesheet" href="consult-list-v32.css?v=20261110g">
 </head>
 <body class="sales-workspace">
   <aside class="sidebar" aria-label="左侧导航">
@@ -34,7 +34,7 @@
       <div class="side-item"><span class="side-icon">◇</span>优惠券<span class="side-arrow">⌄</span></div>
       <div class="side-item open"><span class="side-icon">◈</span>教务管理<span class="side-arrow">⌃</span></div>
       <div class="side-sub active" id="myScheduleNav" role="button" tabindex="0">我的排课</div>
-      <div class="side-sub" id="smartConsultNav" role="button" tabindex="0">售前咨单</div>
+      <div class="side-sub" id="smartConsultNav" role="button" tabindex="0">售前匹配</div>
       <div class="side-sub" id="myClassesNav" role="button" tabindex="0">我的班级</div>
       <div class="side-sub">课表查询</div>
       <div class="side-item"><span class="side-icon">◇</span>会员中心 <b class="small-badge">99+</b><span class="side-arrow">⌄</span></div>
@@ -49,7 +49,7 @@
 
   <div class="workspace">
     <header class="topbar">
-      <div class="top-left"><span class="refresh" aria-hidden="true">⟳</span><nav class="workspace-tabs" aria-label="工作台切换"><a class="workspace-tab active" href="index.html" aria-current="page">销售工作台</a><a class="workspace-tab" id="educatorWorkspaceTab" href="../教务端/index.html">教务工作台</a></nav></div>
+      <div class="top-left"><span class="refresh" aria-hidden="true">⟳</span><nav class="workspace-tabs" aria-label="工作台切换"><a class="workspace-tab active" href="index.html" aria-current="page">销售工作台</a><a class="workspace-tab" id="educatorWorkspaceTab" href="教务端/index.html">教务工作台</a></nav></div>
       <div class="top-announcement"><span class="bell-blue">♟</span><strong>今日您有 <em>0</em> 个客户生日</strong><span class="ann-sep">|</span><strong>当日首课 <em>0</em> 人 · 一周内首课 <em>0</em> 人</strong><span class="ann-sep">|</span><strong>线索量： A: 795 B: 263（不受助分配 28、影响分配 235）</strong></div>
       <div class="top-right"><span class="orange-app">薪心</span><span class="top-icon with-count">♧<b>99+</b></span><span class="top-icon with-count">⇩<b>0</b></span><span class="top-icon with-count">⇧<b>0</b></span><span class="top-avatar">A</span><span>李春玲</span><a href="#" class="logout" onclick="return false">退出</a></div>
     </header>
@@ -69,8 +69,7 @@
         <div class="table-scroll"><table class="order-table"><colgroup><col class="col-course"><col class="col-created"><col class="col-type"><col class="col-attribute"><col class="col-handler"><col class="col-status"><col class="col-finished"><col class="col-applicant"><col class="col-action"><col class="col-settings"></colgroup><thead><tr><th>排课课程</th><th>发起时间</th><th>排课单类型</th><th>排课单属性</th><th>处理人名称</th><th>排课单状态</th><th>完成时间</th><th>申请人名称</th><th>操作</th><th><button class="table-settings" aria-label="表格设置">☷</button></th></tr></thead><tbody id="orderRows"></tbody></table></div>
         <div class="pagination"><button class="page-arrow" id="prevPage" aria-label="上一页">‹</button><div id="pageNumbers" class="page-numbers"></div><button class="page-arrow" id="nextPage" aria-label="下一页">›</button><select id="pageSize"><option value="10">10条/页</option><option value="20">20条/页</option><option value="50">50条/页</option></select><span id="totalCount">共 2024 条</span><span class="jump-label">前往</span><input type="number" id="jumpPage" min="1" value="1"><span>页</span></div>
       </section>
-      <section class="smart-consult-panel" id="smartConsultPanel" aria-label="售前咨单" hidden>
-        <header class="smart-consult-heading"><div><span>销售工作台 / 售前咨单</span><h1>售前咨单</h1></div></header>
+      <section class="smart-consult-panel" id="smartConsultPanel" aria-label="售前匹配" hidden>
         <div class="smart-consult-card">
           <div class="smart-consult-filters">
             <label>方案名称<input id="consultPlanFilter" type="search" placeholder="请输入方案名称" autocomplete="off"></label>
@@ -84,8 +83,8 @@
             <label>是否发起正式排课<select id="consultLinkedFilter"><option value="">全部</option><option value="yes">是</option><option value="no">否</option></select></label>
             <div class="smart-consult-filter-actions"><button type="button" class="btn plain" id="consultReset">重置</button><button type="button" class="btn primary" id="consultSearch">查询</button></div>
           </div>
-          <div class="smart-consult-tabs educator-only" id="consultTabs" role="tablist" aria-label="售前咨单分组"><button type="button" class="active" role="tab" aria-selected="true" data-consult-tab="all">全部</button><button type="button" role="tab" aria-selected="false" data-consult-tab="pending">待分配</button><button type="button" role="tab" aria-selected="false" data-consult-tab="assigned">已分配</button><button type="button" role="tab" aria-selected="false" data-consult-tab="mine">我的</button></div>
-          <div class="smart-consult-toolbar"><button type="button" class="btn primary" id="consultCreate">＋ 新增售前咨单</button></div>
+          <div class="smart-consult-tabs educator-only" id="consultTabs" role="tablist" aria-label="售前匹配分组"><button type="button" class="active" role="tab" aria-selected="true" data-consult-tab="all">全部</button><button type="button" role="tab" aria-selected="false" data-consult-tab="pending">待分配</button><button type="button" role="tab" aria-selected="false" data-consult-tab="assigned">已分配</button><button type="button" role="tab" aria-selected="false" data-consult-tab="mine">我的</button></div>
+          <div class="smart-consult-toolbar"><button type="button" class="btn plain educator-only" id="consultAssign" hidden disabled>分配</button><button type="button" class="btn primary" id="consultCreate">＋ 新增售前匹配</button></div>
           <div class="smart-consult-table-wrap"><table class="smart-consult-table"><thead><tr><th>方案名称</th><th>客户信息</th><th class="sales-only">课程</th><th>总课时</th><th>发起人</th><th class="educator-only">发起人角色</th><th>发起时间</th><th>当前状态</th><th>处理人</th><th>完成时间</th><th>是否发起正式排课</th><th>操作</th></tr></thead><tbody id="consultRows"></tbody></table></div>
           <div class="smart-consult-count" id="consultCount"></div>
         </div>
@@ -105,7 +104,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <div class="smart-consult-backdrop" id="consultBackdrop" hidden></div>
   <aside class="smart-consult-drawer" id="consultDrawer" role="dialog" aria-modal="true" aria-labelledby="consultDrawerTitle" hidden>
-    <header class="smart-consult-drawer-head"><h2 id="consultDrawerTitle">查看售前咨单</h2><div class="smart-consult-drawer-head-actions"><button type="button" id="consultClose" aria-label="关闭">×</button></div></header>
+    <header class="smart-consult-drawer-head"><h2 id="consultDrawerTitle">查看售前匹配</h2><div class="smart-consult-drawer-head-actions"><button type="button" id="consultClose" aria-label="关闭">×</button></div></header>
     <div class="smart-consult-drawer-body" id="consultDrawerBody"></div>
     <footer class="smart-consult-drawer-foot" id="consultDrawerFoot"></footer>
   </aside>
@@ -114,6 +113,22 @@
     <header><h2 id="consultAssociateTitle">关联正式排课</h2><button type="button" id="consultAssociateClose" aria-label="关闭关联正式排课弹窗">×</button></header>
     <div class="smart-consult-associate-body"><label>排课单名称<input id="consultAssociateSearch" type="search" placeholder="搜索排课单名称"></label><div id="consultAssociateOrders" class="smart-consult-associate-orders"></div></div>
     <footer><button type="button" id="consultAssociateCancel">取消</button><button type="button" id="consultAssociateConfirm" class="primary">确认关联</button></footer>
+  </section>
+  <div class="smart-consult-associate-backdrop" id="consultAssignBackdrop" hidden></div>
+  <section class="smart-consult-associate-modal smart-consult-assign-modal" id="consultAssignModal" role="dialog" aria-modal="true" aria-labelledby="consultAssignTitle" hidden>
+    <header><h2 id="consultAssignTitle">分配售前匹配</h2><button type="button" id="consultAssignClose" aria-label="关闭分配售前匹配弹窗">×</button></header>
+    <div class="smart-consult-associate-body">
+      <div class="smart-consult-assign-summary" id="consultAssignSummary"></div>
+      <label>教务姓名<input id="consultAssignSearch" type="search" placeholder="输入教务姓名或工号搜索" autocomplete="off"></label>
+      <div id="consultAssignStaff" class="smart-consult-associate-orders"></div>
+    </div>
+    <footer><button type="button" id="consultAssignCancel">取消</button><button type="button" id="consultAssignConfirm" class="primary">确认分配</button></footer>
+  </section>
+  <div class="smart-consult-associate-backdrop" id="consultRejectBackdrop" hidden></div>
+  <section class="smart-consult-associate-modal smart-consult-reject-modal" id="consultRejectModal" role="dialog" aria-modal="true" aria-labelledby="consultRejectTitle" hidden>
+    <header><h2 id="consultRejectTitle">驳回售前匹配</h2><button type="button" id="consultRejectClose" aria-label="关闭驳回弹窗">×</button></header>
+    <div class="smart-consult-associate-body"><label>驳回原因<textarea id="consultRejectReasonInput" maxlength="300" placeholder="请输入驳回原因，便于顾问修改后重新提交"></textarea></label></div>
+    <footer><button type="button" id="consultRejectCancel">取消</button><button type="button" id="consultRejectConfirm" class="primary">确认驳回</button></footer>
   </section>
   <div class="smart-consult-course-backdrop" id="consultCourseBackdrop" hidden></div>
   <section class="smart-consult-course-modal" id="consultCourseModal" role="dialog" aria-modal="true" aria-labelledby="consultCourseModalTitle" hidden>
@@ -140,14 +155,14 @@
     <div class="order-drawer-body">
       <div class="order-drawer-side">
         <section class="student-card"><div class="student-card-header"><strong>学生信息</strong><button type="button" class="decrypt-button" id="decryptButton">♙解密</button></div><div class="student-card-fields" id="studentFields"></div></section>
-        <section class="order-consult-card" aria-label="售前咨单"><div class="order-consult-header"><strong>售前咨单</strong></div><div class="order-consult-body" id="orderConsultBody"></div><div class="order-consult-actions" id="orderConsultActions"><button type="button" id="orderConsultLinkButton">关联售前咨单</button></div></section>
+        <section class="order-consult-card" aria-label="售前匹配"><div class="order-consult-header"><strong>售前匹配</strong></div><div class="order-consult-body" id="orderConsultBody"></div><div class="order-consult-actions" id="orderConsultActions"><button type="button" id="orderConsultLinkButton">关联售前匹配</button></div></section>
       </div>
       <div class="order-drawer-main"><section class="drawer-card course-card"><div class="drawer-card-title"><strong>课程信息</strong><span class="gold-badge">★ 金牌</span></div><div class="order-package-summary" id="detailPackages" hidden></div><div class="course-table-wrap" id="detailCourseTable"><table class="drawer-course-table"><colgroup><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:72px"><col style="width:188px"><col style="width:145px"><col style="width:72px"><col style="width:160px"></colgroup><thead><tr><th>课程项</th><th>班型</th><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>授课模式</th><th>校区</th><th>课时</th><th>历史授课老师</th><th>当前授课老师</th><th>老师时间<br>是否已沟通</th><th>学生成绩</th></tr></thead><tbody id="detailCourses"></tbody></table></div></section><section class="drawer-card order-info-card"><div class="drawer-card-title"><strong>排课单详情</strong></div><div class="order-info-grid" id="detailOrderInfo"></div></section></div>
     </div>
   </aside>
   <div class="order-consult-modal-backdrop" id="orderConsultModalBackdrop" hidden></div>
   <section class="order-consult-modal" id="orderConsultModal" role="dialog" aria-modal="true" aria-labelledby="orderConsultModalTitle" hidden>
-    <header><h2 id="orderConsultModalTitle">售前咨单</h2><button type="button" id="orderConsultModalClose" aria-label="关闭售前咨单弹窗">×</button></header>
+    <header><h2 id="orderConsultModalTitle">售前匹配</h2><button type="button" id="orderConsultModalClose" aria-label="关闭售前匹配弹窗">×</button></header>
     <div class="order-consult-modal-content" id="orderConsultModalContent"></div>
     <footer id="orderConsultModalFooter"></footer>
   </section>
@@ -172,7 +187,7 @@
           </div>
         </section>
 
-        <section class="create-course-section"><h2>课程信息</h2><div class="create-course-awaiting-student" id="createCourseAwaitingStudent">请先选择学生</div><div id="createCourseGroups"><div class="create-course-package" data-package-group><div class="course-package-line"><span>选择课时包</span><select aria-label="选择课时包"><option value="">请选择课时包</option></select><span class="create-gold-tag">★ 金牌</span><span class="package-total-hours">班级所需总课时：<strong data-package-total>0</strong></span><button type="button" class="create-blue-btn" data-add-package-course>添加课程</button><button type="button" class="create-remove-package" data-remove-package hidden>移除课时包</button><div class="course-hours-summary"><div><span>购买课时</span><strong>600</strong></div><div><span>已排课时</span><strong>120.5</strong></div><div><span>已上课时</span><strong>202.5</strong></div><div><span>可排课时</span><strong>277</strong></div><div class="course-needed-summary"><span>排课所需课时</span><strong data-package-needed>20</strong></div></div></div>
+        <section class="create-course-section"><h2>课程信息</h2><div class="create-course-awaiting-student" id="createCourseAwaitingStudent">请先选择学生</div><div id="createCourseGroups"><div class="create-course-package" data-package-group><div class="course-package-line"><span>选择课时包</span><select aria-label="选择课时包"><option value="">请选择课时包</option></select><span class="create-gold-tag">★ 金牌</span><span class="package-total-hours">排课单总课时：<strong data-package-total>0</strong></span><button type="button" class="create-blue-btn" data-add-package-course>添加课程</button><button type="button" class="create-remove-package" data-remove-package hidden>移除课时包</button><div class="course-hours-summary"><div><span>购买课时</span><strong>600</strong></div><div><span>已排课时</span><strong>120.5</strong></div><div><span>已上课时</span><strong>202.5</strong></div><div><span>可排课时</span><strong>277</strong></div><div class="course-needed-summary"><span>班级所需课时</span><strong data-package-needed>20</strong></div></div></div>
           <div class="create-course-table-scroll"><table class="create-course-table"><colgroup><col style="width:204px"><col style="width:133px"><col style="width:133px"><col style="width:162px"><col style="width:162px"><col style="width:162px"><col style="width:133px"><col style="width:108px"><col style="width:108px"><col style="width:144px"><col style="width:144px"><col style="width:146px"><col style="width:54px"></colgroup><thead><tr><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>学生水平</th><th>期望成绩</th><th>授课模式</th><th>历史授课老师</th><th>校区</th><th>课时</th><th>当前授课老师</th><th>老师时间是否已沟通</th><th>操作</th></tr></thead><tbody>
             <tr><td>商务</td><td>OCR</td><td>AS</td><td><select class="create-cell-select" aria-label="商务模块"><option>P1</option></select></td><td><select class="create-cell-select" aria-label="商务学生水平"><option>先修/同步-B及以上</option></select></td><td><select class="create-cell-select" aria-label="商务期望成绩"><option>先修/同步-B及以上</option></select></td><td>线上</td><td class="truncate">李春玲、成兴玲...</td><td>/</td><td><span class="hours-stepper"><button type="button" data-hour-step="-1">−</button><input type="text" value="10.0" aria-label="商务课时"><button type="button" data-hour-step="1">+</button></span></td><td><input class="teacher-input" value="无" aria-label="商务当前授课老师"></td><td><select class="create-cell-select" aria-label="商务老师时间是否已沟通"><option>是</option><option>否</option></select></td><td><button type="button" class="remove-course" aria-label="删除商务课程">−</button></td></tr>
             <tr><td>会计</td><td>EDX</td><td>AS</td><td>/</td><td><select class="create-cell-select" aria-label="会计学生水平"><option>先修/同步-B及以上</option></select></td><td><select class="create-cell-select" aria-label="会计期望成绩"><option>先修/同步-B及以上</option></select></td><td>线下</td><td>李春玲</td><td><select class="create-cell-select" aria-label="会计校区"><option>舜元中心</option></select></td><td><span class="hours-stepper"><button type="button" data-hour-step="-1">−</button><input type="text" value="10.0" aria-label="会计课时"><button type="button" data-hour-step="1">+</button></span></td><td><input class="teacher-input" value="无" aria-label="会计当前授课老师"></td><td><select class="create-cell-select" aria-label="会计老师时间是否已沟通"><option>是</option><option>否</option></select></td><td><button type="button" class="remove-course" aria-label="删除会计课程">−</button></td></tr>
@@ -239,11 +254,11 @@
   <div class="self-class-ai-backdrop" id="selfClassAiBackdrop" hidden></div>
   <aside class="self-class-ai-drawer" id="selfClassAiDrawer" role="dialog" aria-modal="true" aria-label="AI排课提示" hidden><header><strong>AI排课提示</strong><button type="button" id="selfClassAiClose" aria-label="关闭">×</button></header><div id="selfClassAiContent"></div></aside>
   <div class="self-class-course-backdrop" id="selfClassCourseBackdrop" hidden></div><section class="self-class-course-modal" id="selfClassCourseModal" role="dialog" aria-modal="true" aria-label="添加课程" hidden><header><strong>添加课程</strong><button type="button" id="selfClassCourseClose" aria-label="关闭">×</button></header><div class="self-class-course-body" id="selfClassCourseBody"></div><footer><button type="button" class="btn plain" id="selfClassCourseCancel">取消</button><button type="button" class="btn primary" id="selfClassCourseConfirm">确认添加</button></footer></section>
-  <script src="flow-demo-order.js"></script>
-  <script src="app.js"></script>
-  <script src="create-order-groups.js"></script>
-  <script src="create-order-form.js"></script>
-  <script src="smart-consult.js"></script>
-  <script src="self-class.js"></script>
+  <script src="flow-demo-order.js?v=20261110g"></script>
+  <script src="app.js?v=20261110g"></script>
+  <script src="create-order-groups.js?v=20261110g"></script>
+  <script src="create-order-form.js?v=20261110g"></script>
+  <script src="smart-consult.js?v=20261110g"></script>
+  <script src="self-class.js?v=20261110g"></script>
 </body>
 </html>

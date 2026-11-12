@@ -24,7 +24,7 @@ html.embedded-consult .sales-only { display: none !important; }
 .smart-consult-table th:nth-child(10) { width: 9%; }
 .smart-consult-table th:nth-child(11) { width: 7%; }
 .smart-consult-table th:nth-child(12) { width: 14%; }
-.smart-consult-plan-name { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #2779e8; font-weight: 600; }
+.smart-consult-plan-name { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #30435e; font-weight: 600; }
 .smart-consult-customer-field input[readonly] { background:#f4f6fa; color:#7b8798; cursor:not-allowed; }
 .smart-consult-associate-backdrop { position:fixed; inset:0; z-index:90; background:#1726448c; }
 .smart-consult-associate-modal { position:fixed; z-index:91; left:50%; top:50%; transform:translate(-50%,-50%); width:min(680px,calc(100vw - 32px)); max-height:min(680px,calc(100vh - 40px)); display:flex; flex-direction:column; background:#fff; border:1px solid #dce5f1; border-radius:10px; box-shadow:0 18px 60px #152a4b33; }
@@ -38,6 +38,40 @@ html.embedded-consult .sales-only { display: none !important; }
 .smart-consult-associate-body { min-height:0; padding:18px 20px; display:grid; gap:12px; }
 .smart-consult-associate-body label { display:grid; gap:7px; color:#52647e; }
 .smart-consult-associate-body input[type=search] { height:36px; padding:0 10px; border:1px solid #d4dfee; border-radius:5px; }
+.smart-consult-reject-modal { width:min(480px,calc(100vw - 32px)); }
+.smart-consult-reject-modal .smart-consult-associate-body textarea { min-height:112px; padding:10px 12px; border:1px solid #d4dfee; border-radius:5px; font:inherit; font-size:13px; line-height:1.6; color:#263b59; resize:vertical; }
+.smart-consult-reject-modal .smart-consult-associate-body textarea:focus { outline:none; border-color:#287cf3; box-shadow:0 0 0 2px #287cf31f; }
 .smart-consult-associate-orders { max-height:365px; overflow:auto; border:1px solid #e3e9f2; border-radius:6px; }
 .smart-consult-associate-orders .smart-consult-associate-option { display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:1px solid #edf1f7; cursor:pointer; color:#263b59; }
 .smart-consult-associate-orders .smart-consult-associate-option:hover { background:#f2f7ff; }
+
+/* 教务工作台：售前匹配批量分配 */
+.smart-consult-toolbar { gap: 10px; align-items: center; }
+.smart-consult-toolbar #consultAssign { min-width: 76px; height: 35px; color: #287cf3; border-color: #a9caf7; }
+.smart-consult-toolbar #consultAssign:disabled { color: #a6b1c0; border-color: #dde5ef; background: #f5f7fa; cursor: not-allowed; }
+.smart-consult-table.assignment-mode { min-width: 2120px; }
+.smart-consult-table .consult-select-column { text-align: center; }
+.smart-consult-table .consult-select-column input[type=checkbox] { width: 14px; height: 14px; margin: 0; cursor: pointer; accent-color: #287cf3; }
+.smart-consult-table .consult-select-column input[type=checkbox]:disabled { cursor: not-allowed; }
+.smart-consult-table.assignment-mode th:nth-child(1) { width: 44px; }
+.smart-consult-table.assignment-mode th:nth-child(2) { width: 15%; }
+.smart-consult-table.assignment-mode th:nth-child(3) { width: 10%; }
+.smart-consult-table.assignment-mode th:nth-child(4) { width: 12%; }
+.smart-consult-table.assignment-mode th:nth-child(5) { width: 6%; }
+.smart-consult-table.assignment-mode th:nth-child(6) { width: 8%; }
+.smart-consult-table.assignment-mode th:nth-child(7) { width: 6%; }
+.smart-consult-table.assignment-mode th:nth-child(8) { width: 9%; }
+.smart-consult-table.assignment-mode th:nth-child(9) { width: 7%; }
+.smart-consult-table.assignment-mode th:nth-child(10) { width: 8%; }
+.smart-consult-table.assignment-mode th:nth-child(11) { width: 9%; }
+.smart-consult-table.assignment-mode th:nth-child(12) { width: 7%; }
+.smart-consult-table.assignment-mode th:nth-child(13) { width: 14%; }
+.smart-consult-assign-modal { width: min(520px, calc(100vw - 32px)); }
+.smart-consult-assign-summary { padding: 10px 12px; border: 1px solid #dce9fb; border-radius: 5px; background: #f4f9ff; color: #3f618c; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+.smart-consult-assign-modal .smart-consult-associate-orders { max-height: 260px; }
+.smart-consult-assign-modal .smart-consult-associate-option input[type=radio] { width: 14px; height: 14px; margin: 0; cursor: pointer; accent-color: #287cf3; }
+.smart-consult-assign-modal .smart-consult-associate-option:has(input:checked) { background: #eef5ff; color: #2062c4; font-weight: 600; }
+.smart-consult-assign-empty { padding: 18px 12px; text-align: center; color: #8d9bb0; font-size: 12px; }
+.smart-consult-foot-spacer { flex: 1; }
+.smart-consult-drawer-foot button.danger { border-color: #e7acac; background: #fff; color: #c04b4b; }
+.smart-consult-drawer-foot button.danger:hover { background: #fff4f4; }

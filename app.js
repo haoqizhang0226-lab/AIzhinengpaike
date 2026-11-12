@@ -134,7 +134,7 @@ function linkedOrderConsults(order){
 }
 function renderOrderConsultCard(order){
   const linked=linkedOrderConsults(order);
-  $('orderConsultBody').innerHTML=linked.length?linked.map(item=>`<button type="button" class="order-consult-plan" data-order-consult="${esc(item.id)}">${esc(item.name)}</button>`).join(''):'<span class="order-consult-empty">暂无关联售前咨单</span>';
+  $('orderConsultBody').innerHTML=linked.length?linked.map(item=>`<button type="button" class="order-consult-plan" data-order-consult="${esc(item.id)}">${esc(item.name)}</button>`).join(''):'<span class="order-consult-empty">暂无关联售前匹配</span>';
 }
 function closeOrderConsultModal(){
   $('orderConsultModal').hidden=true;
@@ -154,13 +154,17 @@ function orderConsultChoices(query=''){
   const linked=order?linkedOrderConsults(order).map(item=>item.id):[];
   const choices=(window.salesConsultBridge?.list()||[]).filter(item=>item.status==='已完成'&&!linked.includes(item.id)&&(!term||(item.name+' '+item.customer).toLowerCase().includes(term)));
   if(!choices.some(item=>item.id===selectedOrderConsultId)){selectedOrderConsultId=null;$('confirmOrderConsultLink').disabled=true}
-  $('orderConsultChoices').innerHTML=choices.length?choices.map(item=>`<label class="order-consult-choice"><input type="radio" name="orderConsultChoice" value="${esc(item.id)}" ${selectedOrderConsultId===item.id?'checked':''}><span>${esc(item.name)}</span><small>${esc(item.customer)}</small></label>`).join(''):'<p class="order-consult-modal-empty">暂无可关联的已完成售前咨单</p>';
+  $('orderConsultChoices').innerHTML=choices.length?choices.map(item=>`<label class="order-consult-choice"><input type="radio" name="orderConsultChoice" value="${esc(item.id)}" ${selectedOrderConsultId===item.id?'checked':''}><span>${esc(item.name)}</span><small>${esc(item.customer)}</small></label>`).join(''):'<p class="order-consult-modal-empty">暂无可关联的已完成售前匹配</p>';
 }
 function openOrderConsultLink(){
   selectedOrderConsultId=null;
-  openOrderConsultModal('关联售前咨单','<input class="order-consult-search" id="orderConsultSearch" type="search" placeholder="搜索方案名称或客户姓名" aria-label="搜索售前咨单"><div class="order-consult-choices" id="orderConsultChoices"></div>','<button type="button" data-order-consult-cancel>取消</button><button type="button" class="primary" id="confirmOrderConsultLink" disabled>确认关联</button>');
+  openOrderConsultModal('关联售前匹配','<input class="order-consult-search" id="orderConsultSearch" type="search" placeholder="搜索方案名称或客户姓名" aria-label="搜索售前匹配"><div class="order-consult-choices" id="orderConsultChoices"></div>','<button type="button" data-order-consult-cancel>取消</button><button type="button" class="primary" id="confirmOrderConsultLink" disabled>确认关联</button>');
   orderConsultChoices();
   $('orderConsultSearch').focus();
+}
+function weekdayOf(date){
+  const parsed=new Date((date||'')+'T00:00:00');
+  return Number.isNaN(parsed.getTime())?'--':['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][parsed.getDay()];
 }
 function orderConsultLessonRows(item){
   const lessons=item.status==='已完成'?(item.preview?.lessons||[]):[];
@@ -170,14 +174,14 @@ function orderConsultLessonRows(item){
     const minutes=Number(start.slice(0,2))*60+Number(start.slice(3,5))+Math.round((Number(lesson.durationHours)||2)*60);
     const end=String(Math.floor(minutes/60)%24).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');
     const courseName=course.name||[course.system,course.item,course.subject,course.board,course.grade].filter(Boolean).join('-');
-    return `<tr><td>${esc((lesson.date||'')+' '+start+'—'+end)}</td><td>${esc(courseName||'--')}</td><td>${esc(String(lesson.teacher||'--').replace(/\([^)]*\)/g,''))}</td><td>${esc(course.mode||'--')}</td><td>${esc((Number(lesson.durationHours)||2)+' 课时')}</td></tr>`;
-  }).join('')||'<tr><td colspan="5" class="order-consult-modal-empty">暂无预排课程</td></tr>';
+    return `<tr><td>${esc((lesson.date||'')+' '+start+'—'+end)}</td><td>${esc(weekdayOf(lesson.date))}</td><td>${esc(courseName||'--')}</td><td>${esc(String(lesson.teacher||'--').replace(/\([^)]*\)/g,''))}</td><td>${esc(course.mode||'--')}</td><td>${esc((Number(lesson.durationHours)||2)+' 课时')}</td></tr>`;
+  }).join('')||'<tr><td colspan="6" class="order-consult-modal-empty">暂无预排课程</td></tr>';
 }
 function openOrderConsultView(id){
   const item=window.salesConsultBridge?.get(id);
-  if(!item){toast('未找到售前咨单');return}
-  const content=`<section class="order-consult-view-section"><div class="order-consult-view-fields"><div><small>客户姓名</small><strong>${esc(item.customerDisplay||'--')}</strong></div><div><small>发起人</small><strong>${esc(item.initiatorDisplay||'--')}</strong></div><div><small>发起时间</small><strong>${esc(item.created||'--')}</strong></div><div><small>处理人</small><strong>${esc(item.handlerDisplay||'--')}</strong></div><div><small>处理时间</small><strong>${esc(item.processedAt||'--')}</strong></div></div></section><section class="order-consult-view-section"><h3>预排课表</h3><div class="order-consult-preplan-wrap"><table class="order-consult-preplan-table"><thead><tr><th>上课时间</th><th>课程</th><th>授课老师</th><th>授课模式</th><th>课节时长</th></tr></thead><tbody>${orderConsultLessonRows(item)}</tbody></table></div></section>`;
-  openOrderConsultModal('售前咨单',content,'<button type="button" data-order-consult-cancel>关闭</button>');
+  if(!item){toast('未找到售前匹配');return}
+  const content=`<section class="order-consult-view-section"><div class="order-consult-view-fields"><div><small>客户姓名</small><strong>${esc(item.customerDisplay||'--')}</strong></div><div><small>发起人</small><strong>${esc(item.initiatorDisplay||'--')}</strong></div><div><small>发起时间</small><strong>${esc(item.created||'--')}</strong></div><div><small>处理人</small><strong>${esc(item.handlerDisplay||'--')}</strong></div><div><small>处理时间</small><strong>${esc(item.processedAt||'--')}</strong></div></div></section><section class="order-consult-view-section"><h3>预排课表</h3><div class="order-consult-preplan-wrap"><table class="order-consult-preplan-table"><thead><tr><th>上课时间</th><th>星期</th><th>课程</th><th>授课老师</th><th>授课模式</th><th>课节时长</th></tr></thead><tbody>${orderConsultLessonRows(item)}</tbody></table></div></section>`;
+  openOrderConsultModal('售前匹配',content,'<button type="button" data-order-consult-cancel>关闭</button>');
 }
 function showList(push=true){
   if(push)history.pushState({},'',location.pathname);
@@ -228,12 +232,12 @@ $('orderConsultModalFooter').addEventListener('click',event=>{
   if(event.target.id!=='confirmOrderConsultLink'||!selectedOrderConsultId)return;
   if(window.salesConsultBridge?.associate(selectedOrderConsultId,state.currentOrderId)){
     const order=allOrders.find(item=>item.id===state.currentOrderId);
-    renderOrderConsultCard(order);closeOrderConsultModal();toast('已关联售前咨单');
+    renderOrderConsultCard(order);closeOrderConsultModal();toast('已关联售前匹配');
   }else toast('关联失败，请重试');
 });
 window.addEventListener('sales-consult-ready',()=>{const order=allOrders.find(item=>item.id===state.currentOrderId);if(order)renderOrderConsultCard(order)});
 function educatorWorkspaceHref(order){
-  return order?.submission?`../教务端/index.html#flow-order=${encodeURIComponent(JSON.stringify(order))}`:'../教务端/index.html';
+  return order?.submission?`教务端/index.html?v=20261110g#flow-order=${encodeURIComponent(JSON.stringify(order))}`:'教务端/index.html?v=20261110g';
 }
 $('educatorWorkspaceTab').onclick=event=>{
   const order=allOrders.find(item=>item.id===state.currentOrderId&&item.submission)||allOrders.find(item=>item.submission);
@@ -391,9 +395,11 @@ function currentTimestamp(){
   return `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 }
 function courseNameForSubmission(submission){
-  const packageLabel=submission.packages.length===1?
-    [submission.packages[0].system,submission.packages[0].item].filter(Boolean).join('-'):`多课程包${submission.packages.length}个`;
-  return `${submission.student}-${packageLabel}-${submission.courses.map(course=>course.name).join('&')}-1v1-新增`;
+  const packages=submission.packages||[];
+  const prefixFor=(pkg,withStudent=true)=>[withStudent?submission.student:'',pkg.system,pkg.item,(pkg.courses||[]).map(course=>course.name).join('&')].filter(Boolean).join('-');
+  if(packages.length>1) return `${packages.map((pkg,pi)=>prefixFor(pkg,pi===0)).join('/')}-1V1`;
+  if(packages.length===1) return `${prefixFor(packages[0])}-1V1`;
+  return `${submission.student}-${submission.courses.map(course=>course.name).join('&')}-1v1-新增`;
 }
 function createDemoOrder(submission,supplements=[],precheckIssues=''){
   const order={
@@ -448,11 +454,12 @@ function readCreateOrder(){
       slots:[...form.querySelectorAll('input[name="createPreciseSlot"]:checked')].map(input=>input.value),
       custom:[...form.querySelectorAll('.create-custom-time-row')].map(row=>[...row.querySelectorAll('input')].map(input=>input.value))
     }:null,
-    requirement:$('createRequirement').value.trim(),
+    requirement:form.querySelector('input[name="timeRequirement"]:checked').value==='precise'?'':$('createRequirement').value.trim(),
     courses:packages.flatMap(entry=>entry.courses)
   };
 }
 function demoPrecheckIssues(order){
+  if(order.preciseTime)return '';
   // 原型示例：补充前先检查排课要求，待确认问题处理完成后才发起排课单。
   if(/测试|报错|超时|延迟返回/.test(order.requirement)||order.requirement.length<6){
     return '1、排课要求中的“'+(order.requirement||'空白内容')+'”未说明具体上课安排。请确认是否按开结课日期均匀排课；若有固定、仅限或不可排时段，请一次性补充。';

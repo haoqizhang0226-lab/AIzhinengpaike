@@ -267,5 +267,7 @@
 .sales-workspace .create-precise-checks{gap:8px}
 .sales-workspace .create-choice-list{gap:8px}
 .sales-workspace .create-scheduling-section:has(input[name="timeRequirement"][value="vague"]:checked) .create-requirement>label{display:none}
+.sales-workspace .create-scheduling-section:has(input[name="timeRequirement"][value="precise"]:checked) .create-requirement{display:none}
+.sales-workspace .create-scheduling-section:has(input[name="timeRequirement"][value="precise"]:checked) .create-requirement-attachment{margin-top:16px}
 .sales-workspace .create-scheduling-extra{margin-top:18px;padding-top:17px;border-top:1px solid #e4ebf5}
 .sales-workspace .create-scheduling-extra .create-other-field:last-child{margin-bottom:0}

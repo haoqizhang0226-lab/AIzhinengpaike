@@ -1,0 +1,195 @@
+/* ===== V3.3 排课工作台：侧栏收起、按钮分组、课节气泡与调整 ===== */
+
+/* --- 1. 左侧「排课信息」收起 / 展开 --- */
+.formal-schedule-page .formal-layout.side-collapsed { grid-template-columns: 40px minmax(0,1fr); }
+.formal-schedule-page .side-collapsed .formal-side-card { display: none; }
+.formal-schedule-page .formal-side-rail { display: none; }
+.formal-schedule-page .side-collapsed .formal-side-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 40px;
+  min-height: 280px;
+  padding: 14px 0;
+  border: 1px solid #d8e4f4;
+  border-radius: 6px;
+  background: linear-gradient(180deg,#f8fbff,#edf5ff);
+  box-shadow: 0 4px 10px #2337510a;
+  color: #2f6dc4;
+  cursor: pointer;
+}
+.formal-schedule-page .side-collapsed .formal-side-rail:hover { background: linear-gradient(180deg,#f0f7ff,#e2eeff); border-color: #a9c9f0; }
+.formal-schedule-page .formal-side-rail-arrow { font-size: 17px; line-height: 1; }
+.formal-schedule-page .formal-side-rail-text { writing-mode: vertical-rl; letter-spacing: 3px; font-size: 12px; font-weight: 600; }
+.formal-schedule-page .formal-side-toggle {
+  min-height: 25px;
+  padding: 0 8px;
+  border: 1px solid #d9e4f3;
+  border-radius: 4px;
+  background: #fff;
+  color: #4f76ad;
+  font-size: 11px;
+  font-weight: 400;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.formal-schedule-page .formal-side-toggle:hover { background: #f2f8ff; border-color: #9fc1ee; }
+
+/* --- 2. 教师排课标题后的按钮：统一样式 + 分组 + 三档配色 --- */
+.formal-head-actions { flex-wrap: wrap; row-gap: 6px; gap: 9px; }
+.formal-head-actions .formal-head-group { display: inline-flex; align-items: center; gap: 6px; flex: none; }
+.formal-head-actions .formal-head-group + .formal-head-group { padding-left: 10px; margin-left: 2px; border-left: 1px solid #cddae9; }
+.formal-head-actions .formal-head-group button {
+  min-height: 32px;
+  padding: 0 11px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+}
+/* 第一组：更新排课数据（实心蓝） */
+.formal-head-actions .group-refresh button { border: 1px solid #337ff0; background: #337ff0; color: #fff; font-weight: 600; }
+.formal-head-actions .group-refresh button:hover { border-color: #2469d6; background: #2469d6; }
+/* 第二、三组：方案与预览（白底蓝字） */
+.formal-head-actions .group-plan button,
+.formal-head-actions .group-preview button { border: 1px solid #9fc1ee; background: #fff; color: #245fa7; }
+.formal-head-actions .group-plan button:hover,
+.formal-head-actions .group-preview button:hover { border-color: #7eaee9; background: #f2f8ff; }
+/* 最后一组：查看智能排课结果（与「提交咨单」同款紫蓝渐变） */
+.formal-head-actions .group-result button {
+  border: 0;
+  background: linear-gradient(100deg,#a900ff,#287aff);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 6px #287aff33;
+}
+.formal-head-actions .group-result button:hover { filter: brightness(1.07); }
+.formal-head-actions .formal-head-group button:disabled {
+  border-color: #dfe5ed;
+  background: #f6f7f9;
+  color: #b5beca;
+  box-shadow: none;
+  filter: none;
+  cursor: not-allowed;
+}
+.formal-head-actions .formal-collapse { margin-left: 6px; }
+
+/* --- 3. 教师日程：绿色格子气泡、二次确认、调整提示 --- */
+.formal-teacher-slot[data-lesson-slot] { cursor: pointer; }
+.formal-lesson-popover {
+  position: fixed;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 128px;
+  padding: 6px;
+  border: 1px solid #d7e2ef;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 12px 30px #1b305233;
+}
+.formal-lesson-popover[hidden] { display: none; }
+.formal-lesson-popover::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 16px;
+  width: 10px;
+  height: 10px;
+  transform: rotate(45deg);
+  border-left: 1px solid #d7e2ef;
+  border-top: 1px solid #d7e2ef;
+  background: #fff;
+}
+.formal-lesson-popover button {
+  min-height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #33465f;
+  font-size: 12px;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.formal-lesson-popover button:hover { background: #f0f6ff; color: #245fa7; }
+.formal-lesson-popover button[data-lesson-action="delete"]:hover { background: #fff1ef; color: #c0472f; }
+
+.formal-lesson-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 210;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #17264480;
+}
+.formal-lesson-confirm-backdrop[hidden] { display: none; }
+.formal-lesson-confirm-window {
+  width: min(360px,calc(100vw - 32px));
+  padding: 20px 22px 16px;
+  border: 1px solid #dce5f0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 20px 60px #172e4b4a;
+}
+.formal-lesson-confirm-window h3 { margin: 0; color: #263d59; font-size: 15px; font-weight: 600; line-height: 1.6; }
+.formal-lesson-confirm-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 20px; }
+.formal-lesson-confirm-actions button {
+  min-height: 32px;
+  padding: 0 15px;
+  border: 1px solid #d2dce9;
+  border-radius: 4px;
+  background: #fff;
+  color: #506780;
+  font-size: 12px;
+  cursor: pointer;
+}
+.formal-lesson-confirm-actions button.primary { border-color: #317ce6; background: #317ce6; color: #fff; }
+
+.formal-adjust-tip {
+  position: fixed;
+  left: 50%;
+  bottom: 52px;
+  transform: translateX(-50%);
+  z-index: 160;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(100vw - 40px);
+  padding: 8px 12px;
+  border: 1px solid #b7d3f7;
+  border-radius: 6px;
+  background: #eef6ff;
+  box-shadow: 0 8px 24px #1b30521f;
+  color: #245fa7;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.formal-adjust-tip[hidden] { display: none; }
+.formal-adjust-tip button {
+  min-height: 24px;
+  padding: 0 10px;
+  border: 1px solid #9fc1ee;
+  border-radius: 4px;
+  background: #fff;
+  color: #245fa7;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.formal-teacher-scroll.is-adjusting [data-empty-slot] { cursor: copy; box-shadow: inset 0 0 0 2px #a8cdf7; }
+.formal-teacher-scroll.is-adjusting [data-empty-slot]:hover { background: #eaf4ff; }
+.formal-teacher-scroll.is-adjusting [data-lesson-slot] { cursor: cell; box-shadow: inset 0 0 0 2px #f0a33a; }
+.formal-teacher-scroll.is-adjusting [data-lesson-slot].is-adjust-source { box-shadow: inset 0 0 0 3px #ff8a00; }
+
+@media (max-width: 1180px) {
+  .formal-schedule-page .formal-layout.side-collapsed .formal-side-column { display: flex; align-items: flex-start; }
+  .formal-schedule-page .side-collapsed .formal-side-rail { min-height: 180px; }
+}

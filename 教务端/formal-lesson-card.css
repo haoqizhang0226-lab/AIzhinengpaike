@@ -1,0 +1,75 @@
+/* 正式排课结果：加宽、压低灰色课节格。 */
+.formal-schedule-page .formal-calendar-grid {
+  grid-template-columns: 108px repeat(var(--formal-day-count), minmax(210px, max-content));
+}
+
+/* 表头 58px + 五个 88px 课节行，并预留横向滚动条空间。 */
+.formal-schedule-page .formal-calendar-scroll {
+  height: 520px;
+  min-height: 520px;
+  max-height: 520px;
+}
+
+.formal-schedule-page .formal-time,
+.formal-schedule-page .formal-calendar-cell {
+  min-height: 88px;
+  height: 88px;
+}
+
+.formal-schedule-page .formal-lesson,
+.formal-schedule-page .formal-lesson.specified {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 88px;
+  height: 100%;
+  gap: 5px;
+  padding: 7px 10px;
+  background: #e3e4e6;
+}
+
+.formal-lesson-title,
+.formal-lesson-meta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.formal-schedule-page .formal-lesson .formal-lesson-title strong {
+  font-size: 12px;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.formal-schedule-page .formal-lesson .formal-lesson-title span {
+  color: #273b58;
+  font-size: 11px;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.formal-schedule-page .formal-lesson .formal-lesson-meta span {
+  color: #273b58;
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.formal-schedule-page .formal-lesson .formal-lesson-mode {
+  display: inline-flex;
+  align-items: center;
+  min-height: 18px;
+  border: 1px solid #929aa6;
+  border-radius: 3px;
+  padding: 0 5px;
+  background: #fff;
+}
+
+.formal-schedule-page .formal-lesson .formal-lesson-note {
+  margin-top: auto;
+  color: #273b58;
+  font-size: 11px;
+  line-height: 1.25;
+}
+

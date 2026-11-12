@@ -145,7 +145,7 @@
     const importedElsewhere = new Set([...groups.querySelectorAll('[data-package-group]')]
       .filter(other => other !== group)
       .flatMap(other => [...other.querySelectorAll('tbody tr[data-consult-course-index]')].map(row => row.dataset.consultCourseIndex)));
-    panel.innerHTML = '<div class="create-consult-import-title"><strong>售前咨单科目</strong><span>勾选后填入当前课时包的课程列表</span></div><div class="create-consult-import-list">' +
+    panel.innerHTML = '<div class="create-consult-import-title"><strong>售前匹配科目</strong><span>勾选后填入当前课时包的课程列表</span></div><div class="create-consult-import-list">' +
       consultCourses.map((source,index) => {
         const match = matchedConsultCourse(source,packageName);
         const imported = rows.some(row => row.dataset.consultCourseIndex === String(index));
