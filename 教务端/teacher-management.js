@@ -1,21 +1,25 @@
 (() => {
   'use strict';
   const order = document.getElementById('orderPage');
+  const orderList = document.getElementById('orderListPage');
   const result = document.getElementById('resultPage');
   const management = document.getElementById('teacherManagementPage');
   const whitelist = document.getElementById('teacherWhitelistPage');
   const consult = document.getElementById('educatorConsultPage');
+  const classManagement = document.getElementById('classManagementPage');
   const consultFrame = document.getElementById('educatorConsultFrame');
   const frame = document.getElementById('teacherManagementFrame');
   const scheduleMenu = document.getElementById('scheduleMenu');
   const consultMenu = document.getElementById('consultMenu');
+  const classMenu = document.getElementById('classMenu');
   const smartConfigMenu = document.getElementById('smartConfigMenu');
   const smartConfigSubmenu = document.getElementById('smartConfigSubmenu');
   const teacherScheduleMenu = document.getElementById('teacherScheduleMenu');
   const teacherWhitelistMenu = document.getElementById('teacherWhitelistMenu');
-  let previousPage = 'order';
+  let previousPage = location.hash.startsWith('#flow-order=') ? 'order' : 'list';
   let configuration = null;
   let consultCatalog = [];
+  let awaitingLinkedConsults = false;
   let selectedConsultId = null;
   const currentOrder = () => window.currentEducatorFlowOrder;
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -31,7 +35,7 @@
   const renderConsultCard = () => {
     const body = document.getElementById('educatorConsultCardBody');
     const linked = linkedConsults();
-    body.innerHTML = linked.length ? linked.map(item => '<button type="button" class="educator-consult-linked-plan" data-consult-view="' + escapeHtml(item.id) + '">' + escapeHtml(item.name) + '</button>').join('') : '<span class="educator-consult-unlinked">暂无关联售前匹配</span>';
+    body.innerHTML = linked.length ? linked.map(item => '<button type="button" class="educator-consult-linked-plan" data-consult-view="' + escapeHtml(item.id) + '">' + escapeHtml(item.name) + '</button>').join('') : '<span class="educator-consult-unlinked">暂无关联售前咨单</span>';
   };
   const renderConsultChoices = () => {
     const search = document.getElementById('educatorConsultLinkSearch').value.trim().toLowerCase();
@@ -46,8 +50,34 @@
     selectedConsultId = null;
   };
   const closeConsultView = () => {
+    awaitingLinkedConsults = false;
     document.getElementById('educatorConsultViewBackdrop').hidden = true;
     document.getElementById('educatorConsultViewModal').hidden = true;
+  };
+  const showConsultView = (content,title='售前咨单详情') => {
+    document.getElementById('educatorConsultViewTitle').textContent = title;
+    document.getElementById('educatorConsultViewBody').innerHTML = content;
+    document.getElementById('educatorConsultViewBackdrop').hidden = false;
+    document.getElementById('educatorConsultViewModal').hidden = false;
+  };
+  const requestConsultDetail = id => {
+    showConsultView('<p class="educator-consult-view-message">正在读取售前咨单…</p>');
+    consultFrame.contentWindow?.postMessage({kind:'REQUEST_CONSULT_DETAIL',consultId:id},'*');
+  };
+  const openLinkedConsultsFromCatalog = () => {
+    const linked = linkedConsults();
+    if (!linked.length) {
+      showConsultView('<p class="educator-consult-view-message">当前排课单暂无关联售前咨单</p>');
+    } else if (linked.length === 1) {
+      requestConsultDetail(linked[0].id);
+    } else {
+      showConsultView('<div class="educator-consult-view-choices">' + linked.map(item => '<button type="button" data-linked-consult-id="' + escapeHtml(item.id) + '"><strong>' + escapeHtml(item.name) + '</strong><span>' + escapeHtml(item.customer || '') + '</span></button>').join('') + '</div>','已关联的售前咨单');
+    }
+  };
+  window.openEducatorLinkedConsults = () => {
+    awaitingLinkedConsults = true;
+    showConsultView('<p class="educator-consult-view-message">正在读取已关联的售前咨单…</p>');
+    sendCurrentOrder();
   };
   const consultLessonRows = item => {
     const lessons = item?.status === '已完成' ? (item.preview?.lessons || []) : [];
@@ -62,7 +92,7 @@
   };
   const renderConsultView = item => {
     if (!item) return;
-    document.getElementById('educatorConsultViewTitle').textContent = '售前匹配';
+    document.getElementById('educatorConsultViewTitle').textContent = '售前咨单';
     const fields = [['客户姓名',item.customerDisplay],['发起人',item.initiatorDisplay],['发起时间',item.created],['处理人',item.handlerDisplay],['处理时间',item.processedAt]];
     document.getElementById('educatorConsultViewBody').innerHTML = '<div class="educator-consult-view-fields">' + fields.map(([label,value]) => '<div><small>' + escapeHtml(label) + '</small><strong>' + escapeHtml(value||'--') + '</strong></div>').join('') + '</div><section class="educator-consult-view-section"><h3>预排课表</h3><div class="educator-consult-view-table-wrap"><table class="educator-consult-view-table"><thead><tr><th>上课时间</th><th>星期</th><th>课程</th><th>授课老师</th><th>授课模式</th><th>课节时长</th></tr></thead><tbody>' + consultLessonRows(item) + '</tbody></table></div></section>';
     document.getElementById('educatorConsultViewBackdrop').hidden = false;
@@ -73,6 +103,7 @@
   const selectMenu = page => {
     scheduleMenu.classList.toggle('active', page === 'schedule');
     consultMenu.classList.toggle('active', page === 'consult');
+    classMenu.classList.toggle('active', page === 'classes');
     smartConfigMenu.classList.toggle('active', page === 'rules' || page === 'whitelist');
     teacherScheduleMenu.classList.toggle('active', page === 'rules');
     teacherWhitelistMenu.classList.toggle('active', page === 'whitelist');
@@ -83,10 +114,12 @@
   });
   teacherScheduleMenu.addEventListener('click', () => {
     if (!management.hidden) return;
-    if (!order.hidden || !result.hidden) previousPage = result.hidden ? 'order' : 'result';
+    if (!order.hidden || !result.hidden || !orderList.hidden) previousPage = !result.hidden ? 'result' : !order.hidden ? 'order' : 'list';
+    orderList.hidden = true;
     order.hidden = true;
     result.hidden = true;
     consult.hidden = true;
+    classManagement.hidden = true;
     whitelist.hidden = true;
     management.hidden = false;
     document.body.classList.remove('formal-page-active');
@@ -97,10 +130,12 @@
   });
   teacherWhitelistMenu.addEventListener('click', () => {
     if (!whitelist.hidden) return;
-    if (!order.hidden || !result.hidden) previousPage = result.hidden ? 'order' : 'result';
+    if (!order.hidden || !result.hidden || !orderList.hidden) previousPage = !result.hidden ? 'result' : !order.hidden ? 'order' : 'list';
+    orderList.hidden = true;
     order.hidden = true;
     result.hidden = true;
     consult.hidden = true;
+    classManagement.hidden = true;
     management.hidden = true;
     whitelist.hidden = false;
     document.body.classList.remove('formal-page-active');
@@ -112,27 +147,39 @@
     management.hidden = true;
     whitelist.hidden = true;
     consult.hidden = true;
-    if (previousPage === 'result') {
-      result.hidden = false;
-      order.hidden = true;
-      document.body.classList.add('formal-page-active');
-    } else {
-      order.hidden = false;
-      result.hidden = true;
-      document.body.classList.remove('formal-page-active');
-    }
+    classManagement.hidden = true;
+    orderList.hidden = false;
+    order.hidden = true;
+    result.hidden = true;
+    previousPage = 'list';
+    document.body.classList.remove('formal-page-active');
+    if (location.hash.startsWith('#flow-order=')) history.replaceState(null, '', location.pathname + location.search);
     selectMenu('schedule');
   });
   consultMenu.addEventListener('click', () => {
-    if (!order.hidden || !result.hidden) previousPage = result.hidden ? 'order' : 'result';
+    if (!order.hidden || !result.hidden || !orderList.hidden) previousPage = !result.hidden ? 'result' : !order.hidden ? 'order' : 'list';
+    orderList.hidden = true;
     order.hidden = true;
     result.hidden = true;
     management.hidden = true;
+    classManagement.hidden = true;
     whitelist.hidden = true;
     consult.hidden = false;
     document.body.classList.remove('formal-page-active');
     selectMenu('consult');
     sendCurrentOrder();
+  });
+  classMenu.addEventListener('click', () => {
+    orderList.hidden = true;
+    order.hidden = true;
+    result.hidden = true;
+    management.hidden = true;
+    whitelist.hidden = true;
+    consult.hidden = true;
+    classManagement.hidden = false;
+    document.body.classList.remove('formal-page-active');
+    selectMenu('classes');
+    window.renderEducatorClasses?.();
   });
   consultFrame.addEventListener('load',sendCurrentOrder);
   document.addEventListener('DOMContentLoaded',sendCurrentOrder,{once:true});
@@ -150,6 +197,10 @@
     if (!button) return;
     consultFrame.contentWindow?.postMessage({kind:'REQUEST_CONSULT_DETAIL',consultId:button.dataset.consultView},'*');
   });
+  document.getElementById('educatorConsultViewBody').addEventListener('click',event => {
+    const button = event.target.closest('[data-linked-consult-id]');
+    if (button) requestConsultDetail(button.dataset.linkedConsultId);
+  });
   for (const id of ['educatorConsultViewClose','educatorConsultViewDone','educatorConsultViewBackdrop']) document.getElementById(id).addEventListener('click',closeConsultView);
   for (const id of ['educatorConsultLinkClose','educatorConsultLinkCancel','educatorConsultLinkBackdrop']) document.getElementById(id).addEventListener('click',closeLinkModal);
   document.addEventListener('keydown',event => { if (event.key !== 'Escape') return; if (!document.getElementById('educatorConsultViewModal').hidden) closeConsultView(); else if (!document.getElementById('educatorConsultLinkModal').hidden) closeLinkModal(); });
@@ -158,7 +209,7 @@
   document.getElementById('educatorConsultLinkConfirm').addEventListener('click',() => {
     if (!selectedConsultId || !currentOrder()?.id) {
       const error = document.getElementById('educatorConsultLinkError');
-      error.textContent = '请选择售前匹配'; error.hidden = false;
+      error.textContent = '请选择售前咨单'; error.hidden = false;
       return;
     }
     consultFrame.contentWindow?.postMessage({kind:'LINK_CONSULT_TO_ORDER',consultId:selectedConsultId,order:currentOrder()},'*');
@@ -174,12 +225,16 @@
     if (event.data?.kind === 'CONSULT_CATALOG' && Array.isArray(event.data.consults)) {
       consultCatalog = event.data.consults;
       renderConsultCard();
+      if (awaitingLinkedConsults) { awaitingLinkedConsults = false; openLinkedConsultsFromCatalog(); }
       if (!document.getElementById('educatorConsultLinkModal').hidden) renderConsultChoices();
     }
     if (event.data?.kind === 'CONSULT_ASSOCIATION_RESULT') {
       if (event.data.success) closeLinkModal();
       else { const error = document.getElementById('educatorConsultLinkError'); error.textContent = '关联失败，请重试'; error.hidden = false; }
     }
-    if (event.data?.kind === 'CONSULT_DETAIL') renderConsultView(event.data.consult);
+    if (event.data?.kind === 'CONSULT_DETAIL') {
+      if (event.data.consult) renderConsultView(event.data.consult);
+      else if (!document.getElementById('educatorConsultViewModal').hidden) showConsultView('<p class="educator-consult-view-message">未找到该售前咨单</p>');
+    }
   });
 })();

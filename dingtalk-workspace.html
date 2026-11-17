@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>钉钉工作台｜智慧排课原型</title><link rel="stylesheet" href="prototype-docs.css?v=20261116-tabs"><link rel="stylesheet" href="dingtalk-workspace.css?v=20261116-mobile"><script src="dingtalk-workspace.js?v=20261116-mobile" defer></script></head>
+<body class="prototype-doc-page">
+<header class="prototype-doc-topbar"><nav aria-label="原型导航"><a href="index.html">销售工作台</a><a href="教务端/index.html">教务工作台</a><a href="homeroom-workspace.html">班主任工作台</a><a href="teaching-workspace.html">教学工作台</a><a class="active" aria-current="page" href="dingtalk-workspace.html">钉钉工作台</a><a href="wecom-sidebar.html">企微侧边栏</a><a href="business-flow.html">业务流程</a><a href="scheduling-algorithm.html">排课算法</a></nav></header>
+<main class="ding-canvas"><div class="ding-mobile" aria-label="钉钉移动端工作台原型">
+<div class="ding-status" aria-hidden="true"><strong>17:42</strong><div class="ding-status-right"><span class="ding-signal"><i></i><i></i><i></i><i></i></span><b>5G</b><span class="ding-battery">100</span></div></div>
+<section class="ding-screen" id="ding-home" aria-label="唯寻业务工作台首页">
+<div class="ding-appbar"><button class="ding-round" type="button" aria-label="返回"><span class="ding-chevron-left"></span></button><h1>唯寻业务工作台</h1><button class="ding-round ding-more" type="button" aria-label="更多">···</button></div>
+<div class="ding-home-content"><div class="ding-summary"><div class="ding-summary-stats"><div><span>质检新分配</span><strong>0</strong></div><div><span>今日待跟进</span><strong>0</strong></div><div><span>今日到访</span><strong>0</strong></div></div><div class="ding-summary-link">查看所有学员 <span>›</span></div></div>
+<div class="ding-entry-grid" aria-label="业务功能">
+<div class="ding-entry"><span class="ding-entry-icon green">▣</span><span>邀约到访</span></div><div class="ding-entry"><span class="ding-entry-icon blue">▥</span><span>活动签到</span></div><div class="ding-entry"><span class="ding-entry-icon royal">▦</span><span>课表查询</span></div><div class="ding-entry"><span class="ding-entry-icon sky">▤</span><span>自定义审批</span></div>
+<div class="ding-entry"><span class="ding-entry-icon orange">▣</span><span>优惠券审批</span></div><div class="ding-entry"><span class="ding-entry-icon pink">♙</span><span>密码重置</span></div><div class="ding-entry"><span class="ding-entry-icon blue">▤</span><span>教学审批</span></div><div class="ding-entry"><span class="ding-entry-icon green">▧</span><span>还原审批</span></div>
+<div class="ding-entry"><span class="ding-entry-icon green">▦</span><span>排班</span></div><div class="ding-entry"><span class="ding-entry-icon purple">▣</span><span>班级信息</span></div><div class="ding-entry"><span class="ding-entry-icon green">▤</span><span>预设班管理</span></div><button class="ding-entry ding-entry-button" id="open-scheduling-approval" type="button"><span class="ding-entry-icon royal">✓</span><span>排课审批</span></button>
+</div></div></section>
+<section class="ding-screen ding-approval-screen" id="ding-approval" aria-label="排课审批" hidden>
+<div class="ding-appbar"><button class="ding-round" id="ding-back" type="button" aria-label="返回工作台"><span class="ding-chevron-left"></span></button><h1>排课审批</h1><button class="ding-round ding-more" type="button" aria-label="更多">···</button></div>
+<div class="ding-filter"><button class="ding-filter-select" type="button">课程项 <span>⌄</span></button><label class="ding-search"><span>⌕</span><input id="ding-query" type="search" placeholder="请输入关键词" aria-label="搜索关键词"></label><button class="ding-search-button" id="ding-search-button" type="button">搜索</button></div>
+<div class="ding-status-tabs" role="tablist" aria-label="审批状态"><button class="active" type="button" data-status="pending" role="tab" aria-selected="true">待审批 <em id="ding-pending-count">2</em></button><button type="button" data-status="approved" role="tab" aria-selected="false">审核通过</button><button type="button" data-status="rejected" role="tab" aria-selected="false">审核驳回</button></div>
+<div class="ding-approval-body"><div class="ding-category"><button class="active" type="button">全部</button><span>审批分类及字段待补充</span></div><div id="ding-card-list" class="ding-card-list"></div></div>
+</section></div></main></body>
+</html>

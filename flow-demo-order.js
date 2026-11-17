@@ -1,6 +1,8 @@
 window.smartSchedulingV3DemoOrder = {
   submission: {
     student: '授课反馈产品验收',
+    customerNo: 'VA100078710',
+    studentInfo: { number: 'VA100078710', name: '授课反馈产品验收', gender: '男', grade: '8年级', school: '上海市建平中学' },
     start: '2026-11-02',
     end: '2026-11-18',
     type: '此科目新排',

@@ -1,0 +1,93 @@
+:root{--prototype-notes-width:0px}
+body.sales-workspace,body.educator-workspace,body.prototype-doc-page{padding-right:var(--prototype-notes-width)!important}
+.prototype-notes{box-sizing:border-box;position:fixed;z-index:100000;top:0;right:0;bottom:0;width:var(--prototype-notes-width);display:flex;flex-direction:column;gap:0;padding:0 18px 18px;border-left:1px solid #dbe3ef;background:#fff;box-shadow:-4px 0 18px #233b5a12;color:#28384f;font:13px/1.5 "Microsoft YaHei",Arial,sans-serif}
+.prototype-notes *{box-sizing:border-box}
+.prototype-notes-head{height:49px;min-height:49px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid #e7ecf3}
+.prototype-notes-head strong{font-size:16px}.prototype-notes-head span{color:#8795a8;font-size:11px}
+.prototype-notes-page{padding:18px 0 6px;color:#256fcd;font-size:14px;font-weight:700;overflow-wrap:anywhere}
+.prototype-notes-help{margin:2px 0 19px;color:#75859b;font-size:12px;line-height:1.7}
+.prototype-notes>label{margin-bottom:8px;font-weight:700}
+.prototype-notes textarea{display:block;width:100%;min-height:220px;flex:1;resize:none;padding:12px;border:1px solid #cad6e6;border-radius:6px;background:#fbfdff;color:#253b57;font:inherit;font-size:13px;line-height:1.7;outline:none}
+.prototype-notes textarea:focus{border-color:#3989ed;box-shadow:0 0 0 2px #3989ed1f}
+.prototype-notes-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
+.prototype-notes-actions span{color:#75859b;font-size:11px;line-height:1.4}
+.prototype-notes-actions button{flex:none;height:34px;padding:0 14px;border:0;border-radius:4px;background:#3487f2;color:#fff;font-size:12px;cursor:pointer}
+.prototype-notes-actions button:disabled{opacity:.55;cursor:wait}
+.prototype-notes-foot{margin:14px 0 0;color:#98a5b6;font-size:11px}
+body.sales-workspace .create-order-page,body.sales-workspace .detail-backdrop,body.sales-workspace .ai-precheck-backdrop{right:var(--prototype-notes-width)}
+body.sales-workspace .order-drawer,body.sales-workspace .ai-precheck-drawer{right:var(--prototype-notes-width);max-width:calc(100vw - var(--prototype-notes-width))}
+body.sales-workspace .top-announcement{display:none}
+body.educator-workspace .modal-backdrop,body.educator-workspace .legacy-fixed-actions{right:var(--prototype-notes-width)}
+@media(max-width:800px){.prototype-notes{padding:0 12px 12px}.prototype-notes-head span{display:none}}
+.prototype-global-nav{position:sticky;top:0;z-index:100001;display:flex;align-items:stretch;height:44px;padding:0 20px;background:#fff;border-bottom:1px solid #dfe7f1;box-shadow:0 2px 6px #1e3a6010;overflow-x:auto;overflow-y:hidden}
+.prototype-global-nav .workspace-tabs{height:44px;gap:28px}
+.prototype-global-nav .workspace-tab{flex:none}
+.prototype-global-nav .workspace-tab{font-size:14px}
+body.prototype-nav-active .sidebar{top:44px}
+body.prototype-nav-active .create-order-page,body.prototype-nav-active .detail-backdrop,body.prototype-nav-active .order-drawer,body.prototype-nav-active .ai-precheck-backdrop,body.prototype-nav-active .ai-precheck-drawer,body.prototype-nav-active .modal-backdrop{top:44px}
+body.prototype-nav-active.educator-workspace #modalBackdrop.flow-drawer-backdrop:not(.strategy-edit-modal)>.wizard[data-step]{height:calc(100dvh - 44px);max-height:calc(100dvh - 44px);min-height:0}
+body.prototype-nav-active.educator-workspace:not(.consult-preview-mode) #modalBackdrop.flow-drawer-backdrop.strategy-edit-modal>.wizard[data-step="2"]{height:min(920px,calc(100dvh - 92px));max-height:calc(100dvh - 92px);min-height:0}
+/* Keep sales dialogs inside the prototype canvas, below the four workspace tabs. */
+body.prototype-nav-active.sales-workspace .self-class-wizard{top:44px;right:var(--prototype-notes-width);bottom:0;left:0;min-height:0}
+body.prototype-nav-active.sales-workspace .self-class-ai-backdrop,body.prototype-nav-active.sales-workspace .self-class-course-backdrop,body.prototype-nav-active.sales-workspace .create-course-picker-backdrop,body.prototype-nav-active.sales-workspace .order-consult-modal-backdrop,body.prototype-nav-active.sales-workspace .smart-consult-associate-backdrop,body.prototype-nav-active.sales-workspace .smart-consult-backdrop,body.prototype-nav-active.sales-workspace .smart-consult-course-backdrop{top:44px;right:var(--prototype-notes-width)}
+body.prototype-nav-active.sales-workspace .self-class-ai-drawer{top:44px;right:var(--prototype-notes-width);width:min(1240px,calc(100vw - var(--prototype-notes-width)));max-width:calc(100vw - var(--prototype-notes-width))}
+body.prototype-nav-active.sales-workspace .self-class-course-modal,body.prototype-nav-active.sales-workspace .create-course-picker,body.prototype-nav-active.sales-workspace .order-consult-modal,body.prototype-nav-active.sales-workspace .smart-consult-associate-modal,body.prototype-nav-active.sales-workspace .smart-consult-course-modal{left:calc((100vw - var(--prototype-notes-width))/2);top:calc(50% + 22px);max-width:calc(100vw - var(--prototype-notes-width) - 32px);max-height:calc(100dvh - 76px)}
+body.prototype-nav-active.sales-workspace .self-class-course-modal{height:min(760px,calc(100dvh - 76px))}
+body.prototype-nav-active.sales-workspace .smart-consult-drawer{top:44px;right:var(--prototype-notes-width);max-width:calc(100vw - var(--prototype-notes-width))}
+body.prototype-nav-active.sales-workspace .ai-precheck-fab{right:calc(var(--prototype-notes-width) + 25px)}
+body.prototype-nav-active.educator-workspace .formal-dialog-backdrop,body.prototype-nav-active.educator-workspace .formal-lesson-confirm-backdrop,body.prototype-nav-active.educator-workspace .teacher-load-backdrop,body.prototype-nav-active.educator-workspace .teacher-schedule-backdrop,body.prototype-nav-active.educator-workspace .educator-consult-link-backdrop,body.prototype-nav-active.educator-workspace .educator-consult-view-backdrop{top:44px;right:var(--prototype-notes-width)}
+body.prototype-nav-active.educator-workspace .teacher-schedule-drawer{height:calc(100dvh - 44px);max-width:calc(100vw - var(--prototype-notes-width))}
+body.prototype-nav-active.educator-workspace:not(.consult-preview-mode) #flowRequirementsOverlay{top:44px;right:var(--prototype-notes-width);bottom:0;left:0}
+body.prototype-nav-active.educator-workspace:not(.consult-preview-mode) #flowRequirementsOverlay .flow-requirements-dialog{max-height:calc(100dvh - 92px)}
+body.prototype-nav-active.educator-workspace #modalBackdrop.flow-drawer-backdrop>.wizard[data-step]{max-width:calc(100vw - var(--prototype-notes-width))}
+body.prototype-nav-active.educator-workspace.consult-preview-mode #modalBackdrop.flow-drawer-backdrop>.wizard[data-step="3"]{width:calc(100vw - var(--prototype-notes-width))}
+body.prototype-nav-active.educator-workspace .modal-backdrop:not(.flow-drawer-backdrop)>.wizard{max-width:calc(100vw - var(--prototype-notes-width) - 32px);max-height:calc(100dvh - 76px)}
+body.prototype-nav-active.educator-workspace .educator-consult-link-modal,body.prototype-nav-active.educator-workspace .educator-consult-view-modal{left:calc((100vw - var(--prototype-notes-width))/2);top:calc(50% + 22px);max-width:calc(100vw - var(--prototype-notes-width) - 32px);max-height:calc(100dvh - 76px)}
+body.prototype-nav-active.educator-workspace .formal-fixed-footer{right:var(--prototype-notes-width)}
+body.prototype-nav-active.educator-workspace .formal-adjust-tip{left:calc((100vw - var(--prototype-notes-width))/2);max-width:calc(100vw - var(--prototype-notes-width) - 40px)}
+body.prototype-nav-active.educator-workspace .formal-toast{right:calc(var(--prototype-notes-width) + 24px)}
+body.prototype-nav-active.sales-workspace .toast,body.prototype-nav-active.educator-workspace .toast{left:calc((100vw - var(--prototype-notes-width))/2)}
+.prototype-notes{top:44px}
+body.prototype-doc-page .prototype-notes{top:49px}
+.prototype-notes-head{height:auto;min-height:66px;align-items:flex-start;padding:17px 0 12px}
+.prototype-notes-head strong{font-size:15px;line-height:1.5;overflow-wrap:anywhere}
+.prototype-notes-toolbar{display:flex;justify-content:flex-start;margin:16px 0 9px}
+.prototype-notes-toolbar button{height:29px;padding:0 10px;border:1px solid #cedbeb;border-radius:4px;background:#f8fbff;color:#326da9;font-size:12px;cursor:pointer}
+.prototype-notes-toolbar button:hover{border-color:#87b6ec;background:#edf5ff}
+.prototype-notes-toolbar{gap:7px;flex-wrap:wrap}
+.prototype-notes-toolbar button,.prototype-notes-toolbar select,.prototype-color-control{height:30px;border:1px solid #cedbeb;border-radius:4px;background:#f8fbff;color:#326da9;font:12px "Microsoft YaHei",Arial,sans-serif}
+.prototype-notes-toolbar button{padding:0 8px}
+.prototype-notes-toolbar select{padding:0 3px;cursor:pointer}
+.prototype-color-control{display:flex;align-items:center;gap:3px;padding:0 5px;white-space:nowrap}
+.prototype-color-control input{width:24px;height:24px;padding:0;border:0;background:transparent;cursor:pointer}
+.prototype-notes-editor{display:block;width:100%;min-height:220px;flex:1;overflow:auto;padding:12px;border:1px solid #cad6e6;border-radius:6px;background:#fbfdff;color:#253b57;font-size:13px;line-height:1.7;outline:none;white-space:pre-wrap;overflow-wrap:anywhere}
+.prototype-notes-editor:focus{border-color:#3989ed;box-shadow:0 0 0 2px #3989ed1f}
+.prototype-notes-editor p,.prototype-notes-editor div{margin:0 0 5px}.prototype-notes-editor ol,.prototype-notes-editor ul{margin:4px 0 10px;padding-left:28px}.prototype-notes-editor li{padding-left:2px}
+.prototype-notes-editor ol[data-style="decimal-outline"],.prototype-notes-editor ol[data-style="decimal-outline"] ol{counter-reset:outline-item;list-style:none}
+.prototype-notes-editor ol[data-style="decimal-outline"] li{counter-increment:outline-item}
+.prototype-notes-editor ol[data-style="decimal-outline"] li::before{content:counters(outline-item,".") ". ";display:inline-block;margin-left:-24px;min-width:24px;color:#365f91}
+
+/* Align the page title with the four prototype tabs and distinguish notes. */
+.prototype-notes{
+  top:0;
+  z-index:100002;
+  border-left:1px solid #a9c9f0;
+  background:#ecf5ff;
+  box-shadow:-5px 0 20px #245a991a;
+}
+body.prototype-doc-page .prototype-notes{top:0}
+.prototype-notes-head{
+  height:44px;
+  min-height:44px;
+  margin:0 -18px;
+  padding:0 18px;
+  align-items:center;
+  border-bottom:1px solid #b8d2f2;
+  background:#dcecff;
+}
+.prototype-notes-head strong{color:#214b80;font-size:13px;line-height:1.3}
+body.prototype-doc-page .prototype-notes-head{height:49px;min-height:49px}
+.prototype-notes-toolbar button,.prototype-notes-toolbar select,.prototype-color-control{background:#fff}
+.prototype-notes-editor{border-color:#b9d1ed;background:#fff}
+.prototype-notes-editor:focus{border-color:#3989ed}
+@media(max-width:800px){.prototype-notes-head{margin:0 -12px;padding:0 12px}}

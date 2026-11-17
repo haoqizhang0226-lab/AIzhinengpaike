@@ -1,4 +1,5 @@
 .ai-precheck-fab{position:fixed;right:25px;bottom:25px;z-index:32;width:60px;height:60px;padding:3px;border:2px solid #fff;border-radius:50%;background:#fff;box-shadow:0 5px 18px rgba(28,67,132,.28);transition:transform .18s,box-shadow .18s}
+.sales-workspace .ai-precheck-fab{display:none!important}
 .ai-precheck-fab:hover{transform:translateY(-3px);box-shadow:0 9px 24px rgba(28,67,132,.32)}
 .ai-precheck-fab img{width:100%;height:100%;display:block;object-fit:cover;border-radius:50%}
 .ai-fab-dot{position:absolute;right:0;top:0;width:15px;height:15px;border:2px solid #fff;border-radius:50%;background:#f04444;box-shadow:0 1px 4px #d72f2f66}
@@ -79,8 +80,6 @@
 .ai-precheck-footer{padding:12px 18px}.ai-precheck-success-view{flex:1;min-height:0;display:grid;place-items:center;padding:22px;background:#f3f8fc}.ai-precheck-success-card{text-align:center;width:min(380px,100%);padding:32px 25px;border:1px solid #dce7f5;border-radius:10px;background:#fff;box-shadow:0 14px 34px #274a8018}.ai-precheck-success-icon{margin:0 auto 17px;width:44px;height:44px;font-size:26px}.ai-precheck-success-card h2{margin:0;color:#18375c;font-size:17px}.ai-precheck-success-card p{margin:11px 0 0;color:#748a9e;line-height:1.6}.ai-precheck-success-card button{margin-top:20px;padding:8px 18px;border:1px solid #2b7be8;border-radius:6px;background:#2b7be8;color:#fff}
 @media(max-width:900px){.ai-precheck-drawer{width:100vw}.ai-precheck-body{grid-template-columns:minmax(0,1fr) minmax(330px,.82fr)}}
 @media(max-width:700px){.ai-precheck-body{display:block;overflow:auto}.ai-precheck-left,.ai-precheck-right-scroll{overflow:visible}.ai-precheck-right{border-left:0;border-top:1px solid #e3eaf3}.ai-precheck-student,.ai-precheck-summary{grid-template-columns:1fr}.ai-precheck-footer{position:sticky;bottom:0}}
-.ai-precheck-header #aiPrecheckDraftSwitch{margin-left:auto;max-width:min(440px,48vw);height:34px;padding:0 10px;border:1px solid #d0ddec;border-radius:5px;background:#fff;color:#36506c;font-size:12px}
-.ai-precheck-header #aiPrecheckDraftSwitch[hidden]{display:none}
 .ai-precheck-drawer{width:min(1780px,calc(100vw - 28px))}
 .ai-precheck-body{grid-template-columns:minmax(0,66fr) minmax(350px,34fr)}
 .ai-precheck-table-wrap.course-table-wrap{height:auto;max-height:none;overflow:visible}
@@ -93,3 +92,61 @@
 }
 @media(max-width:900px){.ai-precheck-drawer{width:100vw}.ai-precheck-body{grid-template-columns:minmax(0,1fr) minmax(310px,.58fr)}}
 @media(max-width:700px){.ai-precheck-body{display:block}}
+.ai-precheck-drawer[data-mode="loading"],.ai-precheck-drawer[data-mode="success"]{width:100vw;max-width:none}
+.ai-precheck-drawer[data-mode="loading"] .ai-precheck-header,.ai-precheck-drawer[data-mode="success"] .ai-precheck-header,.ai-precheck-drawer[data-mode="loading"] .ai-precheck-footer,.ai-precheck-drawer[data-mode="success"] .ai-precheck-footer{display:none}
+.ai-precheck-drawer[data-mode="loading"] .ai-precheck-loading,.ai-precheck-drawer[data-mode="success"] .ai-precheck-success-view{background:#f4f8fc}
+.ai-precheck-loading-card,.ai-precheck-success-card{border:0;box-shadow:none;background:transparent}
+.ai-precheck-loading-card{width:min(560px,100%);padding:20px 24px;gap:17px}
+.ai-precheck-loading-avatar{display:block;width:188px;height:188px;margin:0 auto 15px;object-fit:cover;border-radius:24px;mix-blend-mode:multiply}
+.ai-precheck-loading-card strong{font-size:25px;color:#34383e;font-weight:600}
+.ai-precheck-loading-card p{margin:0;color:#737b85;font-size:16px;line-height:1.6}
+.ai-precheck-progress{width:180px;height:4px;margin-top:5px}
+.ai-precheck-success-card{width:min(440px,100%);padding:24px}
+.ai-precheck-success-icon{width:106px;height:106px;margin-bottom:27px;background:linear-gradient(135deg,#91e532,#40c815);font-size:72px;line-height:1}
+.ai-precheck-success-card h2{font-size:25px;color:#36383c}
+.ai-precheck-success-card p{font-size:16px;color:#727982}
+.ai-precheck-success-card button{min-width:98px;margin-top:23px}
+@media(max-width:700px){.ai-precheck-loading-avatar{width:142px;height:142px}.ai-precheck-loading-card strong,.ai-precheck-success-card h2{font-size:21px}}
+
+/* Failed submissions keep the actual creation form editable beside AI feedback. */
+.sales-workspace .ai-precheck-drawer[data-mode="issues"]{left:85px;right:var(--prototype-notes-width);width:auto;max-width:none;background:#f3f7fc}
+.sales-workspace .ai-precheck-drawer[data-mode="issues"] .ai-precheck-header{height:70px;min-height:70px;padding:0 20px;background:#fff}
+.sales-workspace .ai-precheck-drawer[data-mode="issues"] .ai-precheck-header button{width:32px;height:32px}
+.sales-workspace .ai-precheck-drawer[data-mode="issues"] .ai-precheck-body{grid-template-columns:minmax(0,66fr) minmax(330px,34fr);background:#f3f7fc}
+.sales-workspace .ai-precheck-left{padding:20px;scrollbar-width:thin}
+.sales-workspace .ai-precheck-left #createOrderForm{display:block;height:auto;min-height:0}
+.sales-workspace .ai-precheck-left .create-order-header,.sales-workspace .ai-precheck-left .create-order-footer{display:none}
+.sales-workspace .ai-precheck-left .create-order-body{display:block;min-height:0;overflow:visible;padding:0;background:transparent}
+.sales-workspace .ai-precheck-left .create-order-body>section{margin:0 0 18px;padding:18px 20px;border:0;border-radius:5px;background:#fff;box-shadow:none}
+.sales-workspace .ai-precheck-left .create-student-section{min-height:0}
+.sales-workspace .ai-precheck-left .create-student-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:auto;gap:10px 14px}
+.sales-workspace .ai-precheck-left .create-student-item:last-child{grid-column:auto}
+.sales-workspace .ai-precheck-left .create-course-package{padding:16px}
+.sales-workspace .ai-precheck-left .create-course-table{min-width:1450px}
+.sales-workspace .ai-precheck-left .create-package-score{flex-basis:100%;order:1}
+.sales-workspace .ai-precheck-left .course-package-line .create-remove-package{margin-left:auto}
+.sales-workspace .ai-precheck-right{background:#fff}
+.sales-workspace .ai-precheck-right-scroll{padding:0;background:#fff}
+.sales-workspace .ai-precheck-issues{min-height:100%;margin:0;padding:0 20px 20px;border:0;border-radius:0;box-shadow:none}
+.sales-workspace .ai-precheck-result-heading{height:50px;margin:0 -20px 20px;padding:0 20px;border-bottom:1px solid #e7e9ee}
+.sales-workspace .ai-precheck-result-heading>span{padding:0;border-radius:0;background:none;color:#ff811b;font-size:13px}
+.sales-workspace .ai-precheck-result-heading>span::before{content:"ⓘ ";font-size:15px}
+.sales-workspace .ai-precheck-issue-text{margin:0 0 20px;padding:20px 16px;border:0;border-radius:4px;background:#f1fbfa;color:#606870;font-size:13px;line-height:1.65}
+.sales-workspace .ai-precheck-reply{margin:0;padding:0;border:0}
+.sales-workspace .ai-precheck-reply label{margin:0 0 12px;color:#333;font-size:14px;font-weight:400}
+.sales-workspace .ai-precheck-reply textarea{min-height:100px;border-color:#d6d6d6}
+.sales-workspace .ai-precheck-upload{display:flex;align-items:center;gap:12px;min-height:60px;margin-top:16px;padding:10px 14px;border-radius:5px;background:#f1f7ff;cursor:pointer}
+.sales-workspace .ai-precheck-upload strong{flex:none;color:#3488f6;font-size:14px;font-weight:500}
+.sales-workspace .ai-precheck-upload span{padding-left:12px;border-left:1px solid #d7d7d7;color:#777;font-size:12px;line-height:1.35}
+.sales-workspace .ai-precheck-upload.is-dragging{background:#e3f0ff}
+.sales-workspace .ai-precheck-upload-list{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+.sales-workspace .ai-precheck-upload-list:empty{display:none}
+.sales-workspace .ai-precheck-upload-list>div{display:flex;align-items:center;gap:8px;color:#777;font-size:12px;overflow-wrap:anywhere}
+.sales-workspace .ai-precheck-upload-list>div span{flex:1;min-width:0}
+.sales-workspace .ai-precheck-upload-list>div button{flex:none;border:0;background:none;color:#aaa;cursor:pointer}
+.sales-workspace .ai-precheck-drawer[data-mode="issues"] .ai-precheck-footer{height:50px;min-height:50px;padding:0 24px;border-top:1px solid #e4e7ec;box-shadow:none}
+.sales-workspace .ai-precheck-drawer[data-mode="issues"] .ai-precheck-footer button{height:31px;min-height:31px;border-radius:4px;font-size:13px;font-weight:400}
+.sales-workspace .ai-precheck-drawer[data-mode="issues"] .ai-precheck-footer .ai-precheck-submit{background:#427af5;border-color:#427af5}
+@media(min-width:1500px){.sales-workspace .ai-precheck-left .create-student-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1050px){.sales-workspace .ai-precheck-drawer[data-mode="issues"]{left:0}.sales-workspace .ai-precheck-left{padding:12px}.sales-workspace .ai-precheck-left .create-order-body>section{padding:15px}}
+@media(max-width:780px){.sales-workspace .ai-precheck-drawer[data-mode="issues"] .ai-precheck-body{display:block;overflow:auto}.sales-workspace .ai-precheck-left,.sales-workspace .ai-precheck-right-scroll{overflow:visible}.sales-workspace .ai-precheck-right{border-left:0;border-top:1px solid #e3eaf3}}

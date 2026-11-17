@@ -1,0 +1,116 @@
+/* Sales scheduling form, matched to the supplied full-page reference. */
+.sales-workspace .create-order-page{font-family:Arial,"Microsoft YaHei",sans-serif;font-size:14px;color:#333}
+.sales-workspace .create-order-header{height:49px;min-height:49px;padding:0 20px;border:0;border-bottom:1px solid #e6e6e6;font-size:16px}
+.sales-workspace .create-close{font-size:33px;color:#666;cursor:pointer}
+.sales-workspace .create-order-body{padding:0 20px 22px;background:#fff}
+.sales-workspace .create-student-section,.sales-workspace .create-course-section,.sales-workspace .create-scheduling-section,.sales-workspace .create-other-section{margin:0;padding:20px 0;border:0;border-bottom:1px solid #ededed;border-radius:0;background:#fff;box-shadow:none}
+.sales-workspace .create-order-body h2,.sales-workspace .create-student-section h2,.sales-workspace .create-course-section h2,.sales-workspace .create-scheduling-section h2,.sales-workspace .create-other-section h2{display:flex;align-items:center;justify-content:flex-start;margin:0 0 18px;padding:0;border:0;color:#333;font-size:16px;line-height:20px;font-weight:600}
+.sales-workspace .create-order-body h2::before{content:"";width:5px;height:16px;margin-right:11px;border-radius:3px;background:#4d4aff}
+.sales-workspace .create-order-body h2 .create-heading-text{flex:1}
+.sales-workspace .create-course-grand-total{margin-left:auto;color:#666;font-size:14px;font-weight:400}
+.sales-workspace .create-course-grand-total b{color:#333}
+.sales-workspace .create-student-section{min-height:241px;padding-top:26px;padding-bottom:18px}
+.sales-workspace .create-student-picker{height:32px;min-height:32px;margin:0 0 16px;gap:18px;color:#333;font-size:14px}
+.sales-workspace .create-student-picker>label{min-width:66px}
+.sales-workspace .create-student-picker>label::after{content:none}
+.sales-workspace .create-student-search,.sales-workspace .create-student-search .student-name-input{width:201px}
+.sales-workspace .create-student-search .student-name-input{height:31px;padding:0 10px;border-color:#d4d4d4;color:#333;font-size:14px}
+.sales-workspace .create-student-grid{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:27px;gap:13px 0;padding:0}
+.sales-workspace .create-student-item{min-height:27px;padding:0;gap:0;color:#777;font-size:14px}
+.sales-workspace .create-student-item .create-label{min-width:71px;color:#777;font-size:14px}
+.sales-workspace .create-student-item .create-label::after{content:":";margin-left:8px;margin-right:9px;color:#777}
+.sales-workspace .create-student-item strong{color:#777;font-size:14px;font-weight:400}
+.sales-workspace .create-student-item:last-child{grid-column:span 2}
+.sales-workspace .create-student-item:last-child strong{overflow:visible}
+.sales-workspace .create-course-section{padding-top:21px;padding-bottom:20px}
+.sales-workspace .create-course-section h2{margin-bottom:15px}
+.sales-workspace .create-course-package{position:relative;margin:0 0 16px;padding:19px 19px 20px;border:1px solid #d4e2ff;border-radius:5px;background:#fff}
+.sales-workspace .course-package-line{display:flex;align-items:center;gap:15px;min-height:31px;color:#333;font-size:14px}
+.sales-workspace .course-package-line>span:first-child{white-space:nowrap}
+.sales-workspace .course-package-line select{width:260px;height:31px;padding:0 10px;border-color:#d6d6d6;color:#444;font-size:13px}
+.sales-workspace .create-gold-tag,.sales-workspace .package-total-hours{display:none}
+.sales-workspace .create-package-score{color:#777;font-size:13px;white-space:nowrap}
+.sales-workspace .create-package-score button{padding:0 0 0 10px;border:0;background:none;color:#3085f4;font-size:13px;cursor:pointer}
+.sales-workspace .course-package-line .create-remove-package{margin-left:auto;padding:0;border:0;border-radius:0;background:transparent;color:#398aff;font-size:13px;font-weight:400}
+.sales-workspace .course-package-line [data-add-package-course]{position:absolute;right:19px;top:179px;grid-column:auto;grid-row:auto;height:31px;min-width:100px;border-radius:4px;font-size:13px;font-weight:400}
+.sales-workspace .course-hours-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));width:100%;height:90px;margin:19px 0 52px;padding:0;border:0;border-radius:5px;background:#f0f6ff}
+.sales-workspace .course-hours-summary>div,.sales-workspace .course-hours-summary .course-needed-summary{height:49px;padding:0 12px;border-right:1px solid #ccc;background:none;color:#777;font-size:14px;gap:8px}
+.sales-workspace .course-hours-summary>div:last-child{border-right:0}
+.sales-workspace .course-hours-summary strong{color:#666;font-size:24px;line-height:25px}
+.sales-workspace .course-hours-summary .course-needed-summary{color:#3634ff}
+.sales-workspace .course-hours-summary .course-needed-summary strong{color:#3620dd}
+.sales-workspace .create-included-heading{position:absolute;left:19px;right:19px;top:183px;font-size:16px;font-weight:600;color:#333;pointer-events:none}
+.sales-workspace .create-course-package.package-unselected{height:70px;padding:19px}
+.sales-workspace .create-course-package.package-unselected .course-package-line .create-remove-package{display:block}
+.sales-workspace .create-course-package.package-unselected .create-package-score,.sales-workspace .create-course-package.package-unselected .create-included-heading{display:none}
+.sales-workspace .create-course-table-scroll{overflow-x:auto;scrollbar-color:#cbd3dc #f5f5f5;scrollbar-width:thin}
+.sales-workspace .create-course-table{width:100%;min-width:1670px;color:#333;font-size:12px}
+.sales-workspace .create-course-table col:nth-child(1){width:118px!important}.sales-workspace .create-course-table col:nth-child(2){width:80px!important}.sales-workspace .create-course-table col:nth-child(3){width:79px!important}.sales-workspace .create-course-table col:nth-child(4){width:180px!important}.sales-workspace .create-course-table col:nth-child(5){width:180px!important}.sales-workspace .create-course-table col:nth-child(6){width:179px!important}.sales-workspace .create-course-table col:nth-child(7){width:80px!important}.sales-workspace .create-course-table col:nth-child(8){width:120px!important}.sales-workspace .create-course-table col:nth-child(9){width:119px!important}.sales-workspace .create-course-table col:nth-child(10){width:90px!important}.sales-workspace .create-course-table col:nth-child(13){width:60px!important}
+.sales-workspace .create-course-table col:nth-child(11){width:156px!important}.sales-workspace .create-course-table col:nth-child(12){width:148px!important}
+.sales-workspace .create-course-table th{height:41px;background:#fff;color:#222;font-size:12px}
+.sales-workspace .create-course-table td{height:62px;color:#555}
+.sales-workspace .create-course-table tbody tr:nth-child(even){background:#fafafa}
+.sales-workspace .create-cell-select{height:28px;color:#777;font-size:12px}
+.sales-workspace .create-add-package{height:30px;padding:0 12px;border:1px solid #8cbaff;border-radius:4px;background:#fff;color:#398aff;font-size:13px}
+.sales-workspace .create-scheduling-section{padding-top:21px}
+.sales-workspace .create-scheduling-section h2{margin-bottom:20px}
+.sales-workspace .create-schedule-primary-row{display:flex;align-items:center;gap:15px 80px;min-height:78px;flex-wrap:wrap}
+.sales-workspace .create-schedule-primary-row .create-type-row{order:-1;width:100%;height:31px}
+.sales-workspace .create-schedule-primary-row .create-type-row select{width:190px;height:31px}
+.sales-workspace .create-schedule-primary-row .create-start-field,.sales-workspace .create-schedule-primary-row .create-type-row label{font-size:14px;color:#333}
+.sales-workspace .create-schedule-primary-row .create-end-mode-label{font-size:14px;color:#333}
+.sales-workspace .create-end-mode-switch{display:flex;align-items:center;gap:20px;width:auto;height:31px;border:0;border-radius:0;overflow:visible}
+.sales-workspace .create-end-mode-switch button{position:relative;flex:none;padding:0 0 0 23px;border:0!important;background:none!important;color:#444!important;font-size:14px;font-weight:400!important}
+.sales-workspace .create-end-mode-switch button::before{content:"";position:absolute;left:0;top:8px;width:15px;height:15px;border:1px solid #aaa;border-radius:50%;background:#fff}
+.sales-workspace .create-end-mode-switch button.is-active::before{border-color:#3387f5;box-shadow:inset 0 0 0 4px #fff;background:#3387f5}
+.sales-workspace .create-time-row{display:none}
+.sales-workspace .create-requirement{margin:17px 0 0}
+.sales-workspace .create-requirement>label,.sales-workspace .create-scheduling-section:has(input[name="timeRequirement"][value="vague"]:checked) .create-requirement>label{display:block;margin:0 0 13px;color:#333;font-size:14px}
+.sales-workspace .create-requirement>label .required{position:static;color:#f24b4b;font-size:14px}
+.sales-workspace .create-requirement textarea{height:100px;border-radius:0;font-size:13px}
+.sales-workspace .create-requirement textarea::placeholder,.sales-workspace .create-other-textarea textarea::placeholder{color:#c6c6c6}
+.sales-workspace .create-requirement-attachment{display:block;margin:16px 0 20px}
+.sales-workspace .create-requirement-attachment .create-voucher-drop{display:flex;flex-direction:row;justify-content:flex-start;gap:20px;min-height:48px;padding:0 20px;border:0;border-radius:5px;background:#f1f7ff;font-size:14px}
+.sales-workspace .create-requirement-attachment .create-voucher-drop>span{color:#3889fa}
+.sales-workspace .create-requirement-attachment .create-voucher-drop small{padding-left:20px;border-left:1px solid #d5d5d5;color:#777;font-size:13px}
+.sales-workspace .create-requirement-attachment .create-voucher-list{display:block;margin:12px 20px}
+.sales-workspace .create-requirement-attachment .create-voucher-list span{display:block;width:max-content;border:0;padding:5px 0;color:#777;font-size:13px}
+.sales-workspace .create-scheduling-extra{margin:0;padding:0;border:0}
+.sales-workspace .create-other-field{gap:0;margin:0 0 15px;color:#333;font-size:14px}
+.sales-workspace .create-other-label{width:130px;padding-top:6px;color:#333;font-size:14px}
+.sales-workspace .create-scheduling-extra .create-other-field.full{display:block}
+.sales-workspace .create-scheduling-extra .create-other-field.full>.create-other-label{display:block;width:auto;margin:0 0 12px}
+.sales-workspace .create-scheduling-extra .create-other-field:not(.full)>.create-other-label{width:130px}
+.sales-workspace .create-choice-list{gap:12px 25px}
+.sales-workspace .create-time-row label,.sales-workspace .create-precise-checks label,.sales-workspace .create-choice-list label,.sales-workspace .create-choice-list label:has(input:checked){min-height:26px;padding:0;border:0;border-radius:0;background:none;color:#444;font-size:14px;font-weight:400}
+.sales-workspace .create-time-row label input,.sales-workspace .create-precise-checks label input,.sales-workspace .create-choice-list label input{position:static;width:16px;height:16px;opacity:1;pointer-events:auto;accent-color:#3488f6}
+.sales-workspace .create-other-textarea textarea{height:101px;min-height:101px;border-radius:0;font-size:13px}
+.sales-workspace .create-scheduling-extra .create-other-field:last-child{margin-bottom:0}
+.sales-workspace .create-other-section{padding-top:21px;border-bottom:0}
+.sales-workspace .create-other-grid{padding:0}
+.sales-workspace .create-other-section .create-other-field{margin-bottom:13px}
+.sales-workspace .create-other-section .create-other-label{width:125px}
+.sales-workspace .create-other-section .create-other-label{white-space:nowrap}
+.sales-workspace .create-other-section .create-other-field.full{display:flex}
+.sales-workspace .create-other-section .create-voucher-drop{min-height:135px;border:1px dashed #d4d4d4}
+.sales-workspace .create-order-footer{height:50px;min-height:50px;gap:10px;padding:0 26px}
+.sales-workspace .create-order-footer button{height:31px;min-width:80px;border-radius:4px;font-size:13px}
+.sales-workspace .create-submit-primary{border-color:#5651f6;background:#5651f6}
+@media(max-width:900px){.sales-workspace .create-student-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:28px}.sales-workspace .create-package-score{display:none}.sales-workspace .course-package-line select{width:210px}.sales-workspace .create-schedule-primary-row{gap:12px}}
+
+/* Keep package controls in document flow when the notes column narrows the canvas. */
+.sales-workspace .course-package-line{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.sales-workspace .course-package-line select{flex:0 1 260px;min-width:220px}
+.sales-workspace .create-package-score{flex:1 1 380px;min-width:280px;white-space:normal;line-height:1.5}
+.sales-workspace .course-package-line .course-hours-summary{position:static;flex:0 0 100%;order:2;margin:10px 0 0}
+.sales-workspace .create-included-heading{position:static;display:flex;align-items:center;justify-content:space-between;min-height:38px;margin:15px 0 10px;pointer-events:auto}
+.sales-workspace .create-included-heading [data-add-package-course]{position:static;display:inline-flex;align-items:center;justify-content:center;height:31px;min-width:100px;padding:0 13px;border:1px solid #3488f6;border-radius:4px;background:#3488f6;color:#fff;font-size:13px;font-weight:400;cursor:pointer}
+.sales-workspace .create-course-package.package-unselected .create-included-heading{display:none}
+.sales-workspace .create-other-section .create-exam-date-field>.create-other-label{flex:0 0 170px;width:170px;white-space:nowrap}
+.sales-workspace .create-student-item strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sales-workspace .create-student-item:last-child strong{overflow:hidden}
+@media(max-width:900px){
+  .sales-workspace .create-package-score{display:inline;min-width:0}
+  .sales-workspace .course-package-line select{width:auto}
+  .sales-workspace .create-other-section .create-exam-date-field{flex-direction:row;align-items:center}
+}

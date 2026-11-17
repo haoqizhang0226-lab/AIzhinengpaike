@@ -10,6 +10,7 @@
   const requirementAttachmentDrop = document.getElementById('createRequirementAttachmentDrop');
   const requirementAttachmentList = document.getElementById('createRequirementAttachmentList');
   const sampleStudents = [
+    {name:'刘大礼',number:'VA100012345',english:'Ella Du',gender:'女',grade:'12',birthday:'1998-03-13',age:'16岁',country:'英国',phone:'139****8976',wechat:'2****4',email:'13917694897@163.com',school:'上海市浦东新区建平路中心高级学习西校区'},
     {name:'授课反馈产品验收',number:'VA100078710',english:'--',gender:'男',grade:'8年级',birthday:'--',age:'--',country:'--',phone:'138****9993',wechat:'Z****2',email:'--',school:'上海市建平中学'},
     {name:'陈同学',number:'VA100086215',english:'--',gender:'女',grade:'9年级',birthday:'--',age:'--',country:'--',phone:'--',wechat:'--',email:'--',school:'--'},
     {name:'王同学',number:'VA100094332',english:'--',gender:'男',grade:'10年级',birthday:'--',age:'--',country:'--',phone:'--',wechat:'--',email:'--',school:'--'},
@@ -99,7 +100,11 @@
     renderStudent();
     window.createOrderPackages?.setStudentSelected(false);
     form.querySelectorAll('.create-other-section input[type="checkbox"],.create-other-section input[type="radio"]').forEach(input => { input.checked = false; });
-    for (const id of ['createProgress','createCourseNote','createExamDate']) {
+    form.querySelector('#createStudyPurposes input[value="校内备考"]').checked = true;
+    form.querySelector('input[name="createFamilyRelation"][value="父母主导"]').checked = true;
+    form.querySelector('#createTeacherStyles input[value="可全英文"]').checked = true;
+    form.querySelector('input[name="createTeacherGender"][value="女老师"]').checked = true;
+    for (const id of ['createProgress','createOtherRequirement','createCourseNote','createExamDate']) {
       const input = document.getElementById(id);
       input.value = '';
       if (input.tagName === 'TEXTAREA') updateCounter(input);
@@ -121,6 +126,7 @@
         teacherStyles:checked('#createTeacherStyles input'),
         teacherGender:form.querySelector('input[name="createTeacherGender"]:checked')?.value || '',
         progress:document.getElementById('createProgress').value.trim(),
+        otherRequirement:document.getElementById('createOtherRequirement').value.trim(),
         examDate:document.getElementById('createExamDate').value,
         studyPurposes:checked('#createStudyPurposes input'),
         familyRelation:form.querySelector('input[name="createFamilyRelation"]:checked')?.value || '',
@@ -128,6 +134,31 @@
         vouchers:vouchers.map(file => file.name)
       }
     };
+  }
+  function setFromSubmission(submission) {
+    reset();
+    const info = submission.studentInfo || {};
+    student = {...info,name:info.name || submission.student || '',number:info.number || submission.customerNo || ''};
+    search.value = student.name;
+    renderStudent();
+    window.createOrderPackages?.setStudentSelected(true,student.number);
+    const extra = submission.extra || {};
+    for (const [id,value] of Object.entries({createProgress:extra.progress,createOtherRequirement:extra.otherRequirement,createCourseNote:extra.courseNote,createExamDate:extra.examDate})) {
+      const input = document.getElementById(id);
+      input.value = value || '';
+      if (input.tagName === 'TEXTAREA') updateCounter(input);
+    }
+    for (const [selector,values] of [['#createTeacherStyles input',extra.teacherStyles],['#createStudyPurposes input',extra.studyPurposes]]) {
+      form.querySelectorAll(selector).forEach(input => { input.checked = Array.isArray(values) && values.includes(input.value); });
+    }
+    for (const [name,value] of [['createTeacherGender',extra.teacherGender],['createFamilyRelation',extra.familyRelation]]) {
+      const option = [...form.querySelectorAll('input[name="' + name + '"]')].find(input => input.value === value);
+      if (option) option.checked = true;
+    }
+    vouchers = (extra.vouchers || []).map(name => ({name,size:0}));
+    requirementAttachments = (submission.requirementAttachments || []).map(name => ({name,size:0}));
+    renderVouchers();
+    renderRequirementAttachments();
   }
   function validate() {
     if (!student || search.value.trim() !== student.name) {
@@ -163,7 +194,7 @@
   document.addEventListener('click',event => {
     if (!event.target.closest('.create-student-search')) suggestions.hidden = true;
   });
-  for (const id of ['createProgress','createCourseNote']) {
+  for (const id of ['createProgress','createOtherRequirement','createCourseNote']) {
     const input = document.getElementById(id);
     input.addEventListener('input',() => updateCounter(input));
   }
@@ -188,5 +219,5 @@
     renderRequirementAttachments();
   });
   renderStudent();
-  window.createOrderDetails = {reset,read,validate,setStudentName,selectExistingStudent,studentNumber:() => student?.number || ''};
+  window.createOrderDetails = {reset,read,setFromSubmission,validate,setStudentName,selectExistingStudent,studentNumber:() => student?.number || ''};
 })();

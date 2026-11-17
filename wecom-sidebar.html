@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>企微侧边栏｜智慧排课原型</title>
+  <link rel="stylesheet" href="prototype-docs.css?v=20261116-tabs">
+  <link rel="stylesheet" href="wecom-sidebar.css?v=20261116e">
+  <link rel="stylesheet" href="wecom-consult-form.css?v=20261116b">
+</head>
+<body class="prototype-doc-page wecom-page">
+  <header class="prototype-doc-topbar"><nav aria-label="原型导航"><a href="index.html">销售工作台</a><a href="教务端/index.html">教务工作台</a><a href="homeroom-workspace.html">班主任工作台</a><a href="teaching-workspace.html">教学工作台</a><a href="dingtalk-workspace.html">钉钉工作台</a><a class="active" aria-current="page" href="wecom-sidebar.html">企微侧边栏</a><a href="business-flow.html">业务流程</a><a href="scheduling-algorithm.html">排课算法</a></nav></header>
+  <main class="wecom-app" aria-label="企微侧边栏主页">
+    <aside class="wecom-rail" aria-label="企微导航"><div class="rail-user">🐶</div><div class="rail-item"><span>◉</span>助理</div><div class="rail-item active"><span>●<b>24</b></span>消息</div><div class="rail-item"><span>✉</span>邮件</div><div class="rail-item"><span>▣</span>文档</div><div class="rail-item"><span>▦</span>日程</div><div class="rail-item"><span>✓</span>待办</div><div class="rail-item"><span>▧</span>会议</div><div class="rail-item"><span>⬡</span>机器人</div><div class="rail-item"><span>▦</span>工作台</div><div class="rail-item"><span>♧</span>通讯录</div><div class="rail-item"><span>…</span>更多</div></aside>
+    <section class="wecom-conversations" aria-label="会话列表"><div class="conversation-search"><span>⌕</span><input type="search" placeholder="搜索" aria-label="搜索会话"><button type="button" aria-label="新增会话">＋</button></div><div id="conversationList" class="conversation-scroll"></div></section>
+    <section class="wecom-chat" aria-label="当前会话"><header class="chat-header"><strong>唯寻腾讯会议开通</strong><small>由企业微信用户创建的外部群，含9位外部联系人 · 群主: 熊焰-微伴助手（联系电话 18720194955） <em>@夜莺科技</em></small><span class="chat-header-actions">···　◎　♙</span></header><div id="chatMessages" class="chat-messages"></div><div class="chat-compose"><div class="compose-tools">☻　✂　▧　▤　☑　▱　▦　☏　⚡ 快速会议</div><div class="compose-empty">发送(S)</div></div></section>
+    <aside class="wecom-customer" aria-label="企微客户侧边栏" data-current-wechat-name="张同学"><div class="customer-tabs"><div><button type="button" class="active">客户概况</button><button type="button">快捷回复</button><button type="button">客户画像</button><button type="button">一客一码</button></div><div><button type="button">运营工具</button><button type="button">自定义</button><span>⌃</span></div></div><div class="customer-scroll">
+      <section class="customer-card customer-overview"><div class="overview-person"><span class="person-avatar"></span><strong>-</strong></div><dl><div><dt>备注：</dt><dd>-</dd></div><div><dt>电话：</dt><dd>-</dd></div><div><dt>跟进顾问：</dt><dd>-</dd></div><div><dt>共享人：</dt><dd>-</dd></div><div><dt>专属班主任：</dt><dd>-</dd></div><div><dt>升学规划师：</dt><dd>-</dd></div><div><dt>咨询内容：</dt><dd>-</dd></div><div><dt>添加时间：</dt><dd>-</dd></div></dl><div class="overview-more">更多 ›</div></section>
+      <section class="customer-card binding-card"><label for="customerNumber">客户编号</label><div class="bind-row"><input id="customerNumber" placeholder="请输入客户编号"><button type="button" id="bindCustomer" class="side-primary">绑定</button></div><strong>微信角色</strong><div class="role-options"><button type="button">父亲</button><button type="button">母亲</button><button type="button">学生</button><button type="button">其它</button></div><p id="bindFeedback" class="side-feedback" role="status"></p></section>
+      <section class="customer-card tags-card"><header><strong>个人标签</strong><button type="button" id="addPersonalTag" class="side-primary">新增</button></header><div id="personalTagContent" class="card-empty"><span class="empty-icon">▱</span><span>客户未添加个人标签~</span></div></section>
+      <section class="customer-card consult-card"><header><strong>售前咨单</strong><button type="button" id="addConsult" class="side-primary">新增</button></header><div id="consultContent" class="card-empty"><span class="empty-icon">▤</span><span>暂无售前咨单</span></div></section>
+    </div><div id="wecomDrawerLayer" class="wecom-drawer-layer" aria-hidden="true"><div class="wecom-drawer-shade" data-drawer-close></div><section id="wecomBottomDrawer" class="wecom-bottom-drawer" role="dialog" aria-modal="true" aria-label="新增" tabindex="-1"><h2 id="wecomDrawerTitle" hidden></h2><div id="wecomDrawerBody" class="wecom-drawer-body"></div><footer id="wecomDrawerFooter"><button type="button" id="wecomDrawerCancel">取消</button><button type="button" id="wecomDrawerPrevious" hidden>上一步</button><button type="button" id="wecomDrawerNext" hidden>下一步</button><button type="button" id="wecomDrawerSubmit" hidden>提交咨单</button></footer></section></div></aside>
+  </main>
+  <script src="wecom-consult-form.js?v=20261116c"></script>
+  <script src="wecom-sidebar.js?v=20261116f"></script>
+</body>
+</html>

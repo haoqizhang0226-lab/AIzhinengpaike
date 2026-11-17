@@ -1,6 +1,8 @@
 (() => {
   const form = document.getElementById('createOrderForm');
   const groups = document.getElementById('createCourseGroups');
+  const courseHeading = document.querySelector('.create-course-section h2');
+  courseHeading.innerHTML = '<span class="create-heading-text">课程信息</span><span class="create-course-grand-total">排课总课时: <b id="createAllNeededHours">0</b></span>';
   const picker = document.getElementById('createCoursePicker');
   const backdrop = document.getElementById('createCoursePickerBackdrop');
   const initialGroup = groups.querySelector('[data-package-group]').cloneNode(true);
@@ -8,6 +10,7 @@
   const initialEndMode = document.getElementById('createEndMode').value;
   const initialRequirement = document.getElementById('createRequirement').value;
   const packages = [
+    {name:'英联邦-英联邦学科-雅思-1V1',system:'英联邦学科',item:'雅思',stats:['100','23.25','25','25']},
     {name:'英联邦-英联邦学科-ALEVEL-1v1',system:'英联邦学科',item:'ALEVEL',stats:['600','120.5','202.5','277']},
     {name:'英联邦-英联邦学科-GCSE-1v1',system:'英联邦学科',item:'GCSE',stats:['120','24','31','65']},
     {name:'英联邦-英联邦学科-IGCSE-1v1',system:'英联邦学科',item:'IGCSE',stats:['100','18','22','60']},
@@ -16,6 +19,7 @@
     {name:'雅思-雅思课程-1v1',system:'雅思',item:'雅思',stats:['80','14','16','50']}
   ];
   const samplePurchasedPackages = {
+    VA100012345:['英联邦-英联邦学科-雅思-1V1','英联邦-英联邦学科-ALEVEL-1v1'],
     VA100078710:['英联邦-英联邦学科-ALEVEL-1v1','英联邦-英联邦学科-GCSE-1v1','托福-托福课程-1v1'],
     VA100086215:['英联邦-英联邦学科-ALEVEL-1v1','英联邦-英联邦学科-GCSE-1v1'],
     VA100094332:['英联邦-英联邦学科-ALEVEL-1v1','全日制-全日制学科-1v1'],
@@ -64,16 +68,32 @@
     if (chosen && !values.includes(chosen)) values.push(chosen);
     select.innerHTML = values.map(value => '<option value="' + escapeHtml(value) + '"' + (value === chosen ? ' selected' : '') + '>' +
       escapeHtml(value || '请选择课时包') + '</option>').join('');
-    select.required = true;
+    select.required = false;
   }
   function setupGroup(group,packageName) {
     group.dataset.packageGroup = '';
     group.dataset.selectedPackage = packageName;
     const select = group.querySelector('.course-package-line select');
     setPackageOptions(select,packageName);
-    const stats = packageMeta(packageName).stats;
+    const stats = selectedStudentNumber === 'VA100012345' && packageName ? ['100','23.25','25','25'] : packageMeta(packageName).stats;
     group.querySelectorAll('.course-hours-summary > div:not(.course-needed-summary) strong').forEach((node,index) => { node.textContent = stats[index] || '0'; });
     group.classList.toggle('package-unselected',!packageName);
+    const scoreShown = packageMeta(packageName).item === '雅思';
+    if (scoreShown && !group.querySelector('.create-package-score')) {
+      const score = document.createElement('span');
+      score.className = 'create-package-score';
+      score.innerHTML = '目前(期望)成绩：听力:1 (5);口语:1 (6);写作:1 (4);阅读:1 (20);总分:1 (60) <button type="button" title="编辑成绩">编辑</button>';
+      group.querySelector('.create-gold-tag').after(score);
+    }
+    if (!scoreShown) group.querySelector('.create-package-score')?.remove();
+    if (!group.querySelector('.create-included-heading')) {
+      const heading = document.createElement('div');
+      heading.className = 'create-included-heading';
+      heading.textContent = '包含课程';
+      group.querySelector('.create-course-table-scroll').before(heading);
+    }
+    const addCourse = group.querySelector('[data-add-package-course]');
+    group.querySelector('.create-included-heading').append(addCourse);
     if (!group.querySelector('[data-consult-import]')) {
       const panel = document.createElement('div');
       panel.className = 'create-consult-import';
@@ -92,10 +112,14 @@
     [...groups.querySelectorAll('[data-package-group]')].forEach(group => {
       const total = [...group.querySelectorAll('.hours-stepper input')].reduce((sum,input) => sum + (Number(input.value) || 0),0);
       const displayedTotal = Number(total.toFixed(2));
-      group.querySelector('[data-package-needed]').textContent = displayedTotal;
+      group.querySelector('[data-package-needed]').textContent = selectedStudentNumber === 'VA100012345' && group.querySelector('.course-package-line select').value ? '15' : displayedTotal;
       group.querySelector('[data-package-total]').textContent = displayedTotal;
       group.querySelector('[data-remove-package]').hidden = groups.querySelectorAll('[data-package-group]').length === 1;
     });
+    const allHours = [...groups.querySelectorAll('.hours-stepper input')].reduce((sum,input) => sum + (Number(input.value) || 0),0);
+    const grandTotal = document.getElementById('createAllNeededHours');
+    const firstGroupHours = [...(groups.querySelector('[data-package-group]')?.querySelectorAll('.hours-stepper input') || [])].reduce((sum,input) => sum + (Number(input.value) || 0),0);
+    if (grandTotal) grandTotal.textContent = Number((selectedStudentNumber === 'VA100012345' ? firstGroupHours : allHours).toFixed(2));
   }
   function makeRow(course) {
     const row = document.createElement('tr');
@@ -145,7 +169,7 @@
     const importedElsewhere = new Set([...groups.querySelectorAll('[data-package-group]')]
       .filter(other => other !== group)
       .flatMap(other => [...other.querySelectorAll('tbody tr[data-consult-course-index]')].map(row => row.dataset.consultCourseIndex)));
-    panel.innerHTML = '<div class="create-consult-import-title"><strong>售前匹配科目</strong><span>勾选后填入当前课时包的课程列表</span></div><div class="create-consult-import-list">' +
+    panel.innerHTML = '<div class="create-consult-import-title"><strong>售前咨单科目</strong><span>勾选后填入当前课时包的课程列表</span></div><div class="create-consult-import-list">' +
       consultCourses.map((source,index) => {
         const match = matchedConsultCourse(source,packageName);
         const imported = rows.some(row => row.dataset.consultCourseIndex === String(index));
@@ -244,10 +268,43 @@
     if (!byPackage.size) groups.append(makeGroup(''));
     updateTotals();
   }
+  function setFromPackages(savedPackages, blankPackageCount = 0) {
+    groups.replaceChildren();
+    for (const saved of savedPackages || []) {
+      const group = makeGroup(saved.name || '');
+      for (const course of saved.courses || []) group.querySelector('tbody').append(makeRow(course));
+      const score = group.querySelector('.create-package-score');
+      if (score && saved.score) score.firstChild.textContent = '目前(期望)成绩：' + saved.score + ' ';
+      groups.append(group);
+    }
+    for (let i = 0; i < blankPackageCount; i++) groups.append(makeGroup(''));
+    if (!groups.children.length) groups.append(makeGroup(''));
+    updateTotals();
+  }
+  function seedReferenceDemo() {
+    groups.replaceChildren();
+    const referencePackages = [
+      '英联邦-英联邦学科-雅思-1V1',
+      '英联邦-英联邦学科-ALEVEL-1v1'
+    ];
+    for (const packageName of referencePackages) {
+      const group = makeGroup(packageName);
+      const item = packageMeta(packageName).item;
+      [
+        {subject:'听力',board:'--',grade:'--',module:'高端测试0012',mode:'线下',studentLevel:'先修/同步-B及以上',historicalTeacher:'李春玲、测试老...',hours:1.5},
+        {subject:'阅读',board:'--',grade:'--',module:'高端测试0012',mode:'线上',studentLevel:'先修/同步-B及以上',historicalTeacher:'李春玲',hours:1.5},
+        {subject:'口语',board:'--',grade:'--',module:'/',mode:'线下',studentLevel:'先修/同步-B及以上',historicalTeacher:'无',hours:1}
+      ].forEach(course => group.querySelector('tbody').append(makeRow({...course,package:packageName,system:'英联邦学科',item})));
+      groups.append(group);
+    }
+    groups.append(makeGroup(''));
+    updateTotals();
+  }
   function validate() {
     const packageGroups = [...groups.querySelectorAll('[data-package-group]')];
-    if (packageGroups.some(group => !group.querySelector('.course-package-line select').value)) { toast('请选择每个课时包'); return false; }
-    if (packageGroups.some(group => !group.querySelector('tbody tr'))) { toast('请为每个课时包添加课程'); return false; }
+    if (packageGroups.filter(group => !group.querySelector('.course-package-line select').value).some(group => group.querySelector('tbody tr'))) { toast('请选择每个课时包'); return false; }
+    if (packageGroups.filter(group => group.querySelector('.course-package-line select').value).some(group => !group.querySelector('tbody tr'))) { toast('请为每个课时包添加课程'); return false; }
+    if (!packageGroups.some(group => group.querySelector('tbody tr'))) { toast('请至少添加一门课程'); return false; }
     const hours = [...groups.querySelectorAll('.hours-stepper input')].map(input => Number(input.value));
     if (hours.some(value => !Number.isFinite(value) || value <= 0 || Math.round(value * 4) !== value * 4)) {
       toast('课程课时须为 0.25 的正倍数'); return false;
@@ -267,6 +324,13 @@
   groups.addEventListener('click',event => {
     const group = event.target.closest('[data-package-group]');
     if (!group) return;
+    if (event.target.closest('.create-package-score button')) {
+      const score = group.querySelector('.create-package-score');
+      const current = score.firstChild.textContent.replace(/^目前\(期望\)成绩：/,'').trim();
+      const updated = window.prompt('编辑目前(期望)成绩',current);
+      if (updated !== null) score.firstChild.textContent = '目前(期望)成绩：' + updated.trim() + ' ';
+      return;
+    }
     if (event.target.closest('[data-add-package-course]')) { openPicker(group); return; }
     if (event.target.closest('[data-remove-package]')) { group.remove(); renderAllConsultChoices(); updateTotals(); return; }
     if (event.target.closest('.remove-course')) { event.target.closest('tr').remove(); renderAllConsultChoices(); updateTotals(); return; }
@@ -341,5 +405,5 @@
     renderAllConsultChoices();
     updateTotals();
   });
-  window.createOrderPackages = {reset,setFromCourses,setConsultIntent,setStudentSelected,validate,packageMeta};
+  window.createOrderPackages = {reset,setFromCourses,setFromPackages,setConsultIntent,setStudentSelected,seedReferenceDemo,validate,packageMeta};
 })();

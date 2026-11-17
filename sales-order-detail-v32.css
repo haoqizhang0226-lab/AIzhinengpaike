@@ -1,0 +1,104 @@
+.sales-workspace .order-number-filter input{width:145px}
+.sales-workspace .order-name-filter input{width:185px}
+.sales-workspace .order-table{min-width:1650px}
+.sales-workspace .order-table col.col-order-number{width:11%}
+.sales-workspace .order-table col.col-order-name{width:30%}
+.sales-workspace .order-table col.col-created{width:9%}
+.sales-workspace .order-table col.col-type{width:7%}
+.sales-workspace .order-table col.col-attribute{width:7%}
+.sales-workspace .order-table col.col-handler{width:7%}
+.sales-workspace .order-table col.col-status{width:7%}
+.sales-workspace .order-table col.col-finished{width:9%}
+.sales-workspace .order-table col.col-applicant{width:7%}
+.sales-workspace .order-table col.col-action{width:4%}
+.sales-workspace .order-table col.col-settings{width:2%}
+
+.sales-workspace .order-drawer{left:286px;right:var(--prototype-notes-width);width:auto;max-width:none;background:#f8f8f8}
+.sales-workspace .order-drawer-header{height:70px;min-height:70px;padding:0 20px;gap:20px}
+.sales-workspace .order-drawer-header strong{font-size:20px;font-weight:700}
+.sales-workspace .order-drawer-close{height:34px;width:34px;font-size:28px;border-radius:3px}
+.sales-workspace .order-drawer-body{gap:20px;padding:20px;align-items:flex-start}
+.sales-workspace .order-drawer-side{width:210px;min-width:210px;gap:20px}
+.sales-workspace .student-card{display:flex;flex-direction:column;max-height:min(650px,calc(100vh - 170px));border-radius:5px;overflow:hidden}
+.sales-workspace .student-card-header,.sales-workspace .order-consult-header{height:50px;min-height:50px;padding:0 20px}
+.sales-workspace .student-card-header strong,.sales-workspace .order-consult-header strong,.sales-workspace .drawer-card-title strong{font-size:17px;font-weight:700;color:#111}
+.sales-workspace .student-card-fields{padding:17px 20px 20px;overflow:auto;scrollbar-color:#c8c8c8 #fff}
+.sales-workspace .student-field{margin:0 0 16px;line-height:1.45}
+.sales-workspace .student-field-label{color:#777;font-size:13px}
+.sales-workspace .student-field-value{margin-top:7px;color:#666;font-size:14px;overflow-wrap:anywhere}
+.sales-workspace .order-consult-card,.sales-workspace .drawer-card{border-radius:5px;overflow:hidden}
+.sales-workspace .order-consult-body{padding:18px 20px 4px}
+.sales-workspace .order-consult-plan{padding:12px;margin-bottom:14px;border:0;border-radius:6px;background:#edf5ff;color:#2780ef;font-size:13px}
+.sales-workspace .order-consult-actions{padding:0 20px 20px}
+.sales-workspace .order-consult-actions button{min-height:36px;border:0;background:#3687ee;color:#fff;font-size:13px}
+.sales-workspace .order-consult-actions button:hover{background:#2778e0}
+.sales-workspace .order-drawer-main{min-width:0;flex:1}
+.sales-workspace .course-card{height:auto;min-height:0;margin-bottom:20px;padding-bottom:20px}
+.sales-workspace .drawer-card-title{height:50px;padding:0 20px}
+.sales-workspace .order-package-summary{display:block;padding:20px}
+.sales-workspace .detail-package-block{border:0;border-radius:0;margin:0 0 20px;overflow:visible}
+.sales-workspace .detail-package-block:last-child{margin-bottom:0}
+.sales-workspace .detail-package-heading{display:inline-flex;width:auto;max-width:100%;min-height:44px;padding:9px 14px;border:1px solid #e1e7ef;border-bottom:0;border-radius:5px 5px 0 0;background:#edf5ff;color:#333}
+.sales-workspace .detail-package-icon{color:#2786fa;font-size:19px;line-height:1}
+.sales-workspace .detail-package-label{max-width:none;overflow:hidden;text-overflow:ellipsis;border:0;padding:0;background:none;color:#333;font-size:14px;font-weight:500}
+.sales-workspace .detail-package-table-scroll{overflow-x:auto}
+.sales-workspace .detail-package-table-scroll table{min-width:740px;width:100%;table-layout:fixed;font-size:12px;color:#363636}
+.sales-workspace .detail-package-table-scroll th,.sales-workspace .detail-package-table-scroll td{height:48px;padding:8px 5px;border-color:#e7e7e7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sales-workspace .detail-package-table-scroll th:nth-child(5){width:18%}
+.sales-workspace .detail-package-table-scroll th:nth-child(9){width:19%}
+.sales-workspace .detail-package-table-scroll th{background:#fafafa;color:#333;font-weight:500}
+.sales-workspace .detail-package-table-scroll tbody tr:nth-child(even){background:#fafafa}
+.sales-workspace .order-info-card{min-height:0}
+.sales-workspace .order-info-grid{grid-template-columns:1fr 1fr;gap:0 20px;padding:18px 20px 25px}
+.sales-workspace .order-info-field{min-height:48px;align-items:flex-start;padding:11px 0;line-height:1.65}
+.sales-workspace .order-info-field.wide{grid-column:1/-1}
+.sales-workspace .order-info-label{flex:0 0 132px;color:#777;font-size:13px;white-space:normal}
+.sales-workspace .order-info-field:nth-child(7) .order-info-label{flex-basis:205px;white-space:nowrap}
+.sales-workspace .order-info-colon{margin:0 8px 0 0;color:#777}
+.sales-workspace .order-info-value{color:#373737;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
+.sales-workspace .order-info-supplement-item{padding:0;border:0;border-radius:0;background:none}
+.sales-workspace .order-info-supplement-item small{display:inline;margin:0 8px 0 0;color:#777;font-size:12px}
+.sales-workspace .order-info-supplement-item div{display:inline;color:#373737;font-size:13px}
+.sales-workspace .order-info-attachment{color:#2682ed}
+
+@media(max-width:1650px){
+  .sales-workspace .order-info-grid{grid-template-columns:1fr}
+  .sales-workspace .order-info-field{grid-column:1/-1}
+}
+@media(max-width:1200px){
+  .sales-workspace .order-drawer{left:164px}
+  .sales-workspace .order-drawer-side{width:170px;min-width:170px}
+  .sales-workspace .order-drawer-body{gap:12px;padding:12px}
+  .sales-workspace .order-info-grid{grid-template-columns:1fr}
+  .sales-workspace .order-info-field{grid-column:1/-1}
+}
+
+/* Sales consult drawers stay inside the workbench, below the prototype tabs. */
+html:not(.embedded-consult) body.sales-workspace.prototype-nav-active .smart-consult-backdrop{
+  top:44px;
+  right:var(--prototype-notes-width);
+}
+html:not(.embedded-consult) body.sales-workspace.prototype-nav-active .smart-consult-drawer{
+  top:44px;
+  right:var(--prototype-notes-width);
+  left:max(164px,21vw);
+  bottom:0;
+  width:auto;
+  max-width:none;
+}
+html:not(.embedded-consult) body.sales-workspace .smart-consult-drawer-head{padding-left:72px}
+html:not(.embedded-consult) body.sales-workspace .smart-consult-drawer.create-mode .smart-consult-drawer-head{padding-left:60px}
+html:not(.embedded-consult) body.sales-workspace .smart-consult-drawer-foot{flex-wrap:wrap}
+html:not(.embedded-consult) body.sales-workspace .smart-consult-associate-modal,
+html:not(.embedded-consult) body.sales-workspace .smart-consult-course-modal{
+  left:calc((100vw - var(--prototype-notes-width))/2);
+  max-width:calc(100vw - var(--prototype-notes-width) - 32px);
+}
+@media(max-width:1400px){
+  html:not(.embedded-consult) body.sales-workspace .smart-consult-view-layout{
+    grid-template-columns:minmax(0,1fr);
+  }
+  html:not(.embedded-consult) body.sales-workspace .smart-consult-view-sidebar>.smart-consult-customer-sidebar .smart-consult-detail-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}

@@ -196,8 +196,27 @@
     catch { return false; }
   }
   const copyData=value=>JSON.parse(JSON.stringify(value));
-  const state = { step:1, supplement:flowOrder?.supplements?.map(item=>item.text).join('\n')||'', files:[], aiAnalysisError:'', requirementConversation:null, direct:{}, selected:{}, editingSpecifiedCourseId:null, teacherRequirements:Object.fromEntries(courses.map(course=>[course.id,defaultTeacherRequirement(course)])), editingTeacherRequirements:false, teacherRequirementDrafts:null, orderEndRule:flowFinishesAll?endRules[1]:endRules[0], scheduleTimezone:'Asia/Shanghai', editing:false, strategyEditFromTeachers:false, dirty:false, draft:null, aiSnapshot:null, coursePlans:null, expandedPlanCourseId:null, recommended:false, completed:false, resultLessons:[], selectedResultLessons:new Set(), newPlacedLessons:new Set(), pickedSlots:new Set(), versions:loadVersions(), activeVersionId:null, planMode:'智能排课', pendingPlanVersionId:null, currentPlanCreatedAt:null, sideCollapsed:false, lessonAdjustSource:null, lessonConfirm:null };
+  const state = { step:1, supplement:flowOrder?.supplements?.map(item=>item.text).join('\n')||'', files:[], aiAnalysisError:'', requirementConversation:null, direct:{}, selected:{}, editingSpecifiedCourseId:null, teacherRequirements:Object.fromEntries(courses.map(course=>[course.id,defaultTeacherRequirement(course)])), editingTeacherRequirements:false, teacherRequirementDrafts:null, orderEndRule:flowFinishesAll?endRules[1]:endRules[0], scheduleTimezone:'Asia/Shanghai', editing:false, strategyEditFromTeachers:false, dirty:false, draft:null, aiSnapshot:null, coursePlans:null, expandedPlanCourseId:null, recommended:false, completed:false, restartingSchedule:false, resultLessons:[], selectedResultLessons:new Set(), newPlacedLessons:new Set(), pickedSlots:new Set(), versions:loadVersions(), activeVersionId:null, planMode:'智能排课', pendingPlanVersionId:null, currentPlanCreatedAt:null, sideCollapsed:true, lessonAdjustSource:null, lessonConfirm:null };
   state.expandedTeacherRequirementIds=new Set();
+  window.getEducatorScheduleLogContext=()=>{
+    const groups=flowClassGroups.length?flowClassGroups:[{name:flowOrderTitle,index:1,courses}];
+    const sourceCourses=flowSubmission?.courses||[];
+    return {
+      orderId:flowOrder.id,
+      created:flowOrder.created||'2026-11-04 16:51:42',
+      operator:flowOrder.handler||'李春玲',
+      groups:groups.map(group=>({
+        name:group.name,
+        number:flowSubmission?.packages?.[group.index-1]?.classNumber||flowOrder.classNumber||flowOrder.classNo||'1123456789',
+        courseIds:group.courses.map(course=>course.id)
+      })),
+      courses:courses.map((course,index)=>{
+        const source=sourceCourses[index]||{};
+        return {id:course.id,name:[source.item||course.name.split('-')[0],source.name||course.name,source.board,source.mode||course.mode].filter(Boolean).join('-'),teacher:source.currentTeacher&&source.currentTeacher!=='--'&&source.currentTeacher!=='无'?source.currentTeacher:source.historicalTeacher||course.history?.[0]?.[0]||'--',room:source.room||'--'};
+      }),
+      lessons:(state.restartingSchedule?[]:state.resultLessons.length?state.resultLessons:demoResultLessons).map(row=>row.slice(0,3))
+    };
+  };
   function initialCourseSegments(course) {
     return course.segments.map(s=>{
       const frequency=frequencySpec(s[2]);
@@ -384,48 +403,101 @@
   }
   const tightPeriod = teacher => teacher.periods.reduce((worst,p)=>!worst || (p[2]-p[1])/p[1]<(worst[2]-worst[1])/worst[1] ? p : worst,null);
 
+  function renderSelfClassOrder() {
+    const draft=flowSubmission.selfClass||{};
+    const extra=flowSubmission.extra||{};
+    let savedClass;
+    try {
+      const rows=JSON.parse(localStorage.getItem('teacher-scheduling-v3-self-classes')||'[]');
+      savedClass=Array.isArray(rows)?rows.find(row=>row.name===flowOrder.className||row.name===flowOrder.course):null;
+    } catch {}
+    const display=value=>escapeHtml(value===undefined||value===null||value===''||value==='无'||value==='/'?'--':value);
+    const className=String(flowOrder.className||savedClass?.name||flowOrder.course||'--').replace(/-新增$/,'');
+    const classTeacher=flowOrder.classTeacher||savedClass?.teacher||'--';
+    const sideField=(label,value)=>`<div class="self-class-detail-side-field"><small>${label}</small><strong>${display(value)}</strong></div>`;
+    $('#orderPage').classList.add('self-class-detail');
+    $('#selfClassDetailContent').hidden=false;
+    $('#selfClassAssign').hidden=false;
+    $('#educatorDetailType').textContent='自组班排课单';
+    $('#educatorDetailClasses').innerHTML=[
+      sideField('自组班编号',flowOrder.classNumber||savedClass?.number),
+      sideField('自组班名称',className),
+      sideField('报名日期',draft.registrationFrom&&draft.registrationTo?`${draft.registrationFrom} 至 ${draft.registrationTo}`:'--'),
+      sideField('开课日期',flowSubmission.start),sideField('结课日期',flowSubmission.end),
+      sideField('最大承载人数',draft.capacity),sideField('开班最低人数',draft.minimum),
+      sideField('班级状态',flowOrder.classStatus||savedClass?.status||'待排课'),
+      sideField('报名状态',flowOrder.registrationStatus||savedClass?.registration),
+      sideField('班级介绍',draft.introduction),sideField('组班学员要求',draft.studentRequirement),
+      sideField('教学目标',draft.learningGoal),sideField('班课班主任',classTeacher)
+    ].join('');
+    const courses=flowSubmission.courses||[];
+    const courseRows=courses.map(course=>`<tr>${[course.subject||course.name,course.board,course.grade,course.module,course.mode,course.campus,course.hours,course.currentTeacher||course.teacher,course.teacherDiscussed||course.discussed].map(cell=>`<td>${display(cell)}</td>`).join('')}</tr>`).join('');
+    const students=(Array.isArray(draft.students)&&draft.students.length?draft.students:[flowSubmission.student]).filter(Boolean);
+    const studentRows=students.map(student=>`<tr><td>${display(student?.name||student)}</td><td>${display(flowOrder.courseAdvisor||flowOrder.applicant)}</td><td>${display(classTeacher)}</td><td>${display(flowOrder.created)}</td></tr>`).join('');
+    const field=(label,value)=>`<div class="self-class-detail-fact"><span>${label}</span><b>:</b><strong>${display(value)}</strong></div>`;
+    $('#selfClassDetailContent').innerHTML=`
+      <section class="self-class-detail-card"><header>课程信息 <em>★ 金牌</em></header><div class="self-class-detail-card-body">
+        <div class="self-class-detail-course-meta">${[['归属事业部',draft.division],['课程体系',draft.system],['课程项',draft.item],['班型',draft.classType]].map(([label,value])=>`<div><small>${label}</small><strong>${display(value)}</strong></div>`).join('')}</div>
+        <h3>包含课程</h3><div class="self-class-detail-table-scroll"><table><thead><tr>${['科目','考试局','年级','模块','授课模式','校区','课时','当前授课老师','老师时间是否已沟通'].map(label=>`<th>${label}</th>`).join('')}</tr></thead><tbody>${courseRows||'<tr><td colspan="9">暂无课程</td></tr>'}</tbody></table></div>
+      </div></section>
+      <section class="self-class-detail-card"><header>学生列表</header><div class="self-class-detail-card-body"><div class="self-class-detail-table-scroll"><table><thead><tr><th>学生姓名</th><th>课程顾问</th><th>专属班主任</th><th>加入时间</th></tr></thead><tbody>${studentRows||'<tr><td colspan="4">暂无学生</td></tr>'}</tbody></table></div></div></section>
+      <section class="self-class-detail-card"><header>排课单详情</header><div class="self-class-detail-card-body self-class-detail-facts">
+        <div class="self-class-detail-fact-row">${field('排课单状态',flowOrder.status)}${field('排课单属性',flowOrder.attribute)}${field('发起人',flowOrder.applicant)}</div>
+        <div class="self-class-detail-fact-row">${field('开课日期',flowSubmission.start)}${field('结课日期',flowSubmission.end)}</div>
+        ${field('排课类型','--')}${field('排课时间要求',draft.description||flowSubmission.requirement||flowSubmission.time)}${field('课程备注',extra.courseNote||draft.notes)}
+      </div></section>`;
+  }
   function renderOrder() {
     $('#orderRequirementText').textContent=orderText;
     if(!flowSubmission)return;
-    const setLabelValue=(container,label,value)=>{
-      const row=[...document.querySelectorAll(`${container} > div`)].find(item=>item.querySelector('label,span')?.textContent.trim()===label);
-      if(row)row.querySelector('strong').textContent=value;
-    };
-    setLabelValue('.legacy-fields','班级名称',flowClassGroups.length?flowClassGroups.map(group=>group.name).join(' / '):flowOrderTitle);
-    setLabelValue('.legacy-fields','班级编号',`ORDER-${flowOrder.id}`);
-    const groupSummary=$('#flowPackageClasses');
-    groupSummary.hidden=flowClassGroups.length<2;
-    groupSummary.innerHTML=flowClassGroups.length<2?'':`<strong>本排课单包含 ${flowClassGroups.length} 个课程包，分别创建班级</strong><div>${flowClassGroups.map(group=>`<span>${escapeHtml(group.name)}<small>班级 ${group.index} · ${group.courses.length} 门课程</small></span>`).join('')}</div>`;
-    const courseFields=[
-      ['科目',course=>course.name,true],['考试局',course=>course.board],['年级',course=>course.grade],
-      ['模块',course=>course.module],['授课模式',course=>course.mode,true],['校区',course=>course.campus],
-      ['课时',course=>course.hours,true],['历史授课老师',course=>course.historicalTeacher],
-      ['当前授课老师',course=>course.currentTeacher],['老师时间是否已沟通',course=>course.teacherDiscussed]
-    ];
-    const filled=value=>value!==undefined&&value!==null&&!['','--','/','无'].includes(String(value).trim());
-    $('#flowCourseGroups').hidden=flowClassGroups.length===0;
-    document.querySelector('.legacy-table-wrap').hidden=flowClassGroups.length>0;
-    $('#flowCourseGroups').innerHTML=flowClassGroups.map((group,gi)=>{
-      const sources=flowSubmission.packages[group.index-1].courses||[];
-      const fields=courseFields.filter(([,read,required])=>required||sources.some(source=>filled(read(source))));
-      const color=classColors[gi%classColors.length];
-      const totalHours=sources.reduce((total,source)=>total+(Number(source.hours)||0),0);
-      return `<section class="flow-course-group" style="--cls-main:${color[0]};--cls-light:${color[1]}"><div class="flow-course-group-head"><i class="flow-class-dot" aria-hidden="true"></i><span>班级 ${group.index} · ${escapeHtml(group.name)}</span><small>${sources.length} 门课程 · 班级课时 ${totalHours}</small></div><div class="flow-course-group-scroll"><table><thead><tr>${fields.map(([label])=>`<th>${escapeHtml(label)}</th>`).join('')}</tr></thead><tbody>${sources.map(source=>`<tr>${fields.map(([,read])=>`<td>${escapeHtml(read(source)||'--')}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>`;
+    if(flowSubmission.selfClass||flowOrder.type==='自组班排课单') {renderSelfClassOrder();return;}
+    $('#orderPage').classList.remove('self-class-detail');
+    $('#selfClassDetailContent').hidden=true;
+    $('#selfClassAssign').hidden=true;
+    const value=text=>escapeHtml(text===undefined||text===null||text===''?'--':text);
+    const student=flowSubmission.studentInfo||{};
+    const classGroups=flowClassGroups.length?flowClassGroups:[{name:flowOrderTitle,index:1,courses}];
+    const classNumber=flowOrder.classNumber||flowOrder.classNo||'1123456789';
+    const classTeacher=flowOrder.classTeacher||'--';
+    $('#educatorDetailType').textContent=flowOrder.type||'1V1排课单';
+    $('#educatorDetailStatus').textContent=flowOrder.status||'处理中';
+    $('#educatorDetailAttribute').textContent=flowOrder.attribute||'新增排课单';
+    $('#educatorDetailApplicant').textContent=flowOrder.applicant||'李春玲';
+    $('#educatorDetailClasses').innerHTML=classGroups.map(group=>`<div class="educator-detail-class"><div><small>班级名称</small><strong>${value(group.name)}</strong></div><div><small>班级编号</small><strong>${value(classNumber)}</strong></div><div><small>班课班主任</small><strong>${value(classTeacher)}</strong></div></div>`).join('');
+    $('#educatorDetailStudent').innerHTML=[['学生姓名',student.name||flowStudentName],['性别',student.gender],['学生手机',student.phone],['学生微信',student.wechat],['在读学校',student.school]].map(([label,text])=>`<div><small>${label}</small><strong>${value(text)}</strong></div>`).join('');
+    const headers=['科目','考试局','年级','模块','授课模式','校区','课时','历史授课老师','当前授课老师','老师时间是否已沟通'];
+    $('#flowCourseGroups').innerHTML=classGroups.map(group=>{
+      const sources=flowSubmission.packages?.[group.index-1]?.courses||flowSubmission.courses||[];
+      const rows=sources.map(course=>[course.subject||course.name,course.board,course.grade,course.module,course.mode,course.campus,course.hours,course.historicalTeacher,course.currentTeacher,course.teacherDiscussed]);
+      return `<section class="flow-course-group"><div class="flow-course-group-head"><span class="educator-course-bag" aria-hidden="true">▣</span><span>${value(group.name)}</span></div><div class="flow-course-group-scroll"><table><thead><tr>${headers.map(label=>`<th>${label}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map(cell=>`<td>${value(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>`;
     }).join('');
-    setLabelValue('.legacy-fields','学生姓名',flowStudentName);
-    setLabelValue('.legacy-detail-lines','开课日期',`${flowSubmission.start}　结课日期：${flowFinishesAll?'排完全部课程结束':flowSubmission.end||'--'}`);
-    setLabelValue('.legacy-detail-lines','排课类型',flowSubmission.type);
-    setLabelValue('.legacy-detail-lines','时间要求',flowSubmission.time);
-    setLabelValue('.legacy-detail-lines','目前校内进度/需要听的知识点','--');
-    setLabelValue('.legacy-detail-lines','预计/已报名考试时间','--');
-    const rows=flowSubmission.courses.map(source=>[
-      'ALEVEL','1v1',source.name,source.board,source.grade,source.module||'--',source.mode,source.campus,source.hours,
-      source.historicalTeacher||'--',source.currentTeacher||'--',source.teacherDiscussed||'--','--','--','--'
-    ]);
-    document.querySelector('.legacy-table-wrap tbody').innerHTML=rows.map(row=>`<tr>${row.map(value=>`<td>${escapeHtml(value)}</td>`).join('')}</tr>`).join('');
+    const extra=flowSubmission.extra||{};
     const supplements=flowOrder.supplements||[];
-    $('#flowSupplements').hidden=supplements.length===0;
-    $('#flowSupplements').innerHTML=supplements.length?`<div class="flow-supplements-title">补充排课要求</div><div class="flow-supplements-list">${supplements.map(item=>`<div class="flow-supplement-item"><small>补充时间：${escapeHtml(item.time)}</small><p>${escapeHtml(item.text)}</p></div>`).join('')}</div>`:'';
+    const attachments=[...new Set([...(flowSubmission.requirementAttachments||[]),...(extra.vouchers||[])])];
+    const specifiedEnd=flowSubmission.endMode==='SPECIFIED_DATE'||(!flowSubmission.endMode&&!!flowSubmission.end);
+    const endDate=specifiedEnd?flowSubmission.end||'--':'排完全部课程结束';
+    const fact=(label,text,className='',raw=false)=>`<div class="educator-detail-fact ${className}"><span class="educator-detail-label">${escapeHtml(label)}</span><span class="educator-detail-colon">:</span><span class="educator-detail-value">${raw?text:value(text)}</span></div>`;
+    const supplementHtml=[extra.otherRequirement?`<div>${value(extra.otherRequirement)}</div>`:'',...supplements.map(item=>`<div class="educator-detail-supplement"><div>${value(item.text)}</div></div>`)].join('')||'--';
+    const precise=flowSubmission.preciseTime;
+    const preciseSummary=precise?[
+      precise.weekdays?.length?precise.weekdays.map(day=>['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][day]).join('、'):'每天',
+      [...(precise.slots||[]),...(precise.custom||[]).map(([start,end])=>`${start}-${end}`)].join('、')
+    ].filter(Boolean).join('；'):'';
+    $('#educatorDetailFacts').innerHTML=`<div class="educator-detail-dates">${fact('开课日期',flowSubmission.start)}${fact('结课日期',endDate)}</div>
+      ${fact('排课类型',flowSubmission.type)}
+      ${fact('排课时间要求',flowSubmission.selfClass?.description||flowSubmission.requirement||flowSubmission.time)}
+      ${precise?fact('精准排课时段',preciseSummary):''}
+      ${fact('排课时间要求补充',supplementHtml,'educator-detail-long',true)}
+      ${fact('目前校内进度/需要听的知识点',extra.progress,'educator-detail-long-label')}
+      ${fact('预计/已报名考试时间',extra.examDate)}
+      ${fact('课程备注',extra.courseNote)}
+      ${fact('学习目的',extra.studyPurposes?.join('、'))}
+      ${fact('家庭与学习关系',extra.familyRelation)}
+      ${fact('偏好上课风格',extra.teacherStyles?.join('、'))}
+      ${fact('性别偏好',extra.teacherGender)}
+      ${fact('学生学情介绍','--')}
+      ${fact('凭证',attachments.length?`<span class="educator-detail-attachment">♧ ${value(attachments.join('、'))}</span>`:'--','',!!attachments.length)}`;
+    $('#flowSupplements').hidden=true;
   }
   function openRequirementReview() {
     $('#flowRequirementsTitle').textContent='查看排课要求';
@@ -561,8 +633,8 @@
     document.body.classList.remove('flow-drawer-open');
   }
   function renderWizard() {
-    const titles={1:'补充排课要求',1.5:'排课要求沟通确认',2:'确认排课策略',3:'选择排课老师',4:'查看智能排课结果'};
-    const isDrawer=state.step<=3;
+    const titles={1:'补充排课要求',1.5:'排课要求沟通确认',2:'确认排课策略',3:consultPreview?'确认售前咨单方案':'选择排课老师',4:'查看智能排课结果'};
+    const isDrawer=state.step<=4;
     $('#modalBackdrop').classList.toggle('flow-drawer-backdrop',isDrawer);
     $('#modalBackdrop').classList.toggle('strategy-edit-modal',state.step===2&&state.strategyEditFromTeachers);
     document.body.classList.toggle('flow-drawer-open',isDrawer);
@@ -1182,7 +1254,7 @@
       ${courses.map(c=>`<section class="content-card analysis-section strategy-course-card"><div class="content-card-header"><div class="course-analysis-title"><strong>${c.name}</strong><span class="meta-chip">${c.hours}课时</span><span class="meta-chip">${escapeHtml(c.mode)}</span><span class="meta-chip">${escapeHtml(c.campus)}</span>${courseLessonDurationChips(c)}<span class="meta-chip">${courseLessonTotal(c)}节</span></div></div><div class="content-card-inner"><div class="analysis-card"><p>根据AI分析结果：${escapeHtml(state.aiSnapshot.courses[c.id])}</p></div>${strategyTeacherAssignment(c)}<details class="structure"${policyOpen}><summary><span>排课策略</span></summary>${courseStructure(c)}</details></div></section>`).join('')}`;
     $('#wizardFooter').innerHTML=state.strategyEditFromTeachers?'<button class="btn" data-cancel-strategy-edit>取消</button><button class="btn btn-primary" data-save-rules>校验并保存策略</button>':`<button class="btn" data-strategy-supplement>补充排课要求</button><button class="btn btn-quiet" data-toggle-edit>${state.editing?'退出编辑':'编辑排课策略'}</button>${state.editing?'<button class="btn btn-primary" data-save-rules>校验并保存策略</button>':'<button class="btn btn-primary" data-recommend>生成学生排课计划并推荐教师</button>'}`;
   }
-  function renderCandidate(course,teacher,specified=false,tier=null,knownCoverage=null) {
+  function renderCandidate(course,teacher,specified=false,tier=null,knownCoverage=null,sampleApproval=false) {
     const total=courseLessonTotal(course);
     const requirements=state.draft.courses[course.id];
     const hasFixed=requirements.some(segment=>rulesByType(segment,'固定').length);
@@ -1191,42 +1263,45 @@
     const metrics=[`<span><b>${coverage.total}/${total}</b><small>总课节覆盖</small></span>`];
     if(hasFixed) metrics.push(`<span><b>${coverage.fixed}/${total}</b><small>固定时段覆盖</small></span>`);
     else if(hasPreferred) metrics.push(`<span><b>${coverage.preferred}/${total}</b><small>优先时段覆盖</small></span>`);
-    else metrics.push(`<span><b>${coverage.total}/${total}</b><small>候选时段覆盖</small></span>`);
+    else if(!consultPreview) metrics.push(`<span><b>${coverage.total}/${total}</b><small>候选时段覆盖</small></span>`);
     const selected=specified||state.selected[course.id]===teacher.name;
     const status=teacherStatus(teacher.name);
     const lessonStatus=courseStatus(course,teacher.name);
     const statusPair=`<span class="teacher-status-pair" tabindex="0" aria-label="老师排课状态：${escapeHtml(status)}；课程排课状态：${escapeHtml(lessonStatus)}"><span class="teacher-status-tag ready">${escapeHtml(status)}</span><span class="teacher-status-tag warning">${escapeHtml(lessonStatus)}</span><span class="candidate-status-tooltip" role="tooltip"><span><i class="status-legend-dot teacher-dot" aria-hidden="true"></i>老师排课状态：${escapeHtml(status)}</span><span><i class="status-legend-dot course-dot" aria-hidden="true"></i>课程排课状态：${escapeHtml(lessonStatus)}</span></span></span>`;
     const matchedTier=tier||teacherPriorityRuleFor(course)?.tiers.find(row=>teacherMatchesPriorityTier(teacher.name,row));
-    const approvalText=matchedTier?.approvalRequired&&matchedTier.approvalText?matchedTier.approvalText:'';
+    const approvalText=matchedTier?.approvalRequired&&matchedTier.approvalText?matchedTier.approvalText:sampleApproval?'【示例】推荐该老师需先由所属教学部门负责人审批':'';
     const approvalTag=approvalText?`<span class="org-approval-icon" tabindex="0" aria-label="审批提示：${escapeHtml(approvalText)}"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 2.5 18 17H2zM10 7.5v4.8M10 14.7v.2"/></svg><span class="org-approval-tooltip" role="tooltip">${escapeHtml(approvalText)}</span></span>`:'';
     const approvalNote=approvalText?`<div class="candidate-approval-note"><span aria-hidden="true">●</span>${escapeHtml(approvalText)}</div>`:'';
-    const action=specified?'<button class="btn choose-teacher" type="button" disabled>✓ 已指定为本课程老师</button>':`<button class="btn ${selected?'choose-teacher':'btn-quiet choose-teacher'}" data-select-candidate="${course.id}" data-teacher="${escapeHtml(teacher.name)}">${selected?'✓ 已选为本课程老师':'选择该老师'}</button>`;
-    return `<article class="candidate ${selected?'selected':''} ${specified?'specified-candidate':''}" data-scheduling-status="${escapeHtml(lessonStatus)}"><div class="candidate-title"><div class="candidate-name-row"><strong>${escapeHtml(teacher.name)}</strong>${statusPair}</div><button type="button" class="teacher-load-button" data-view-teacher-load="${escapeHtml(teacher.name)}">查看</button></div><div class="teacher-department">${escapeHtml(teacherDepartmentFor(teacher.name))}</div>${approvalNote}<div class="candidate-metrics" style="--metric-count:${metrics.length}">${metrics.join('')}</div><div class="candidate-action">${action}${approvalTag}</div></article>`;
+    const action=specified?`<button class="btn choose-teacher" type="button" disabled>${consultPreview?'已确定方案':'✓ 已指定为本课程老师'}</button>`:`<button class="btn ${selected?'choose-teacher':'btn-quiet choose-teacher'}" data-select-candidate="${course.id}" data-teacher="${escapeHtml(teacher.name)}" aria-pressed="${selected}">${consultPreview?'选择该方案':selected?'✓ 已选为本课程老师':'选择该老师'}</button>`;
+    return `<article class="candidate ${selected?'selected':''} ${specified?'specified-candidate':''}" data-scheduling-status="${escapeHtml(lessonStatus)}"><div class="candidate-title"><div class="candidate-name-row"><strong>${escapeHtml(teacher.name)}</strong>${statusPair}</div><button type="button" class="teacher-load-button" data-view-teacher-load="${escapeHtml(teacher.name)}">${consultPreview?'查看教师信息':'查看'}</button></div><div class="teacher-department">${escapeHtml(teacherDepartmentFor(teacher.name))}</div>${approvalNote}<div class="candidate-metrics" style="--metric-count:${metrics.length}">${metrics.join('')}</div><div class="candidate-action">${action}${approvalTag}</div></article>`;
   }
-  function renderRecommendedCandidates(course,pinnedTeacher='') {
+  function renderRecommendedCandidates(course,pinnedTeacher='',showSampleApproval=false) {
     const result=recommendTeachersForCourse(course);
     const candidates=result.groups.flatMap(group=>group.ranked.map(item=>({teacher:item.teacher,tier:group.tier,coverage:item.coverage}))).filter(item=>item.teacher.name!==pinnedTeacher);
     if(!candidates.length&&!pinnedTeacher) return '<div class="empty-teacher">暂无可用教师。可修改老师要求后重新推荐。</div>';
-    return `<div class="candidate-grid">${pinnedTeacher?renderCandidate(course,{name:pinnedTeacher},true):''}${candidates.map(item=>renderCandidate(course,item.teacher,false,item.tier,item.coverage)).join('')}</div>`;
+    return `<div class="candidate-grid">${pinnedTeacher?renderCandidate(course,{name:pinnedTeacher},true):''}${candidates.map((item,index)=>renderCandidate(course,item.teacher,false,item.tier,item.coverage,showSampleApproval&&index===0)).join('')}</div>`;
   }
   function renderTeachers() {
     const selectedCount=courses.filter(c=>state.direct[c.id]||state.selected[c.id]).length;
     const editing=state.editingTeacherRequirements;
     const title=$('#wizardTitle');
-    title.textContent=editing?'修改老师要求':'选择排课老师';
+    title.textContent=editing?'修改老师要求':consultPreview?'确认售前咨单方案':'选择排课老师';
     title.closest('.wizard-header').querySelector('.strategy-timezone-pill')?.remove();
     title.parentElement.insertAdjacentHTML('afterend',`<span class="strategy-timezone-pill"><span aria-hidden="true">◉</span> 上课时区：${escapeHtml(scheduleTimezoneLabel(state.scheduleTimezone))}</span>`);
     $('#wizardBody').classList.toggle('teacher-requirements-editing',editing);
-    $('#wizardBody').innerHTML=`<div class="teacher-selection-count"><span class="selection-summary">${editing?'正在修改老师要求，保存后重新显示推荐结果':`已选择：${selectedCount}/${courses.length}门`}</span></div>
+    const hasActualApproval=courses.some(course=>recommendTeachersForCourse(course).groups.some(group=>group.tier?.approvalRequired&&group.tier.approvalText&&group.ranked.length));
+    let sampleApprovalShown=false;
+    $('#wizardBody').innerHTML=`${consultPreview&&!editing?'':`<div class="teacher-selection-count"><span class="selection-summary">${editing?'正在修改老师要求，保存后重新显示推荐结果':`已选择：${selectedCount}/${courses.length}门`}</span></div>`}
       ${courses.map(c=>{
         const direct=state.direct[c.id],expanded=state.expandedPlanCourseId===c.id,showRequirement=editing||state.expandedTeacherRequirementIds.has(c.id);
-        const teacherPanel=editing?'':renderRecommendedCandidates(c,direct);
-        const planPanel=editing||!expanded?'':`<div class="teacher-plan-shell"><div class="teacher-course-plan" id="course-plan-${c.id}">${coursePlanList(c.id)}</div></div>`;
+        const teacherPanel=editing?'':renderRecommendedCandidates(c,direct,!hasActualApproval&&!sampleApprovalShown);
+        if(teacherPanel.includes('【示例】'))sampleApprovalShown=true;
+        const planPanel=editing||consultPreview||!expanded?'':`<div class="teacher-plan-shell"><div class="teacher-course-plan" id="course-plan-${c.id}">${coursePlanList(c.id)}</div></div>`;
         const requirementToggle=editing?'':`<button class="teacher-requirement-toggle" type="button" data-toggle-teacher-requirements="${c.id}" aria-controls="teacher-requirement-${c.id}" aria-expanded="${showRequirement}">${showRequirement?'收起老师要求':'查看老师要求'}</button>`;
-        const planToggle=editing?'':`<button class="teacher-requirement-toggle" type="button" data-view-course-plan="${c.id}" aria-controls="course-plan-${c.id}" aria-expanded="${expanded}">${expanded?'收起学生排课计划':'查看学生排课计划'}</button>`;
+        const planToggle=editing||consultPreview?'':`<button class="teacher-requirement-toggle" type="button" data-view-course-plan="${c.id}" aria-controls="course-plan-${c.id}" aria-expanded="${expanded}">${expanded?'收起学生排课计划':'查看学生排课计划'}</button>`;
         return `<section class="content-card teacher-course-card"><div class="content-card-header"><div class="course-analysis-title"><strong>${escapeHtml(c.name)}</strong><span class="meta-chip">${c.hours}课时</span><span class="meta-chip">${escapeHtml(c.mode)}</span><span class="meta-chip">${escapeHtml(c.campus)}</span>${courseLessonDurationChips(c)}<span class="meta-chip">${courseLessonTotal(c)}节</span></div><div class="teacher-direct-course-actions">${requirementToggle}${planToggle}</div></div>${teacherRequirementFields(c,showRequirement)}${planPanel}${teacherPanel?`<div class="content-card-inner teacher-candidates">${teacherPanel}</div>`:''}</section>`;
       }).join('')}`;
-    $('#wizardFooter').innerHTML=state.editingTeacherRequirements?'<button class="btn" data-cancel-teacher-requirements>取消修改</button><button class="btn btn-primary" data-save-teacher-requirements>保存并重新推荐老师</button>':`${consultPreview?'':'<button class="btn" data-back-analysis>返回排课策略</button>'}<button class="btn" data-edit-teacher-requirements>修改老师要求</button><button class="btn btn-primary" data-generate ${selectedCount<courses.length?'disabled':''}>${consultPreview?'生成预排方案':'联合排课并生成正式排课'}</button>`;
+    $('#wizardFooter').innerHTML=state.editingTeacherRequirements?'<button class="btn" data-cancel-teacher-requirements>取消修改</button><button class="btn btn-primary" data-save-teacher-requirements>保存并重新推荐老师</button>':`${consultPreview?(selectedCount<courses.length?'<button class="btn" data-transfer-consult>无合适方案，转教务</button>':''):'<button class="btn" data-back-analysis>返回排课策略</button>'}<button class="btn" data-edit-teacher-requirements>修改老师要求</button><button class="btn btn-primary" data-generate ${selectedCount<courses.length?'disabled':''}>${consultPreview?'确认方案并生成预排课表':'联合排课并生成正式排课'}</button>`;
   }
   function renderTeacherLoad() {
     const overlay=$('#teacherLoadBackdrop');
@@ -1334,7 +1409,7 @@
   function selectedTeacher(course) { return state.direct[course.id]||state.selected[course.id]||'未选择'; }
   function renderCompletedPlan() {
     const lessons=state.resultLessons;
-    const courseResults=courses.map(course=>{
+    const courseResults=courses.map((course,courseIndex)=>{
       const total=courseLessonTotal(course);
       const courseLessons=lessons.filter(item=>item[2]===course.id);
       const actualTotal=courseLessons.length;
@@ -1352,20 +1427,21 @@
           const met=row.finish?cumulative===total:actual>=row.requiredMin&&actual<=row.requiredMax||Boolean(finishedInPeriod);
           const expected=expectedByRow.get(row);
           const expectedRange=row.rolling?`0—${expected.covered} 节（近8周）`:row.finish?`0—${expected.covered} 节`:lessonRange(expected.expectedMin,expected.expectedMax);
-          const periodGap=finishedInPeriod?0:row.finish?Math.max(0,total-cumulative):Math.max(0,row.requiredMin-actual);
+          const periodGap=finishedInPeriod?0:row.finish?Math.max(0,total-cumulative):Math.abs(actual-row.requiredMin);
           return {actual,met,html:`<tr><td>${periodDate(row)}</td><td>${periodRequirement(row)}</td><td><strong>${expectedRange}</strong></td><td>${actual} 节</td><td class="${periodGap?'period-gap':''}">${periodGap} 节</td><td><span class="result-status ${met?'met':'unmet'}">${met?'完成':'未完成'}</span></td></tr>`};
         });
         const accounted=evaluatedRows.reduce((sum,row)=>sum+row.actual,0);
         const completedBefore=courseLessons.filter(item=>item[0]<requirement.start).length===total;
         const requirementMet=(evaluatedRows.length?evaluatedRows.every(row=>row.met):completedBefore)&&accounted===actualInRequirement;
         const periodRows=evaluatedRows.map(row=>row.html).join('');
-        return `<details class="result-requirement"><summary class="result-requirement-head"><strong>排课计划 ${index+1}</strong><span>${requirement.end?`${dateLabel(requirement.start)}—${dateLabel(requirement.end)}`:`${dateLabel(requirement.start)} 起 · 排完全部课时结束`}</span><em class="result-status ${requirementMet?'met':'unmet'}">${requirementMet?'完成':'未完成'} 已排${actualInRequirement}节</em></summary>${planRuleLine(requirement,true)}${periodRows?`<div class="result-table-scroll"><table class="result-period-table"><thead><tr><th>排课日期</th><th>学生排课要求</th><th>本周期预计排课</th><th>本周期实际排课</th><th>本周期排课差额</th><th>完成状态</th></tr></thead><tbody>${periodRows}</tbody></table></div>`:'<div class="result-empty-period">本段暂无周期排课结果</div>'}</details>`;
+        return `<details class="result-requirement" ${courseIndex===0&&index<2?'open':''}><summary class="result-requirement-head"><strong>排课计划 ${index+1}</strong><span>${requirement.end?`${dateLabel(requirement.start)}—${dateLabel(requirement.end)}`:`${dateLabel(requirement.start)} 起 · 排完全部课时结束`}</span><em class="result-status ${requirementMet?'met':'unmet'}">${requirementMet?'完成':'未完成'} 已排${actualInRequirement}节</em></summary>${planRuleLine(requirement,true)}${periodRows?`<div class="result-table-scroll"><table class="result-period-table"><thead><tr><th>排课日期</th><th>学生排课要求</th><th>本周期预计排课</th><th>本周期实际排课</th><th>本周期排课差额</th><th>完成状态</th></tr></thead><tbody>${periodRows}</tbody></table></div>`:'<div class="result-empty-period">本段暂无周期排课结果</div>'}</details>`;
       }).join('');
       const totalLabel=totalMet?'已完成':actualTotal<total?'未完成':'超出';
       const totalGap=Math.max(0,total-actualTotal);
       return `<section class="content-card result-course-card"><div class="content-card-header"><div class="course-analysis-title"><strong>${escapeHtml(course.name)}</strong><span class="meta-chip">授课老师：${escapeHtml(selectedTeacher(course))}</span></div><span class="result-status ${totalMet?'met':'unmet'}">${totalLabel} 已排${actualTotal}/${total}节${totalGap?` · 待补${totalGap}节`:''}</span></div><div class="content-card-inner">${requirementCards}</div></section>`;
     }).join('');
-    $('#wizardBody').innerHTML=`${scheduleTimezoneContext()}${courseResults}`;
+    $('#wizardTitle').parentElement.insertAdjacentHTML('afterend',`<span class="strategy-timezone-pill"><span aria-hidden="true">◉</span> 上课时区：${escapeHtml(scheduleTimezoneLabel(state.scheduleTimezone))}</span>`);
+    $('#wizardBody').innerHTML=courseResults;
     $('#wizardFooter').innerHTML='<button class="btn" data-restart-plan>重新排课</button><button class="btn btn-primary" data-close>关闭</button>';
   }
   function resultSnapshot() {
@@ -1510,7 +1586,8 @@
     pop.hidden=false;
     const rect=cell.getBoundingClientRect();
     const width=pop.offsetWidth||160, height=pop.offsetHeight||84;
-    const left=Math.max(8,Math.min(rect.left,window.innerWidth-width-8));
+    const canvasRight=document.querySelector('.prototype-notes')?.getBoundingClientRect().left||window.innerWidth;
+    const left=Math.max(8,Math.min(rect.left,canvasRight-width-8));
     let top=rect.bottom+6;
     if(top+height>window.innerHeight-8) top=Math.max(8,rect.top-height-6);
     pop.style.left=left+'px';
@@ -1595,6 +1672,7 @@
     document.body.classList.add('formal-page-active');
     $('#orderPage').hidden=true; $('#resultPage').hidden=false;
     if(!reuseExisting) {
+      state.restartingSchedule=false;
       state.planMode='智能排课';
       state.currentPlanCreatedAt=versionName(new Date());
       state.selectedResultLessons.clear();
@@ -1613,7 +1691,7 @@
     // 无 packages 的排课单（老数据/演示单）视作单课程包 = 班级1，与多包渲染结构一致
     const sideGroups=flowClassGroups.length?flowClassGroups:(courses.length?[{name:flowOrderTitle,index:1,courses}]:[]);
     const sideGroupInfo=courseId=>{const gi=sideGroups.findIndex(g=>g.courses.some(c=>c.id===courseId));return {index:gi,group:gi>=0?sideGroups[gi]:null,color:classColors[(gi>=0?gi:0)%classColors.length]};};
-    const sideInfoHtml=`<button type="button" class="formal-side-rail" id="formalSideRail" title="展开排课信息"><span class="formal-side-rail-arrow">›</span><span class="formal-side-rail-text">排课信息</span></button><section class="formal-side-card"><div class="formal-side-title"><span>排课信息</span><button type="button" class="formal-side-toggle" id="formalSideToggle" title="收起排课信息">收起 ‹</button></div><div class="formal-side-info"><div class="formal-side-fields"><div><label>学生姓名</label><strong>${escapeHtml(flowStudentName)}</strong></div><div><label>排课单总课时</label><strong>${classHours}</strong></div><div><label>排课单未排课时</label><strong>${Math.max(0,remainingHours)}</strong></div></div>${sideGroups.map((group,gi)=>{
+    const sideInfoHtml=`<section class="formal-side-card"><div class="formal-side-title"><span>排课信息</span><button type="button" class="formal-side-toggle" id="formalSideToggle" title="收起排课信息">收起 ‹</button></div><div class="formal-side-info"><div class="formal-side-fields"><div><label>学生姓名</label><strong>${escapeHtml(flowStudentName)}</strong></div><div><label>排课单总课时</label><strong>${classHours}</strong></div><div><label>排课单未排课时</label><strong>${Math.max(0,remainingHours)}</strong></div></div>${sideGroups.map((group,gi)=>{
       const color=classColors[gi%classColors.length];
       const hours=group.courses.reduce((total,course)=>total+course.hours,0);
       const scheduled=group.courses.reduce((total,course)=>total+courseScheduledHours(course.id),0);
@@ -1628,13 +1706,12 @@
     const weekday=date=>weekdays[new Date(`${date}T00:00:00Z`).getUTCDay()];
     const calendar=`<div class="formal-calendar-grid" style="--formal-day-count:${dates.length}"><div class="formal-calendar-head formal-calendar-corner">时间/时期</div>${dates.map(date=>`<div class="formal-calendar-head">${date}<span>${weekday(date)}</span></div>`).join('')}${times.map(time=>`<div class="formal-time">${time.replace('-', ' ~ ')}</div>${dates.map(date=>{const item=lessons.find(row=>row[0]===date&&row[1]===time);if(!item)return '<div class="formal-calendar-cell"></div>';const course=courses.find(c=>c.id===item[2]);return `<div class="formal-calendar-cell">${formalLessonCard(item,course,selectedTeacher(course),true,sideGroupInfo(course.id))}</div>`;}).join('')}`).join('')}</div>`;
     const teacherSchedule=`<table class="formal-teacher-table"><thead><tr><th>科目</th><th>教师姓名</th><th>上课时段</th>${dates.map(date=>`<th>${date}<small>(${weekday(date)})</small></th>`).join('')}<th>操作</th></tr></thead><tbody>${courses.map(course=>{const clsInfo=courseClassInfo(course.id);return scheduleTimes.map((time,index)=>`<tr>${index===0?`<td class="formal-merged" rowspan="${scheduleTimes.length}"><div class="formal-course-teacher-cell"><span>${escapeHtml(course.name)}</span>${clsInfo.group?`<small class="formal-course-class" style="color:${clsInfo.color[0]}">班级 ${clsInfo.group.index} · ${escapeHtml(clsInfo.group.name)}</small>`:''}<button class="formal-add-teacher" type="button" data-formal-add-teacher="${course.id}"><span aria-hidden="true">＋</span> 添加教师</button></div></td><td class="formal-merged" rowspan="${scheduleTimes.length}">${escapeHtml(selectedTeacher(course))}</td>`:''}<td>${time}</td>${dates.map(date=>{const status=slotStatus(date,time,course);const slotKey=formalLessonKey([date,time,course.id]);const slotAttrs=status.clickable?` data-teacher-slot="${slotKey}"`:'';const lessonAttrs=(status.cls==='is-teacher'||status.cls==='is-new')?` data-lesson-slot="${slotKey}"`:(status.cls==='is-available'||status.cls==='is-selected')?` data-empty-slot="${slotKey}"`:'';return `<td class="formal-teacher-slot ${status.cls}"${slotAttrs}${lessonAttrs} title="${status.tip}">${status.label}</td>`;}).join('')}${index===0?`<td class="formal-merged" rowspan="${scheduleTimes.length}"><button class="formal-link-button" type="button">删除</button></td>`:''}</tr>`).join('');}).join('')}</tbody></table>`;
-    const classLegend=flowClassGroups.length>1?`<div class="formal-class-legend"><strong>班级图例：</strong>${flowClassGroups.map((group,gi)=>`<span style="--cls-main:${classColors[gi%classColors.length][0]}"><i></i>班级 ${group.index} · ${escapeHtml(group.name)}</span>`).join('')}</div>`:'';
     $('#resultPage').innerHTML=`<div class="formal-toolbar"><div class="formal-toolbar-left"><button class="formal-back" id="formalBack">‹ 返回</button><strong class="formal-toolbar-title" title="${escapeHtml(flowOrderTitle)}">${escapeHtml(flowOrderTitle)}</strong></div><div class="formal-toolbar-right"><button class="primary" id="formalFinish">结束排课单</button></div></div>
       <div class="formal-layout${state.sideCollapsed?' side-collapsed':''}"><aside class="formal-side-column">${sideInfoHtml}</aside><div class="formal-main-column">
-      <section class="formal-workspace"><header class="formal-workspace-head"><h2>教师排课 <span class="formal-calendar-icon">▦</span></h2><div class="formal-head-actions"><div class="formal-head-group group-refresh"><button id="formalRefresh">↻ 更新排课数据</button></div><div class="formal-head-group group-plan"><button id="formalSavePlan">保存排课方案</button><button id="formalSwitchPlan" ${state.versions.length?'':'disabled'}>切换排课方案</button></div><div class="formal-head-group group-preview"><button id="formalExportTeacherSchedule">预览教师课表</button><button id="formalStudentPreview">预览学生课表</button></div><div class="formal-head-group group-result"><button id="formalViewSchedule" ${state.planMode==='人工排课'?'disabled':''}>查看智能排课结果</button></div><span class="formal-collapse">⌄</span></div></header><div class="formal-linked-teachers"><span>已关联教师：</span>${[...new Set(courses.map(c=>selectedTeacher(c)))].map(t=>`<span class="formal-teacher-chip">${escapeHtml(t)} ×</span>`).join('')}<div class="formal-legend"><span class="published">已发布</span><span class="pending">待发布</span><span class="change">待变更</span><span class="conflict">冲突</span></div></div>
-      <div class="formal-actions"><button id="formalAddLesson">添加课程时间</button><button>冲突检测</button><button>冲突详情</button><button id="viewConfirmedRequirements">查看排课要求</button><button>查找可用课次</button><button>清除空白课次</button><button>回写班级</button><button>回写班级课表</button><button>查看回写记录</button><button>排课日志</button></div>
+      <section class="formal-workspace"><header class="formal-workspace-head"><h2>教师排课 <span class="formal-calendar-icon">▦</span></h2><div class="formal-head-actions"><div class="formal-head-group group-refresh"><button id="formalRefresh">↻ 更新排课数据</button></div><div class="formal-head-group group-info"><button id="formalViewOrderInfo" type="button" aria-expanded="${!state.sideCollapsed}">查看排课信息</button><button id="formalViewApproval">查看审批结果</button><button id="formalViewConsult">查看售前咨单</button></div><div class="formal-head-group group-plan"><button id="formalSavePlan">保存排课方案</button><button id="formalSwitchPlan" ${state.versions.length?'':'disabled'}>切换排课方案</button></div><div class="formal-head-group group-preview"><button id="formalExportTeacherSchedule">预览教师课表</button><button id="formalStudentPreview">预览学生课表</button></div><div class="formal-head-group group-result"><button id="formalViewSchedule" ${state.planMode==='人工排课'?'disabled':''}>查看智能排课结果</button><button id="formalRestartSchedule">重新排课</button></div><span class="formal-collapse">⌄</span></div></header><div class="formal-linked-teachers"><span>已关联教师：</span>${[...new Set(courses.map(c=>selectedTeacher(c)))].map(t=>`<span class="formal-teacher-chip">${escapeHtml(t)} ×</span>`).join('')}<div class="formal-legend"><span class="published">已发布</span><span class="pending">待发布</span><span class="change">待变更</span><span class="conflict">冲突</span></div></div>
+      <div class="formal-actions"><button id="formalAddLesson">添加课程时间</button><button>冲突检测</button><button>冲突详情</button><button id="viewConfirmedRequirements">查看排课要求</button><button>查找可用课次</button><button>清除空白课次</button><button>回写班级</button><button>回写班级课表</button><button>查看回写记录</button><button id="formalScheduleLog" type="button">排课日志</button></div>
       <div class="formal-actions formal-batch-actions"><button class="formal-active-action">◉ 关闭批量操作</button><button>◯ 全选</button><button disabled>时间调整</button><button disabled>关联课程</button><button disabled>关联教师</button><button disabled>关联教室</button><button disabled>取消教室</button><button disabled>删除书课</button><button disabled>添加备注</button><button disabled>回写选中课次</button><button disabled>修改授课模式</button><button disabled>添加课号</button></div>
-      <div class="formal-calendar-card"><div class="formal-calendar-scroll">${calendar}</div>${classLegend}</div><div class="formal-panel-grip">↧</div>
+      <div class="formal-calendar-card"><div class="formal-calendar-scroll">${calendar}</div></div><div class="formal-panel-grip">↧</div>
       <section class="formal-bottom-panel"><header class="formal-workspace-head"><h2>教师日程 <span class="formal-calendar-icon">▦</span></h2><span class="formal-collapse">⌄</span></header><div class="formal-bottom-content"><div class="formal-schedule-tabs"><button class="active">日程总览</button><button>日程详情</button></div><div class="formal-bottom-filters"><label>日期<input value="${dates[0]}　至　${dates.at(-1)}" readonly></label><label>时段<input value="${scheduleTimes.join(';')}" readonly></label><label>星期<select><option>请选择</option></select></label><div class="formal-filter-actions"><button>重置</button><button class="primary">查询</button></div></div><div class="formal-calendar-legend"><strong>图例：</strong><span class="leave">老师有课</span><span class="rest">老师休假</span><span class="available">可排</span><span class="unavailable">不可排（未到排课时间）</span><span class="student">学生有课</span><span class="shared">老师&学生都有课</span><span class="selected">已选择</span><span class="new">新排</span></div><div class="formal-teacher-scroll">${teacherSchedule}</div></div></section></section>
       </div></div>
       <footer class="formal-fixed-footer"><button id="formalCancel">取消</button><button class="primary" id="formalSubmit">提交</button></footer><div id="formalDialog" class="formal-dialog-backdrop" hidden></div><div id="teacherScheduleDrawer" class="teacher-schedule-backdrop" hidden></div><div id="formalLessonPopover" class="formal-lesson-popover" hidden><button type="button" data-lesson-action="delete">删除课节</button><button type="button" data-lesson-action="adjust">调整课节</button></div><div id="formalLessonConfirm" class="formal-lesson-confirm-backdrop" hidden><div class="formal-lesson-confirm-window" role="dialog" aria-modal="true" aria-labelledby="formalLessonConfirmText"><h3 id="formalLessonConfirmText"></h3><div class="formal-lesson-confirm-actions"><button type="button" data-lesson-confirm="cancel">取消</button><button type="button" class="primary" data-lesson-confirm="ok">确认</button></div></div></div><div id="formalAdjustTip" class="formal-adjust-tip" hidden><span>调整课节：点击空白格子移动课节，或点击其他绿色课节互换时间</span><button type="button" data-lesson-adjust-cancel>取消调整</button></div>`;
@@ -1739,7 +1816,13 @@
   function openFormalDialog(type,versionId) {
     const overlay=$('#formalDialog');
     if(!overlay) return;
-    if(type==='save') {
+    if(type==='approval') {
+      const records=[flowOrder?.approvalRecords,flowOrder?.approvals].find(Array.isArray)||[];
+      const rows=records.map(record=>`<tr><td>${escapeHtml(record.type||record.approvalType||'--')}</td><td>${escapeHtml(record.subject||record.course||'--')}</td><td>${escapeHtml(record.status||'--')}</td><td>${escapeHtml(record.result||'--')}</td><td>${escapeHtml(record.reviewer||'--')}</td><td>${escapeHtml(record.reviewedAt||record.approvalTime||'--')}</td><td>${escapeHtml(record.rejectReason||'--')}</td></tr>`).join('');
+      overlay.innerHTML=`<div class="formal-dialog-window formal-approval-dialog" role="dialog" aria-modal="true" aria-labelledby="formalDialogTitle"><header><strong id="formalDialogTitle">查看审批结果</strong><button type="button" data-formal-dialog-close aria-label="关闭">×</button></header><div class="formal-dialog-body"><p class="formal-approval-order">排课单：${escapeHtml(flowOrderTitle)}</p>${rows?`<div class="formal-approval-table-wrap"><table><thead><tr><th>审批类型</th><th>排课科目</th><th>审批状态</th><th>审批结果</th><th>审批人</th><th>审批时间</th><th>驳回原因</th></tr></thead><tbody>${rows}</tbody></table></div>`:'<div class="formal-approval-empty">当前排课单暂无审批记录</div>'}</div><footer><button type="button" data-formal-dialog-close>关闭</button></footer></div>`;
+    } else if(type==='restart') {
+      overlay.innerHTML='<div class="formal-dialog-window formal-restart-dialog" role="alertdialog" aria-modal="true" aria-labelledby="formalDialogTitle" aria-describedby="formalRestartWarning"><header><strong id="formalDialogTitle">重新排课</strong><button type="button" data-formal-dialog-close aria-label="关闭">×</button></header><div class="formal-dialog-body"><p id="formalRestartWarning">重新排课会删除全部预排课节，确认重新排课？</p></div><footer><button type="button" data-formal-dialog-close>取消</button><button type="button" class="primary" data-formal-restart-confirm>确认重新排课</button></footer></div>';
+    } else if(type==='save') {
       const active=state.versions.find(item=>item.id===state.activeVersionId);
       const sameAsActive=active&&JSON.stringify(active.snapshot)===JSON.stringify(resultSnapshot());
       const remark=sameAsActive?active.remark||'':'';
@@ -1766,6 +1849,31 @@
   function closeFormalDialog() {
     const overlay=$('#formalDialog');
     if(overlay) {overlay.hidden=true;overlay.innerHTML='';}
+  }
+  function restartScheduling() {
+    closeFormalDialog();
+    state.resultLessons=[];
+    state.selectedResultLessons.clear();
+    state.newPlacedLessons.clear();
+    state.pickedSlots.clear();
+    state.restartingSchedule=true;
+    state.completed=false;
+    state.draft=null;
+    state.aiSnapshot=null;
+    state.coursePlans=null;
+    state.selected={};
+    state.direct={};
+    state.teacherRequirements=Object.fromEntries(courses.map(course=>[course.id,defaultTeacherRequirement(course)]));
+    state.recommended=false;
+    state.activeVersionId=null;
+    state.pendingPlanVersionId=null;
+    state.currentPlanCreatedAt=null;
+    state.requirementConversation=null;
+    state.aiAnalysisError='';
+    document.body.classList.remove('formal-page-active');
+    $('#resultPage').hidden=true;
+    $('#orderPage').hidden=false;
+    openWizard(1);
   }
   document.addEventListener('scroll',event=>{
     if(event.target?.classList?.contains('formal-teacher-scroll')) hideLessonPopover();
@@ -1811,8 +1919,8 @@
     }
     const versionRow=event.target.closest('[data-formal-version-row]');
     if(versionRow&&!event.target.closest('button')) {state.pendingPlanVersionId=versionRow.dataset.formalVersionRow;openFormalDialog('switch');return;}
-    const sideToggle=event.target.closest('#formalSideToggle,#formalSideRail');
-    if(sideToggle) {state.sideCollapsed=!state.sideCollapsed;$('#resultPage .formal-layout')?.classList.toggle('side-collapsed',state.sideCollapsed);return;}
+    const sideToggle=event.target.closest('#formalSideToggle');
+    if(sideToggle) {state.sideCollapsed=true;$('#resultPage .formal-layout')?.classList.add('side-collapsed');$('#formalViewOrderInfo')?.setAttribute('aria-expanded','false');$('#formalViewOrderInfo')?.focus();return;}
     const popButton=event.target.closest('[data-lesson-action]');
     if(popButton) {
       const key=$('#formalLessonPopover')?.dataset.key||'';
@@ -1980,6 +2088,8 @@
       $('#formalPlanRemark')?.focus();
       return;
     }
+    if(button.id==='formalRestartSchedule') {openFormalDialog('restart');return;}
+    if(button.hasAttribute('data-formal-restart-confirm')) {restartScheduling();return;}
     if(button.hasAttribute('data-formal-save-confirm')) {
       const remark=$('#formalPlanRemark')?.value.trim()||'';
       const {version,persisted,created}=saveCurrentResultVersion(remark);
@@ -2032,6 +2142,17 @@
       syncTimeControl(control);
       return;
     }
+    if(button.id==='selfClassAssign') {
+      const key='teacher-scheduling-v32-educator-assignments';
+      let assignments={};
+      try { assignments=JSON.parse(localStorage.getItem(key)||'{}')||{}; } catch {}
+      assignments[String(flowOrder.id)]={handler:'李春玲',status:'处理中'};
+      localStorage.setItem(key,JSON.stringify(assignments));
+      flowOrder.handler='李春玲';flowOrder.status='处理中';
+      window.refreshEducatorPendingCounts?.();
+      if(location.hash.startsWith('#flow-order='))history.replaceState(null,'',`${location.pathname}${location.search}#flow-order=${encodeURIComponent(JSON.stringify(flowOrder))}`);
+      renderOrder();notify('排课单已分配');return;
+    }
     if(button.id==='startScheduling'||button.id==='restartScheduling') {
       if(state.draft) {state.editing=false;openWizard(2);return;}
       if(strategyAnalysisStatus==='SUCCESS') {finishAiAnalysis(2);return;}
@@ -2046,6 +2167,9 @@
 
     if(button.id==='formalViewSchedule') { openWizard(4);return; }
     if(button.id==='formalRefresh') { notify('排课数据已更新（原型示意）');return; }
+    if(button.id==='formalViewOrderInfo') {state.sideCollapsed=false;$('#resultPage .formal-layout')?.classList.remove('side-collapsed');button.setAttribute('aria-expanded','true');return;}
+    if(button.id==='formalViewApproval') {openFormalDialog('approval');return;}
+    if(button.id==='formalViewConsult') { window.openEducatorLinkedConsults?.();return; }
     if(button.id==='formalExportTeacherSchedule') {Object.assign(teacherScheduleView,{teacher:'',timezone:'Asia/Shanghai',queried:false});renderTeacherScheduleDrawer();return;}
     if(button.id==='formalStudentPreview') { notify('学生课表预览需接入正式课节数据');return; }
     if(button.id==='formalFinish') { notify('原型演示未实际结束排课单');return; }
@@ -2062,7 +2186,7 @@
     }
     if(button.id==='viewConfirmedRequirements') { state.editing=false;openWizard(2);return; }
     if(button.id==='closeWizard'||button.hasAttribute('data-close')) {closeWizard();return;}
-    if(button.hasAttribute('data-restart-plan')) {openWizard(1);return;}
+    if(button.hasAttribute('data-restart-plan')) {closeWizard();openFormalDialog('restart');return;}
     if(button.hasAttribute('data-pick-history')) {const id=button.dataset.pickHistory;state.direct[id]=button.dataset.teacher;delete state.selected[id];state.editingSpecifiedCourseId=null;refreshStrategyTeacher(id);return;}
     if(button.hasAttribute('data-change-specified')) {const id=button.dataset.changeSpecified;state.editingSpecifiedCourseId=id;refreshStrategyTeacher(id);return;}
     if(button.hasAttribute('data-cancel-specified-change')) {const id=state.editingSpecifiedCourseId;state.editingSpecifiedCourseId=null;refreshStrategyTeacher(id);return;}
@@ -2098,8 +2222,9 @@
     if(button.hasAttribute('data-save-rules')) {const error=validateDraft();if(error){notify(error);return;}state.editing=false;state.dirty=false;state.coursePlans=null;state.recommended=false;state.selected={};if(state.strategyEditFromTeachers){state.strategyEditSnapshot=null;state.strategyEditDirty=false;state.strategyEditFromTeachers=false;generateCoursePlans();state.recommended=true;openWizard(3);notify('排课策略已保存，学生计划和老师推荐已更新');}else{renderAnalysis();notify('排课策略已保存');}return;}
     if(button.hasAttribute('data-recommend')) {if(state.editing){notify('请先校验并保存策略');return;}const error=validateDraft();if(error){notify(error);return;}if(state.coursePlans&&state.recommended&&!state.dirty){openWizard(3);return;}state.strategyEditFromTeachers=false;generateCoursePlans();state.selected={};setLoading('正在计算学生排课计划并推荐教师','按各周期要求与示例学生日程计算可排容量，再测算候选老师覆盖…',()=>{state.recommended=true;openWizard(3);});return;}
     if(button.hasAttribute('data-back-analysis')) {state.editing=false;openWizard(2);return;}
-    if(button.hasAttribute('data-select-candidate')) {delete state.direct[button.dataset.selectCandidate];state.selected[button.dataset.selectCandidate]=button.dataset.teacher;renderTeachers();notify(`已选择 ${plainName(button.dataset.teacher)}`);return;}
-    if(button.hasAttribute('data-generate')) {const missing=courses.find(c=>!state.direct[c.id]&&!state.selected[c.id]);if(missing){notify(`请先为${missing.name}选择老师`);return;}if(consultPreview){setLoading('正在生成预排方案','按所选教师和学生时段生成预排课表…',()=>window.parent.postMessage({type:'consult-preview-ready',consultId:flowOrder.consultId,teachers:courses.map(course=>selectedTeacher(course))},'*'));return;}setLoading('正在生成排课方案','固定时段优先尝试、共用时段动态比较，冲突时前向检查并回退…',renderResult);}
+    if(button.hasAttribute('data-transfer-consult') && consultPreview) {window.parent.postMessage({type:'consult-preview-transfer',consultId:flowOrder.consultId},'*');return;}
+    if(button.hasAttribute('data-select-candidate')) {delete state.direct[button.dataset.selectCandidate];state.selected[button.dataset.selectCandidate]=button.dataset.teacher;renderTeachers();if(!consultPreview)notify(`已选择 ${plainName(button.dataset.teacher)}`);return;}
+    if(button.hasAttribute('data-generate')) {const missing=courses.find(c=>!state.direct[c.id]&&!state.selected[c.id]);if(missing){notify(`请先为${missing.name}${consultPreview?'选择方案':'选择老师'}`);return;}if(consultPreview){setLoading('正在生成预排课表','按所选方案和学生时段生成预排课表…',()=>window.parent.postMessage({type:'consult-preview-ready',consultId:flowOrder.consultId,teachers:courses.map(course=>selectedTeacher(course))},'*'));return;}setLoading('正在生成排课方案','固定时段优先尝试、共用时段动态比较，冲突时前向检查并回退…',renderResult);}
   });
   document.addEventListener('keydown',event=>{
     if(event.target.id==='requirementChatInput'&&event.key==='Enter'&&!event.shiftKey) {

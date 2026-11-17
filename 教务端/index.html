@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>智慧排课V3.1｜教务处理</title>
+  <title>智慧排课V3.2｜教务处理</title>
   <link rel="stylesheet" href="styles.css?v=20261110g">
   <link rel="stylesheet" href="formal-schedule.css?v=20261110g">
   <link rel="stylesheet" href="legacy-pages.css?v=20261110g">
@@ -11,12 +11,12 @@
   <link rel="stylesheet" href="formal-layout-v7.css?v=20261110g">
   <link rel="stylesheet" href="end-mode-demo.css?v=20261110g">
   <link rel="stylesheet" href="formal-lesson-card.css?v=20261110g">
-  <link rel="stylesheet" href="drawer-flow.css?v=20261110g">
-  <link rel="stylesheet" href="readability.css?v=20261110g">
+  <link rel="stylesheet" href="drawer-flow.css?v=20261113a">
+  <link rel="stylesheet" href="readability.css?v=20261113a">
   <link rel="stylesheet" href="teacher-schedule-drawer.css?v=20261110g">
   <link rel="stylesheet" href="teacher-approval-tip.css?v=20261110g">
-  <link rel="stylesheet" href="teacher-management.css?v=20261110g">
-  <link rel="stylesheet" href="educator-consult.css?v=20261110g">
+  <link rel="stylesheet" href="teacher-management.css?v=20261114a">
+  <link rel="stylesheet" href="educator-consult.css?v=20261115c">
   <link rel="stylesheet" href="supplement-reference.css?v=20261110g">
   <link rel="stylesheet" href="order-home-actions.css?v=20261110g">
   <link rel="stylesheet" href="strategy-reference.css?v=20261110g">
@@ -27,21 +27,26 @@
   <link rel="stylesheet" href="teacher-direct-v32.css?v=20261110g">
   <link rel="stylesheet" href="../workspace-tabs.css?v=20261110g">
   <link rel="stylesheet" href="../workspace-unified.css?v=20261110g">
-  <link rel="stylesheet" href="consult-preview.css?v=20261110g">
+  <link rel="stylesheet" href="consult-preview.css?v=20261114b">
   <link rel="stylesheet" href="teacher-selection-layout-v32.css?v=20261110g">
   <link rel="stylesheet" href="package-order.css?v=20261110g">
-  <link rel="stylesheet" href="educator-consult-link.css?v=20261110g">
-  <link rel="stylesheet" href="formal-workbench-v33.css?v=20261111a">
+  <link rel="stylesheet" href="educator-consult-link.css?v=20261114b">
+  <link rel="stylesheet" href="formal-workbench-v33.css?v=20261117a">
   <link rel="stylesheet" href="smart-config.css?v=20261111a">
+  <link rel="stylesheet" href="order-list-v32.css?v=20261113b">
+  <link rel="stylesheet" href="class-management.css?v=20261114b">
+  <link rel="stylesheet" href="educator-order-detail.css?v=20261114c">
+  <link rel="stylesheet" href="schedule-log-drawer.css?v=20261114a">
+  <link rel="stylesheet" href="../prototype-notes.css?v=20261116-full-tabs">
 </head>
 <body class="educator-workspace">
   <div class="legacy-app">
     <aside class="legacy-sidebar">
       <div class="legacy-brand"><div class="legacy-mark">A</div><div><strong>VISION ACADEMY</strong><span>惟寻国际教育</span></div></div>
       <nav class="legacy-nav" aria-label="主菜单">
-        <button type="button" class="active" id="scheduleMenu">▣ 我的排课单</button>
-        <button type="button" id="consultMenu">▤ 售前匹配</button>
-        <div id="classMenu">□ 班级管理</div>
+        <button type="button" class="active" id="scheduleMenu">▣ 我的排课单 <span class="educator-menu-badge" id="schedulePendingCount" aria-label="待处理排课单数量" hidden></span></button>
+        <button type="button" id="consultMenu">▤ 售前咨单 <span class="educator-menu-badge" id="consultPendingCount" aria-label="待处理售前咨单数量" hidden></span></button>
+        <button type="button" id="classMenu">▣ 班级管理</button>
         <div id="roomMenu">⌂ 教室资源</div>
         <button type="button" id="teacherMenu">♙ 教师管理</button>
         <button type="button" class="legacy-parent-menu" id="smartConfigMenu" aria-expanded="false">⚙ 智能排课配置 <span aria-hidden="true">⌄</span></button>
@@ -53,29 +58,59 @@
       </nav>
     </aside>
     <main class="legacy-main">
-      <header class="legacy-topbar"><nav class="workspace-tabs" aria-label="工作台切换"><a class="workspace-tab" id="salesWorkspaceTab" href="../index.html">销售工作台</a><a class="workspace-tab active" href="index.html" aria-current="page">教务工作台</a></nav><div><span>通知 0</span><span class="legacy-avatar">李</span><span>李春玲</span><button>退出</button></div></header>
-      <section id="orderPage" class="legacy-detail">
-        <div class="legacy-page"><div class="legacy-crumb">排课单详情</div><div class="legacy-crumb"><span>‹ 返回</span><strong>1V1排课单</strong></div>
+      <header class="legacy-topbar"><nav class="workspace-tabs" aria-label="工作台切换"><a class="workspace-tab" id="salesWorkspaceTab" href="../index.html">销售工作台</a><a class="workspace-tab active" href="index.html" aria-current="page">教务工作台</a><a class="workspace-tab" href="../homeroom-workspace.html">班主任工作台</a><a class="workspace-tab" href="../teaching-workspace.html">教学工作台</a><a class="workspace-tab" href="../dingtalk-workspace.html">钉钉工作台</a><a class="workspace-tab" href="../wecom-sidebar.html">企微侧边栏</a><a class="workspace-tab" href="../business-flow.html">业务流程</a><a class="workspace-tab" href="../scheduling-algorithm.html">排课算法</a></nav><div><span>通知 0</span><span class="legacy-avatar">李</span><span id="educatorCurrentUserName">李春玲</span><button>退出</button></div></header>
+      <section id="orderListPage" class="order-list-page" aria-label="我的排课单">
+        <div class="order-list-crumb">我的排课单</div>
+        <form id="orderListFilters" class="order-list-filters">
+          <label>排课单名称<input name="name" type="search" placeholder="名称"></label>
+          <label>排课单类型<select name="type"><option value="">选择类型</option><option>1V1排课单</option><option>班课排课单</option></select></label>
+          <label>排课单属性<select name="attribute"><option value="">选择属性</option><option>新增排课单</option><option>变更排课单</option></select></label>
+          <label>排课单状态<select name="status"><option value="">选择状态</option><option>待分配</option><option>处理中</option><option>待审批</option><option>已完成</option></select></label>
+          <label>发起人<input name="initiator" type="search" placeholder="发起人"></label>
+          <label>处理人<input name="handler" type="search" placeholder="处理人"></label>
+          <label>发起时间<span class="order-list-date-range"><input name="createdFrom" type="date" aria-label="发起开始时间"> 至 <input name="createdTo" type="date" aria-label="发起结束时间"></span></label>
+          <label>开课时间<span class="order-list-date-range"><input name="startFrom" type="date" aria-label="开课开始时间"> 至 <input name="startTo" type="date" aria-label="开课结束时间"></span></label>
+          <label>排课方式<select name="method"><option value="">选择排课方式</option><option>人工</option><option>智能</option></select></label>
+          <div class="order-list-filter-actions"><button type="reset">重置</button><button type="submit">查询</button></div>
+        </form>
+        <div class="order-list-card">
+          <div class="order-list-toolbar"><div class="order-list-tabs" role="tablist" aria-label="排课单范围"><button type="button" class="active" data-order-tab="全部">全部</button><button type="button" data-order-tab="待分配">待分配</button><button type="button" data-order-tab="已分配">已分配</button><button type="button" data-order-tab="我的">我的</button></div><button type="button" id="orderListAssign" class="order-list-assign">分配</button></div>
+          <div class="order-list-table-wrap"><table class="order-list-table"><thead><tr><th><input type="checkbox" id="orderListSelectAll" aria-label="全选排课单"></th><th>排课单名称</th><th>排课单类型</th><th>排课单属性</th><th>排课方式</th><th>排课单状态</th><th>首排总课时</th><th>发起时间</th><th>完成时间</th><th>发起人</th><th>处理人</th><th>班课班主任</th><th>操作</th></tr></thead><tbody id="orderListRows"></tbody></table></div>
+          <div class="order-list-pagination"><div id="orderListPages"></div><label><select id="orderListPageSize"><option value="10">10条/页</option><option value="20">20条/页</option><option value="50">50条/页</option></select></label><span id="orderListTotal"></span><label>前往 <input id="orderListJump" type="number" min="1" value="1"> 页</label></div>
+        </div>
+      </section>
+      <section id="classManagementPage" class="class-management-page" aria-label="班级管理" hidden>
+        <div class="class-management-crumb">班级管理</div>
+        <div class="class-management-card">
+          <form id="classManagementFilters" class="class-management-filters">
+            <label>班级名称<input name="name" type="search" placeholder="班级名称"></label>
+            <label>班级编号<input name="number" type="search" placeholder="班级编号"></label>
+            <label>班级状态<select name="status"><option value="">选择班级状态</option><option>待排课</option><option>新班</option><option>已关闭</option></select></label>
+            <label>班型<select name="classType"><option value="">选择班型</option><option>1v1</option><option>1v1试听</option><option>1v3</option><option>自组班</option></select></label>
+            <label>班主任状态<select name="homeroomStatus"><option value="">请选择</option><option>待分配</option><option>已分配</option></select></label>
+            <div class="class-management-filter-actions"><button type="reset">重置</button><button type="submit">查询</button></div>
+          </form>
+          <div class="class-management-toolbar"><button type="button" id="classConflictCheck">全域冲突检测</button><button type="button" id="classBulkHomeroom">修改班课班主任</button></div>
+          <div class="class-management-table-scroll"><table class="class-management-table"><thead><tr><th><input id="classSelectAll" type="checkbox" aria-label="全选班级"></th><th>班级编号</th><th>班级名称</th><th>状态</th><th>开课日期</th><th>班型</th><th>当前班级人数</th><th>班级学员</th><th>课程体系</th><th>课程项</th><th>班主任状态</th><th>班课班主任</th><th>班级备注</th><th>操作</th><th><button type="button" id="classColumnSettings" aria-label="列设置">☷</button></th></tr></thead><tbody id="classManagementRows"></tbody></table></div>
+          <div class="class-management-pagination"><div id="classManagementPages"></div><label><select id="classManagementPageSize"><option value="10">10条/页</option><option value="20">20条/页</option></select></label><span id="classManagementTotal"></span><label>前往 <input id="classManagementJump" type="number" min="1" value="1"> 页</label></div>
+        </div>
+      </section>
+      <section id="orderPage" class="legacy-detail" hidden>
+        <div class="legacy-page"><div class="legacy-crumb educator-detail-crumb"><button id="orderDetailBack" type="button">‹ 返回</button><i aria-hidden="true"></i><strong id="educatorDetailType">1V1排课单</strong></div>
           <div class="legacy-layout">
             <div class="legacy-left-column">
-            <section class="legacy-card"><div class="legacy-card-title">学员信息</div><div class="legacy-fields">
-              <div><label>班级名称</label><strong>托福听说读写组合排课-1v1</strong></div><div><label>班级编号</label><strong>TOEFL-20260901-001</strong></div><div><label>班课班主任</label><strong>无</strong></div><div><label>学生姓名</label><strong>托福组合排课测试学生</strong></div><div><label>性别</label><strong>男</strong></div><div><label>学生手机</label><strong>13899999993</strong></div><div><label>学生微信</label><strong>Z222222</strong></div><div><label>在读学校</label><strong>上海市建平中学</strong></div>
-            </div></section>
-            <section class="legacy-card educator-consult-card"><div class="legacy-card-title">售前匹配</div><div id="educatorConsultCardBody" class="educator-consult-card-body">正在加载售前匹配…</div><div class="educator-consult-card-actions"><button id="educatorConsultAssociate" type="button">关联售前匹配</button></div></section>
+            <section class="legacy-card educator-detail-side"><div class="legacy-card-title">班级信息</div><div id="educatorDetailClasses" class="educator-detail-classes"></div><div id="educatorDetailStudent" class="educator-detail-student"></div></section>
+            <section class="legacy-card educator-consult-card" hidden><div class="legacy-card-title">售前咨单</div><div id="educatorConsultCardBody" class="educator-consult-card-body">正在加载售前咨单…</div><div class="educator-consult-card-actions"><button id="educatorConsultAssociate" type="button">关联售前咨单</button></div></section>
             </div>
-            <section class="legacy-card"><div class="legacy-card-title"><span>排课单详情</span><em>处理中</em></div><div class="legacy-status-grid"><div><label>排课单状态</label><strong>处理中</strong></div><div><label>排课单属性</label><strong>新增排课单</strong></div><div><label>发起人</label><strong>李春玲</strong></div></div>
-              <div id="flowPackageClasses" class="flow-package-classes" hidden></div><div id="flowCourseGroups" class="flow-course-groups" hidden></div><div class="legacy-table-wrap"><table><thead><tr><th>课程项</th><th>班型</th><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>授课模式</th><th>校区</th><th>课时</th><th>历史授课老师</th><th>当前授课老师</th><th>老师时间是否已沟通</th><th>目前成绩</th><th>期望成绩</th><th>退排历史授课老师</th></tr></thead><tbody>
-                <tr><td>托福</td><td>1v1</td><td>写作</td><td>--</td><td>--</td><td>--</td><td>线下</td><td>雅仕校区</td><td>30</td><td>荷超(VA000144)<br>崔昕瑜(VA001736)<br>郑扬扬(VA000755)</td><td>郑扬扬(VA000755)</td><td>否</td><td>15</td><td>25</td><td>--</td></tr>
-                <tr><td>托福</td><td>1v1</td><td>听力</td><td>--</td><td>--</td><td>--</td><td>线下</td><td>雅仕校区</td><td>30</td><td>崔昕瑜(VA001736)<br>王紫(VA001968)<br>夏红微(VA002413)</td><td>王紫(VA001968)</td><td>否</td><td>15</td><td>25</td><td>--</td></tr>
-                <tr><td>托福</td><td>1v1</td><td>口语</td><td>--</td><td>--</td><td>--</td><td>线下</td><td>雅仕校区</td><td>30</td><td>王紫(VA001968)<br>姜雪竹(VA002901)</td><td>王紫(VA001968)</td><td>否</td><td>15</td><td>25</td><td>--</td></tr>
-                <tr><td>托福</td><td>1v1</td><td>阅读</td><td>--</td><td>--</td><td>--</td><td>线下</td><td>雅仕校区</td><td>30</td><td>崔昕瑜(VA001736)<br>杨红艳(VA001642)<br>姜雪竹(VA002901)</td><td>郑扬扬(VA000755)</td><td>否</td><td>15</td><td>225</td><td>--</td></tr>
-              </tbody></table></div>
-              <div class="legacy-detail-lines"><div><span>开课日期</span><strong>2026-09-01　结课日期：2026-12-30</strong></div><div><span>排课类型</span><strong>新增排课</strong></div><div><span>时间要求</span><strong>复杂组合排课</strong></div><div><span>目前校内进度/需要听的知识点</span><strong>托福听说读写同步提升</strong></div><div><span>预计/已报名考试时间</span><strong>待确认</strong></div><div><span>偏好上课风格</span><strong>无特殊要求</strong></div><div><span>性格偏好</span><strong>都可以</strong></div><div><span>排课要求</span><strong id="orderRequirementText"></strong></div></div>
+            <section class="legacy-card educator-detail-main"><div class="legacy-card-title">排课单详情</div><div class="legacy-status-grid"><div><label>排课单状态</label><strong id="educatorDetailStatus">处理中</strong></div><div><label>排课单属性</label><strong id="educatorDetailAttribute">新增排课单</strong></div><div><label>发起人</label><strong id="educatorDetailApplicant">李春玲</strong></div></div>
+              <div id="flowPackageClasses" class="flow-package-classes" hidden></div><div id="flowCourseGroups" class="flow-course-groups"></div><div class="legacy-table-wrap" hidden><table><tbody></tbody></table></div>
+              <div id="educatorDetailFacts" class="educator-detail-facts"></div><div id="orderRequirementText" hidden></div>
+              <div id="selfClassDetailContent" class="self-class-detail-content" hidden></div>
               <div class="flow-supplements" id="flowSupplements" hidden></div>
             </section>
           </div>
         </div>
-        <div class="legacy-fixed-actions"><div><strong>驳回排课单</strong><textarea placeholder="请输入驳回原因"></textarea><button class="reject-button" type="button">驳 回</button></div><div><button class="legacy-primary" id="startScheduling" type="button"><span class="smart-sparkle" aria-hidden="true">✦</span>智能排课</button><button class="legacy-manual" type="button">人工排课</button></div></div>
+        <div class="legacy-fixed-actions"><div><strong>驳回排课单</strong><textarea placeholder="请输入驳回原因"></textarea><button class="reject-button" type="button">驳 回</button></div><div><button class="legacy-primary" id="startScheduling" type="button"><span class="smart-sparkle" aria-hidden="true">✦</span>智能排课</button><button class="legacy-manual" type="button">人工排课</button><button class="legacy-primary self-class-assign" id="selfClassAssign" type="button" hidden>分配</button></div></div>
       </section>
       <section id="resultPage" class="formal-schedule-page" hidden></section>
       <section id="teacherManagementPage" class="teacher-management-page" hidden aria-label="教师推荐规则管理"><iframe id="teacherManagementFrame" title="教师推荐规则管理" src="teacher-priority-management.html?embedded=1&v=20261110g" loading="lazy"></iframe></section>
@@ -105,13 +140,13 @@
           <div class="smart-config-pager"><span>共 5 条记录</span><span class="smart-config-page-num">‹ 1 ›</span></div>
         </section>
       </section>
-      <section id="educatorConsultPage" class="educator-consult-page" hidden aria-label="售前匹配"><iframe id="educatorConsultFrame" title="售前匹配" src="../index.html?embed-consult=1&v=20261110g#smart-consult"></iframe></section>
+      <section id="educatorConsultPage" class="educator-consult-page" hidden aria-label="售前咨单"><iframe id="educatorConsultFrame" title="售前咨单" src="../index.html?embed-consult=1&v=20261116b#smart-consult"></iframe></section>
     </main>
   </div>
   <div class="educator-consult-link-backdrop" id="educatorConsultLinkBackdrop" hidden></div>
-  <section class="educator-consult-link-modal" id="educatorConsultLinkModal" role="dialog" aria-modal="true" aria-labelledby="educatorConsultLinkTitle" hidden><header><h2 id="educatorConsultLinkTitle">关联售前匹配</h2><button id="educatorConsultLinkClose" type="button" aria-label="关闭">×</button></header><div class="educator-consult-link-body"><label>方案名称<input id="educatorConsultLinkSearch" type="search" placeholder="搜索售前匹配方案"></label><div id="educatorConsultLinkChoices" class="educator-consult-link-choices"></div><p id="educatorConsultLinkError" class="educator-consult-link-error" hidden></p></div><footer><button id="educatorConsultLinkCancel" type="button">取消</button><button id="educatorConsultLinkConfirm" type="button" class="primary">确认关联</button></footer></section>
+  <section class="educator-consult-link-modal" id="educatorConsultLinkModal" role="dialog" aria-modal="true" aria-labelledby="educatorConsultLinkTitle" hidden><header><h2 id="educatorConsultLinkTitle">关联售前咨单</h2><button id="educatorConsultLinkClose" type="button" aria-label="关闭">×</button></header><div class="educator-consult-link-body"><label>方案名称<input id="educatorConsultLinkSearch" type="search" placeholder="搜索售前咨单方案"></label><div id="educatorConsultLinkChoices" class="educator-consult-link-choices"></div><p id="educatorConsultLinkError" class="educator-consult-link-error" hidden></p></div><footer><button id="educatorConsultLinkCancel" type="button">取消</button><button id="educatorConsultLinkConfirm" type="button" class="primary">确认关联</button></footer></section>
   <div class="educator-consult-view-backdrop" id="educatorConsultViewBackdrop" hidden></div>
-  <section class="educator-consult-view-modal" id="educatorConsultViewModal" role="dialog" aria-modal="true" aria-labelledby="educatorConsultViewTitle" hidden><header><h2 id="educatorConsultViewTitle">售前匹配</h2><button type="button" id="educatorConsultViewClose" aria-label="关闭售前匹配弹窗">×</button></header><div class="educator-consult-view-body" id="educatorConsultViewBody"></div><footer><button type="button" id="educatorConsultViewDone">关闭</button></footer></section>
+  <section class="educator-consult-view-modal" id="educatorConsultViewModal" role="dialog" aria-modal="true" aria-labelledby="educatorConsultViewTitle" hidden><header><h2 id="educatorConsultViewTitle">售前咨单</h2><button type="button" id="educatorConsultViewClose" aria-label="关闭售前咨单弹窗">×</button></header><div class="educator-consult-view-body" id="educatorConsultViewBody"></div><footer><button type="button" id="educatorConsultViewDone">关闭</button></footer></section>
 
   <div class="modal-backdrop" id="modalBackdrop" hidden>
     <section class="wizard" role="dialog" aria-modal="true" aria-labelledby="wizardTitle">
@@ -126,8 +161,13 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="teacher-schedule-export.js?v=20261110g"></script>
   <script src="teacher-priority-recommendation.js?v=20261110g"></script>
-  <script src="teacher-management.js?v=20261110g"></script>
+  <script src="teacher-management.js?v=20261114c"></script>
   <script src="../flow-demo-order.js?v=20261110g"></script>
-  <script src="app.js?v=20261110g"></script>
+  <script src="app.js?v=20261117a"></script>
+  <script src="order-list-v32.js?v=20261116a"></script>
+  <script src="../class-remarks.js?v=20261114b"></script>
+  <script src="class-management.js?v=20261114b"></script>
+  <script src="schedule-log-drawer.js?v=20261114b"></script>
+  <script src="../prototype-nav.js?v=20261114c"></script>
 </body>
 </html>

@@ -1,28 +1,8 @@
 /* ===== V3.3 排课工作台：侧栏收起、按钮分组、课节气泡与调整 ===== */
 
-/* --- 1. 左侧「排课信息」收起 / 展开 --- */
-.formal-schedule-page .formal-layout.side-collapsed { grid-template-columns: 40px minmax(0,1fr); }
-.formal-schedule-page .side-collapsed .formal-side-card { display: none; }
-.formal-schedule-page .formal-side-rail { display: none; }
-.formal-schedule-page .side-collapsed .formal-side-rail {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 40px;
-  min-height: 280px;
-  padding: 14px 0;
-  border: 1px solid #d8e4f4;
-  border-radius: 6px;
-  background: linear-gradient(180deg,#f8fbff,#edf5ff);
-  box-shadow: 0 4px 10px #2337510a;
-  color: #2f6dc4;
-  cursor: pointer;
-}
-.formal-schedule-page .side-collapsed .formal-side-rail:hover { background: linear-gradient(180deg,#f0f7ff,#e2eeff); border-color: #a9c9f0; }
-.formal-schedule-page .formal-side-rail-arrow { font-size: 17px; line-height: 1; }
-.formal-schedule-page .formal-side-rail-text { writing-mode: vertical-rl; letter-spacing: 3px; font-size: 12px; font-weight: 600; }
+/* --- 1. 左侧「排课信息」通过工具栏按钮显示，收起时不占宽度 --- */
+.formal-schedule-page .formal-layout.side-collapsed { grid-template-columns: minmax(0,1fr); }
+.formal-schedule-page .formal-layout.side-collapsed .formal-side-column { display: none; }
 .formal-schedule-page .formal-side-toggle {
   min-height: 25px;
   padding: 0 8px;
@@ -53,6 +33,8 @@
 /* 第一组：更新排课数据（实心蓝） */
 .formal-head-actions .group-refresh button { border: 1px solid #337ff0; background: #337ff0; color: #fff; font-weight: 600; }
 .formal-head-actions .group-refresh button:hover { border-color: #2469d6; background: #2469d6; }
+.formal-head-actions .group-info button { border:1px solid #9fc1ee; background:#fff; color:#245fa7; font-weight:400; }
+.formal-head-actions .group-info button:hover { border-color:#7eaee9; background:#f2f8ff; }
 /* 第二、三组：方案与预览（白底蓝字） */
 .formal-head-actions .group-plan button,
 .formal-head-actions .group-preview button { border: 1px solid #9fc1ee; background: #fff; color: #245fa7; }
@@ -67,6 +49,8 @@
   box-shadow: 0 2px 6px #287aff33;
 }
 .formal-head-actions .group-result button:hover { filter: brightness(1.07); }
+.formal-head-actions .group-result #formalRestartSchedule { border:1px solid #9fc1ee; background:#fff; color:#245fa7; box-shadow:none; font-weight:500; }
+.formal-head-actions .group-result #formalRestartSchedule:hover { border-color:#7eaee9; background:#f2f8ff; filter:none; }
 .formal-head-actions .formal-head-group button:disabled {
   border-color: #dfe5ed;
   background: #f6f7f9;
@@ -76,6 +60,15 @@
   cursor: not-allowed;
 }
 .formal-head-actions .formal-collapse { margin-left: 6px; }
+
+.formal-approval-dialog { width: min(900px,100%); }
+.formal-approval-order { margin-bottom: 14px !important; color: #4b607c; }
+.formal-approval-table-wrap { overflow-x: auto; border: 1px solid #dbe4ef; border-radius: 5px; }
+.formal-approval-table-wrap table { width: 100%; min-width: 760px; border-collapse: collapse; }
+.formal-approval-table-wrap th,.formal-approval-table-wrap td { padding: 10px 12px; border-bottom: 1px solid #e8edf4; text-align: left; font-size: 12px; white-space: nowrap; }
+.formal-approval-table-wrap th { background: #f5f8fc; color: #617792; }
+.formal-approval-table-wrap tr:last-child td { border-bottom: 0; }
+.formal-approval-empty { padding: 35px 15px; border: 1px solid #e2e9f2; border-radius: 5px; color: #8a99ac; text-align: center; }
 
 /* --- 3. 教师日程：绿色格子气泡、二次确认、调整提示 --- */
 .formal-teacher-slot[data-lesson-slot] { cursor: pointer; }
@@ -190,6 +183,5 @@
 .formal-teacher-scroll.is-adjusting [data-lesson-slot].is-adjust-source { box-shadow: inset 0 0 0 3px #ff8a00; }
 
 @media (max-width: 1180px) {
-  .formal-schedule-page .formal-layout.side-collapsed .formal-side-column { display: flex; align-items: flex-start; }
-  .formal-schedule-page .side-collapsed .formal-side-rail { min-height: 180px; }
+  .formal-schedule-page .formal-layout.side-collapsed .formal-side-column { display: none; }
 }

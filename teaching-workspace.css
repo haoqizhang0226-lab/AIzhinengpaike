@@ -1,0 +1,85 @@
+*{box-sizing:border-box}
+body.teaching-page{margin:0;color:#25354a;background:#f8f9fb;font:12px/1.5 "Microsoft YaHei","PingFang SC",Arial,sans-serif}
+.teaching-shell{display:grid;grid-template-columns:162px minmax(0,1fr);height:calc(100dvh - 49px);min-height:650px;overflow:hidden}
+.teaching-sidebar{position:relative;display:flex;flex-direction:column;min-width:0;overflow:hidden;background:#213158;color:#c4d3ee}
+.teaching-brand{position:relative;z-index:1;display:flex;align-items:center;gap:7px;flex:none;height:70px;padding:0 7px;background:#1c2b50;color:#fff}
+.teaching-brand-mark{display:grid;place-items:center;flex:none;width:38px;height:38px;border:2px solid #fff;border-radius:50%;font-size:25px;font-style:italic;line-height:1}.teaching-brand b{display:block;white-space:nowrap;font-size:11px;line-height:1.1}.teaching-brand small{display:block;margin-top:3px;white-space:nowrap;font-size:8px;letter-spacing:2px}
+.teaching-side-menu{position:relative;z-index:1;flex:1;min-height:0;overflow:auto;scrollbar-width:none}.teaching-side-menu::-webkit-scrollbar{display:none}
+.teaching-menu-item{position:relative;display:flex;align-items:center;gap:10px;width:100%;height:46px;padding:0 13px;border:0;background:transparent;color:#c8d5ed;text-align:left;font:13px "Microsoft YaHei",Arial,sans-serif;cursor:pointer}.teaching-menu-item:hover,.teaching-menu-item:focus-visible{background:#2b416d;color:#fff}.teaching-menu-item>span{flex:none;width:13px;color:#90a7cf;text-align:center;font-size:14px}.teaching-menu-item i{display:inline-block;min-width:19px;margin-left:-5px;padding:1px 4px;border-radius:11px;background:#ff5569;color:#fff;text-align:center;font-size:10px;font-style:normal}.teaching-menu-item em{margin-left:auto;color:#9ab0d4;font-style:normal}.teaching-manage{color:#fff;font-weight:700}.teaching-submenu{padding:3px 10px 15px;background:#152244}.teaching-submenu[hidden]{display:none}.teaching-submenu button{display:block;width:100%;height:40px;margin:4px 0;padding:0 30px;border:0;border-radius:4px;background:transparent;color:#c7d7ef;text-align:left;font:12px "Microsoft YaHei",Arial,sans-serif;cursor:pointer}.teaching-submenu button.active{background:linear-gradient(105deg,#2d4bff,#389bfa);color:#fff;font-weight:700}.teaching-submenu button:hover:not(.active){background:#29416b}.teaching-side-watermark{position:absolute;right:-26px;bottom:-39px;width:186px;height:186px;border:15px solid #36507c;border-radius:50%;color:#36507c;text-align:center;font-size:155px;font-style:italic;line-height:160px;opacity:.38;pointer-events:none}.teaching-side-collapse{position:absolute;z-index:2;right:12px;bottom:12px;color:#c0d0e8;font-size:18px}
+.teaching-main{min-width:0;overflow:auto;background:#f8f9fb}.teaching-topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;height:48px;padding:0 18px;border-bottom:1px solid #e4e8ef;background:#fff}.teaching-top-title,.teaching-top-actions{display:flex;align-items:center}.teaching-top-title{gap:14px;white-space:nowrap}.teaching-top-title strong{font-size:16px;font-weight:500;color:#292f38}.teaching-refresh{padding-right:14px;border-right:1px solid #e3e8ef;color:#344052;font-size:23px;line-height:1}.teaching-top-actions{gap:15px;white-space:nowrap}.teaching-language{display:flex;align-items:center;gap:1px;padding:3px;border:1px solid #e6ebf3;border-radius:17px;background:#f0f4fb}.teaching-language button{height:25px;padding:0 11px;border:0;border-radius:15px;background:transparent;color:#7183a1;font:11px "Microsoft YaHei",Arial,sans-serif;cursor:pointer}.teaching-language button.active{background:#3989ff;color:#fff}.teaching-head-icon{position:relative;color:#6e7d94;font-size:20px;line-height:1}.teaching-head-icon i{position:absolute;top:-4px;right:-8px;min-width:13px;padding:1px 3px;border-radius:9px;background:#ff596b;color:#fff;text-align:center;font-size:9px;font-style:normal}.teaching-avatar{display:grid;place-items:center;width:21px;height:21px;border:1px solid #2a4c86;border-radius:50%;color:#2a4c86;font-size:13px}.teaching-user{color:#c5862a}.teaching-logout{padding:0;border:0;background:none;color:#3889ed;font:12px "Microsoft YaHei",Arial,sans-serif;cursor:pointer}
+.teaching-content{padding:0 18px 40px}.teaching-breadcrumb{height:52px;padding-top:16px;color:#303a49;font-size:12px}.teaching-panel{padding:18px;border:1px solid #e2e8f1;border-radius:3px;background:#fff}.teaching-filter-row{display:grid;grid-template-columns:420px 430px minmax(260px,1fr);gap:24px;align-items:center}.teaching-filter{display:grid;grid-template-columns:78px minmax(0,1fr);align-items:center;gap:8px;min-width:0}.teaching-filter>label,.teaching-filter>span{white-space:nowrap;color:#465269}.teaching-filter input,.teaching-filter select{width:100%;min-width:0;height:30px;padding:0 10px;border:1px solid #d6deea;border-radius:3px;background:#fff;color:#3b4d68;font:12px "Microsoft YaHei",Arial,sans-serif;outline:none}.teaching-filter input::placeholder{color:#b9c4d2}.teaching-filter input:focus,.teaching-filter select:focus{border-color:#398afb}.teacher-filter{grid-template-columns:78px minmax(0,1fr) 57px}.teaching-outline,.teaching-primary{height:30px;padding:0 13px;border:1px solid #d7e0ec;border-radius:3px;background:#fff;color:#64758e;font:12px "Microsoft YaHei",Arial,sans-serif;white-space:nowrap;cursor:pointer}.teaching-outline:hover{border-color:#398af6;color:#398af6}.teaching-primary{border-color:#3a8bf1;background:#3a8bf1;color:#fff}.teaching-primary:hover{background:#2579df}.teaching-date-range{display:flex;align-items:center;gap:7px;min-width:0}.teaching-date-range input{flex:1;min-width:0}.teaching-date-range span{white-space:nowrap;color:#4e6078}.teaching-filter-row.second{grid-template-columns:430px minmax(0,1fr);margin-top:17px}.weekday-filter{grid-template-columns:78px minmax(0,1fr)}.teaching-filter-buttons{display:flex;justify-content:flex-end;gap:12px}.teaching-schedule-actions{display:flex;gap:9px;margin:32px 0 18px}.teaching-schedule-actions button{height:33px;padding:0 18px}.teaching-schedule-result{display:flex;flex-direction:column;align-items:center;justify-content:center;height:234px;border:1px solid #d7e0eb;border-radius:3px;color:#526277;text-align:center;font-size:13px}.teaching-schedule-result p{margin:0 0 13px}.teaching-schedule-result p:last-child{margin:0}.teaching-schedule-result.has-data{display:block;overflow:auto;text-align:left}.teaching-schedule-result table{width:100%;border-collapse:collapse}.teaching-schedule-result th,.teaching-schedule-result td{padding:10px;border-bottom:1px solid #e9edf4;text-align:left}.teaching-schedule-result th{background:#f4f8fd;color:#5f7190}.teaching-schedule-result label{display:inline-flex;gap:5px;align-items:center}.teaching-other-page{min-height:437px}.teaching-page-title{padding:0 0 18px;border-bottom:1px solid #e9edf3;font-size:14px;font-weight:700}.teaching-placeholder{display:grid;place-items:center;min-height:300px;color:#8292a7}
+.teaching-picker-backdrop{position:fixed;z-index:20;inset:49px 0 0;background:#0d1d3d75}.teaching-picker-backdrop[hidden],.teaching-picker[hidden],.teaching-toast[hidden]{display:none}.teaching-picker{position:fixed;z-index:21;top:50%;left:50%;width:min(420px,calc(100vw - 30px));max-height:70vh;padding:16px;border:1px solid #dbe4ef;border-radius:6px;background:#fff;box-shadow:0 16px 42px #10234435;transform:translate(-50%,-50%)}.teaching-picker header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.teaching-picker header strong{font-size:15px}.teaching-picker header button{border:0;background:none;color:#64748b;font-size:23px;cursor:pointer}.teaching-picker input{width:100%;height:35px;padding:0 10px;border:1px solid #d8e2ee;border-radius:4px}.teaching-teacher-results{max-height:260px;overflow:auto;margin-top:10px}.teaching-teacher-results button{display:block;width:100%;padding:10px;border:0;border-bottom:1px solid #edf1f7;background:#fff;text-align:left;cursor:pointer}.teaching-teacher-results button:hover{background:#eef6ff}.teaching-toast{position:fixed;z-index:30;left:50%;bottom:30px;padding:9px 16px;border-radius:5px;background:#28456d;color:#fff;box-shadow:0 5px 16px #1d385035;transform:translateX(-50%)}
+@media(max-width:1500px){.teaching-filter-row{grid-template-columns:repeat(2,minmax(0,1fr))}.period-filter{grid-column:1/-1}.teaching-filter-row.second{grid-template-columns:minmax(0,1fr) auto}}@media(max-width:900px){.teaching-shell{grid-template-columns:135px minmax(0,1fr)}.teaching-brand b{font-size:9px}.teaching-brand small{font-size:7px;letter-spacing:1px}.teaching-menu-item{padding:0 8px;gap:7px}.teaching-filter-row{grid-template-columns:1fr;gap:14px}.period-filter{grid-column:auto}.teaching-filter-row.second{grid-template-columns:1fr}.teaching-filter-buttons{justify-content:flex-end}.teaching-top-actions{gap:7px}.teaching-language{display:none}}@media(max-width:620px){.teaching-shell{grid-template-columns:90px minmax(0,1fr)}.teaching-brand{padding:0 4px}.teaching-brand-mark{width:30px;height:30px;font-size:19px}.teaching-brand b,.teaching-brand small{display:none}.teaching-menu-item{height:39px;padding:0 5px;font-size:11px;gap:4px}.teaching-menu-item>span{font-size:11px}.teaching-menu-item i,.teaching-menu-item em{display:none}.teaching-submenu{padding:3px}.teaching-submenu button{height:35px;padding:0 6px;font-size:11px}.teaching-content{padding:0 9px 20px}.teaching-panel{padding:10px}.teaching-topbar{padding:0 9px}.teaching-top-title strong{font-size:13px}.teaching-user,.teaching-head-icon{display:none}.teaching-filter{grid-template-columns:64px minmax(0,1fr)}.teacher-filter{grid-template-columns:64px minmax(0,1fr) 45px}.teaching-schedule-actions{flex-wrap:wrap}.teaching-schedule-actions button{flex:1;padding:0 5px;font-size:11px}}
+
+/* 排课审批：只承接列表与弹窗交互；字段由后续设计确定。 */
+.teaching-approval-page{min-height:440px}
+.teaching-approval-filters{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:62px;margin-bottom:18px}
+.teaching-approval-filter-placeholder{color:#9eacbf}
+.teaching-approval-table-wrap{max-width:100%;overflow:auto}
+.teaching-approval-table{width:100%;min-width:440px;border-collapse:collapse;table-layout:fixed;text-align:center;color:#34445e}
+.teaching-approval-table th,.teaching-approval-table td{height:38px;border:1px solid #e5ebf3;padding:6px 12px}
+.teaching-approval-table th{background:#fafcff;color:#1e2c40;font-weight:600}
+.teaching-approval-table th:last-child,.teaching-approval-table td:last-child{width:110px}
+.teaching-approval-table tbody tr:nth-child(odd){background:#f3f7fc}
+.teaching-approval-table tbody tr:hover{background:#eaf3ff}
+.teaching-view-approval{border:0;background:transparent;color:#3286ed;font:inherit;cursor:pointer}
+.teaching-view-approval:hover{text-decoration:underline}
+.teaching-approval-pagination{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:14px;color:#6a7890}
+.teaching-approval-pagination button{min-width:26px;height:26px;border:0;background:#f3f5f8;color:#74849b}
+.teaching-approval-pagination button.active{background:#3d8cef;color:#fff}
+.teaching-approval-backdrop{position:fixed;z-index:24;inset:49px 0 0;background:#0008}
+.teaching-approval-backdrop[hidden],.teaching-approval-dialog[hidden]{display:none}
+.teaching-approval-dialog{position:fixed;z-index:25;top:50%;left:50%;display:flex;flex-direction:column;width:min(1040px,calc(100vw - 28px));min-height:390px;max-height:calc(100dvh - 80px);border-radius:3px;background:#fff;box-shadow:0 14px 40px #12213440;transform:translate(-50%,-50%)}
+.teaching-approval-dialog header{display:flex;align-items:center;justify-content:space-between;height:43px;flex:none;padding:0 18px;border-bottom:1px solid #e6eaf0}
+.teaching-approval-dialog h2{margin:0;color:#252f3d;font-size:16px;font-weight:500}
+.teaching-approval-dialog header button{border:0;background:none;color:#929eae;font-size:24px;cursor:pointer}
+.teaching-approval-dialog-body{flex:1;overflow:auto;padding:20px 18px}
+.teaching-approval-record{margin-bottom:20px;color:#4a5870}
+.teaching-approval-detail-placeholder{display:grid;place-items:center;min-height:225px;border:1px dashed #dbe4ef;background:#fafcff;color:#9aa9bc}
+.teaching-approval-dialog footer{display:flex;align-items:center;justify-content:flex-end;gap:9px;height:48px;flex:none;padding:0 18px;border-top:1px solid #e6eaf0}
+.teaching-approval-dialog footer button{min-width:54px}
+.teaching-reject{height:30px;padding:0 13px;border:1px solid #d7e0ec;border-radius:3px;background:#fff;color:#69778e;font:12px "Microsoft YaHei",Arial,sans-serif;cursor:pointer}
+.teaching-reject:hover{border-color:#f06168;color:#f06168}
+.teaching-approval-filters{display:grid;grid-template-columns:repeat(5,minmax(200px,1fr));gap:14px 18px;align-items:center}
+.teaching-approval-filters label{display:flex;align-items:center;gap:8px;min-width:0;white-space:nowrap;color:#48566c}
+.teaching-approval-filters select,.teaching-approval-filters input{flex:1;min-width:0;width:100%;height:30px;padding:0 8px;border:1px solid #d6deea;border-radius:3px;background:#fff;color:#40516a;font:12px "Microsoft YaHei",Arial,sans-serif}
+.teaching-approval-filters input::placeholder{color:#acbacb}
+.teaching-approval-dates{display:flex;align-items:center;gap:5px;flex:1;min-width:0}
+.teaching-approval-dates input{width:0;min-width:0;padding:0 2px;font-size:11px}
+.teaching-approval-dates>span{flex:none;color:#64748b}
+.teaching-approval-filters .teaching-filter-buttons{grid-column:1/-1;justify-content:flex-end}
+.teaching-approval-table{min-width:1460px}
+.teaching-approval-table th,.teaching-approval-table td{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.teaching-approval-table th:nth-child(2){width:160px}
+.teaching-approval-table th:nth-child(4),.teaching-approval-table td:nth-child(4){width:245px;white-space:normal;overflow-wrap:anywhere;text-overflow:clip}
+.teaching-approval-table th:nth-child(5){width:118px}
+.teaching-approval-table th:nth-child(7),.teaching-approval-table th:nth-child(11){width:154px}
+.teaching-approval-table th:nth-child(12),.teaching-approval-table td:nth-child(12){width:70px}
+.teaching-approval-pending{color:#d29136}
+.teaching-approval-pass{color:#248767}
+.teaching-approval-reject{color:#e05762}
+.teaching-approval-empty{height:120px!important;color:#9aa9bc}
+.teaching-approval-dialog footer[hidden]{display:none}
+.teaching-approval-detail-placeholder[hidden],.teaching-approval-schedule[hidden],.teaching-approval-outcome[hidden],.teaching-approval-reject-form[hidden],.teaching-approval-dialog footer button[hidden]{display:none}
+.teaching-approval-schedule-title{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px}
+.teaching-approval-schedule-title h3{margin:0;color:#25354a;font-size:14px}
+.teaching-approval-schedule-title span{color:#5d6d83}
+.teaching-approval-schedule-wrap{max-width:100%;overflow:auto;border:1px solid #e1e8f0}
+.teaching-approval-schedule-wrap table{width:100%;min-width:880px;border-collapse:collapse;table-layout:fixed;text-align:center;font-size:12px}
+.teaching-approval-schedule-wrap th,.teaching-approval-schedule-wrap td{padding:10px 8px;border-right:1px solid #e6ebf2;border-bottom:1px solid #e6ebf2}
+.teaching-approval-schedule-wrap th{background:#f4f7fb;color:#40506a;font-weight:600}
+.teaching-approval-schedule-wrap tr:last-child td{border-bottom:0}
+.teaching-approval-schedule-wrap th:last-child,.teaching-approval-schedule-wrap td:last-child{width:55px;border-right:0}
+.teaching-approval-schedule-wrap th:nth-child(3),.teaching-approval-schedule-wrap td:nth-child(3){width:245px}
+.teaching-approval-schedule-wrap tbody tr:nth-child(even){background:#fafcff}
+.teaching-approval-outcome{margin-top:18px;padding:12px;border:1px solid #e0e8f3;border-radius:3px;background:#f7faff;color:#40516a;white-space:pre-line;line-height:1.8}
+.teaching-approval-reject-form{margin-top:18px}
+.teaching-approval-reject-form label{display:block;margin-bottom:8px;color:#34445d}
+.teaching-approval-reject-form label span,.teaching-approval-reject-form p{color:#e4535a}
+.teaching-approval-reject-form textarea{display:block;width:100%;min-height:82px;padding:10px;border:1px solid #d5deea;border-radius:3px;resize:vertical;font:12px/1.5 "Microsoft YaHei",Arial,sans-serif}
+.teaching-approval-reject-form textarea:focus{border-color:#3a8bf1;outline:none}
+.teaching-approval-reject-form p{margin:6px 0 0}
+@media(max-width:1500px){.teaching-approval-filters{grid-template-columns:repeat(3,minmax(200px,1fr))}}
+@media(max-width:900px){.teaching-approval-filters{grid-template-columns:repeat(2,minmax(160px,1fr))}}
+@media(max-width:620px){.teaching-approval-filters{grid-template-columns:1fr}}
+.period-filter [hidden],.teaching-schedule-actions [hidden]{display:none}

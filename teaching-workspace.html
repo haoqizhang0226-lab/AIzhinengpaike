@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>教学工作台｜智慧排课原型</title>
+  <link rel="stylesheet" href="prototype-docs.css?v=20261116-tabs">
+  <link rel="stylesheet" href="teaching-workspace.css?v=20261116j">
+</head>
+<body class="prototype-doc-page teaching-page">
+  <header class="prototype-doc-topbar"><nav aria-label="原型导航"><a href="index.html">销售工作台</a><a href="教务端/index.html">教务工作台</a><a href="homeroom-workspace.html">班主任工作台</a><a class="active" aria-current="page" href="teaching-workspace.html">教学工作台</a><a href="dingtalk-workspace.html">钉钉工作台</a><a href="wecom-sidebar.html">企微侧边栏</a><a href="business-flow.html">业务流程</a><a href="scheduling-algorithm.html">排课算法</a></nav></header>
+  <div class="teaching-shell">
+    <aside class="teaching-sidebar" aria-label="教学工作台菜单"><div class="teaching-brand"><span class="teaching-brand-mark">A</span><span><b>VISION ACADEMY</b><small>惟 寻 国 际 教 育</small></span></div><nav class="teaching-side-menu">
+      <button type="button" class="teaching-menu-item"><span>▣</span>课堂</button>
+      <button type="button" class="teaching-menu-item"><span>▤</span>班级</button>
+      <button type="button" class="teaching-menu-item"><span>♙</span>学员</button>
+      <button type="button" class="teaching-menu-item"><span>▧</span>作业<i>59</i></button>
+      <button type="button" class="teaching-menu-item"><span>▣</span>模考<i>99+</i><em>⌄</em></button>
+      <button type="button" class="teaching-menu-item"><span>♢</span>反馈<em>⌄</em></button>
+      <button type="button" class="teaching-menu-item"><span>▤</span>个人试卷库</button>
+      <button type="button" class="teaching-menu-item"><span>♧</span>师训</button>
+      <button type="button" class="teaching-menu-item"><span>▣</span>学伴卡</button>
+      <button type="button" class="teaching-menu-item"><span>♧</span>试听课</button>
+      <button type="button" class="teaching-menu-item"><span>▤</span>学生前测</button>
+      <button type="button" class="teaching-menu-item"><span>▱</span>论文竞赛</button>
+      <button type="button" class="teaching-menu-item"><span>▤</span>雅培测评</button>
+      <button type="button" class="teaching-menu-item"><span>▥</span>错题集</button>
+      <button type="button" class="teaching-menu-item"><span>▧</span>学情查询<em>⌄</em></button>
+      <button type="button" id="teachingManageToggle" class="teaching-menu-item teaching-manage" aria-expanded="true" aria-controls="teachingManageSubmenu"><span>⚙</span>管理<em>⌃</em></button>
+      <div id="teachingManageSubmenu" class="teaching-submenu"><button type="button" data-teaching-page="approval" class="active" aria-current="page">排课审批</button><button type="button" data-teaching-page="scheduleManage">排课管理</button><button type="button" data-teaching-page="schedule">日程管理</button><button type="button" data-teaching-page="settings">配置中心</button></div>
+    </nav><div class="teaching-side-watermark">A</div><div class="teaching-side-collapse">☷</div></aside>
+    <main class="teaching-main"><header class="teaching-topbar"><div class="teaching-top-title"><span class="teaching-refresh">⟳</span><strong>教学工作台</strong></div><div class="teaching-top-actions"><div class="teaching-language"><button type="button" class="active">中文</button><button type="button">English (UK)</button></div><span class="teaching-head-icon">⇩<i>0</i></span><span class="teaching-head-icon">▧<i>●</i></span><span class="teaching-avatar">A</span><span class="teaching-user">李春玲</span><button type="button" class="teaching-logout">退出登录</button></div></header>
+      <div class="teaching-content"><div id="teachingBreadcrumb" class="teaching-breadcrumb">管理-排课审批</div>
+        <section id="teachingSchedulePage" class="teaching-panel" aria-label="日程管理" hidden><form id="teachingScheduleFilters" class="teaching-filter-form"><div class="teaching-filter-row">
+          <div class="teaching-filter teacher-filter"><label for="teachingTeacher">教师姓名</label><input id="teachingTeacher" type="search" placeholder="请选择教师" autocomplete="off"><button type="button" id="teachingChooseTeacher" class="teaching-outline">选择</button></div>
+          <div class="teaching-filter date-filter"><span>日期</span><div class="teaching-date-range"><input id="teachingStartDate" type="date" aria-label="开始日期"><span>至</span><input id="teachingEndDate" type="date" aria-label="结束日期"></div></div>
+          <div class="teaching-filter period-filter"><label id="teachingPeriodLabel" for="teachingPeriods">时段</label><input id="teachingPeriods" value="08:20-10:20;10:30-12:30;13:30-15:30;16:00-18:00;18:30-20:30"><select id="teachingManagePeriod" hidden><option value="">请选择</option><option value="08:20-10:20">早课（08:20-10:20）</option><option value="18:30-20:30">晚课（18:30-20:30）</option></select></div>
+        </div><div class="teaching-filter-row second"><div class="teaching-filter weekday-filter"><label for="teachingWeekday">星期</label><select id="teachingWeekday"><option value="">请选择</option><option>星期一</option><option>星期二</option><option>星期三</option><option>星期四</option><option>星期五</option><option>星期六</option><option>星期日</option></select></div><div class="teaching-filter-buttons"><button type="reset" class="teaching-outline">重置</button><button type="submit" class="teaching-primary">查询</button></div></div></form>
+          <div class="teaching-schedule-actions"><button type="button" id="teachingAddTime" class="teaching-primary">添加可排课时间</button><button type="button" id="teachingRemoveTime" class="teaching-primary">删除可排课时间</button></div>
+          <div id="teachingScheduleResult" class="teaching-schedule-result"><p>您还未选择教师和日期，</p><p>请在上方选择您需要查询的教师和日期进行查询～</p></div>
+        </section>
+        <section id="teachingApprovalPage" class="teaching-panel teaching-approval-page" aria-label="排课审批">
+          <form id="teachingApprovalFilters" class="teaching-approval-filters">
+            <label>审批来源<select id="teachingApprovalSource"><option value="">全部</option><option>排课单</option><option>顾问咨单</option><option>学管咨单</option></select></label>
+            <label>审批类型<select id="teachingApprovalType"><option value="">全部</option><option>排课状态</option><option>科目状态</option><option>试听</option><option>诊断</option><option>单日排课超8小时</option><option>当前跑校区超1次</option></select></label>
+            <label>排课班型<select id="teachingApprovalClassType"><option value="">全部</option><option>1V1</option><option>自组班</option></select></label>
+            <label>排课科目<input id="teachingApprovalSubject" type="search" placeholder="请输入排课科目"></label>
+            <label>排课类型<select id="teachingApprovalScheduleType"><option value="">全部</option><option>此科目新排</option><option>此科目续排</option></select></label>
+            <label>申请人<input id="teachingApprovalApplicant" type="search" placeholder="请输入申请人"></label>
+            <label class="teaching-approval-date-filter">申请时间<span class="teaching-approval-dates"><input id="teachingApprovalAppliedFrom" type="date" aria-label="申请时间开始"><span>至</span><input id="teachingApprovalAppliedTo" type="date" aria-label="申请时间结束"></span></label>
+            <label>审批状态<select id="teachingApprovalStatus"><option value="">全部</option><option>待审批</option><option>已审批</option></select></label>
+            <label>审批结果<select id="teachingApprovalResult"><option value="">全部</option><option>通过</option><option>驳回</option></select></label>
+            <label>审批人<input id="teachingApprovalReviewer" type="search" placeholder="请输入审批人"></label>
+            <label class="teaching-approval-date-filter">审批时间<span class="teaching-approval-dates"><input id="teachingApprovalReviewedFrom" type="date" aria-label="审批时间开始"><span>至</span><input id="teachingApprovalReviewedTo" type="date" aria-label="审批时间结束"></span></label>
+            <div class="teaching-filter-buttons"><button type="reset" class="teaching-outline">重置</button><button type="submit" class="teaching-primary">查询</button></div>
+          </form>
+          <div class="teaching-approval-table-wrap"><table class="teaching-approval-table"><thead><tr><th>审批来源</th><th>审批类型</th><th>排课班型</th><th>排课科目</th><th>排课类型</th><th>申请人</th><th>申请时间</th><th>审批状态</th><th>审批结果</th><th>审批人</th><th>审批时间</th><th>操作</th></tr></thead><tbody id="teachingApprovalRows"></tbody></table></div>
+          <div class="teaching-approval-pagination"><button type="button" disabled aria-label="上一页">‹</button><button type="button" class="active" aria-current="page">1</button><button type="button" disabled aria-label="下一页">›</button><span id="teachingApprovalCount">共 0 条</span></div>
+        </section>
+        <section id="teachingSettingsPage" class="teaching-panel teaching-other-page" aria-label="配置中心" hidden><div class="teaching-page-title">配置中心</div><div class="teaching-placeholder">配置中心内容待补充</div></section>
+      </div>
+    </main>
+  </div>
+  <div id="teachingTeacherBackdrop" class="teaching-picker-backdrop" hidden></div><section id="teachingTeacherPicker" class="teaching-picker" role="dialog" aria-modal="true" aria-label="选择教师" hidden><header><strong>选择教师</strong><button type="button" id="teachingTeacherClose" aria-label="关闭">×</button></header><input id="teachingTeacherSearch" type="search" placeholder="输入教师姓名搜索"><div id="teachingTeacherResults" class="teaching-teacher-results"></div></section>
+  <div id="teachingApprovalBackdrop" class="teaching-approval-backdrop" hidden></div>
+  <section id="teachingApprovalDialog" class="teaching-approval-dialog" role="dialog" aria-modal="true" aria-labelledby="teachingApprovalDialogTitle" hidden>
+    <header><h2 id="teachingApprovalDialogTitle">排课审批</h2><button type="button" id="teachingApprovalClose" aria-label="关闭审批弹窗">×</button></header>
+    <div class="teaching-approval-dialog-body">
+      <div id="teachingApprovalRecord" class="teaching-approval-record"></div>
+      <section id="teachingApprovalSchedule" class="teaching-approval-schedule" aria-label="教师预排课表" hidden><div class="teaching-approval-schedule-title"><h3>教师预排课表</h3><span id="teachingApprovalTeacher"></span></div><div class="teaching-approval-schedule-wrap"><table><thead><tr><th>上课日期</th><th>上课时间</th><th>排课科目</th><th>班级</th><th>授课模式</th><th>校区</th><th>课时</th></tr></thead><tbody id="teachingApprovalScheduleRows"></tbody></table></div></section>
+      <div id="teachingApprovalPendingDetail" class="teaching-approval-detail-placeholder" hidden></div>
+      <div id="teachingApprovalOutcome" class="teaching-approval-outcome" hidden></div>
+      <div id="teachingApprovalRejectForm" class="teaching-approval-reject-form" hidden><label for="teachingApprovalRejectReason">驳回原因 <span>*</span></label><textarea id="teachingApprovalRejectReason" maxlength="500" placeholder="请输入驳回原因"></textarea><p id="teachingApprovalRejectError" role="alert" hidden>请填写驳回原因</p></div>
+    </div>
+    <footer><button type="button" id="teachingApprovalCancelReject" class="teaching-outline" hidden>取消</button><button type="button" id="teachingApprovalReject" class="teaching-reject">驳回</button><button type="button" id="teachingApprovalPass" class="teaching-primary">通过</button></footer>
+  </section>
+  <div id="teachingToast" class="teaching-toast" role="status" hidden></div>
+  <script src="teaching-workspace.js?v=20261116j"></script>
+</body>
+</html>
