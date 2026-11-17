@@ -768,6 +768,10 @@
       [course.item,course.subject,course.board,course.grade,course.module].filter(value=>value&&value!=='/').join('-');
   }
 
+  function canExportConsultPreplan(item) {
+    return !!(item && completeStatus(item.status) && item.preview?.lessons?.length);
+  }
+
   function consultPreplanMarkup(item) {
     const completed=!!item.preview||completeStatus(item.status)||item.priorStatus==='已完结';
     ensureCurrentPreview(item);
@@ -789,17 +793,22 @@
       return '<tr data-course-index="'+index+'"><td>'+safe(lesson.date+' '+start+'—'+end)+'</td><td>'+display(weekdayOf(lesson.date))+'</td><td>'+display(courseName)+'</td><td>'+display(String(lesson.teacher||'').replace(/\([^)]*\)/,''))+'</td><td>'+display(course.mode)+'</td><td>'+display(course.mode==='线上'?'--':course.campus)+'</td><td>'+safe(duration)+' 课时</td><td>'+display(note)+'</td></tr>';
     }).join('');
     const endDate=consultEndMode(item)==='SPECIFIED_DATE'&&item.end?item.end:(lessons.at(-1)?.date||'--');
-    return '<div class="smart-consult-preplan"><div class="smart-consult-preplan-heading"><h4>预排课表</h4></div>'+
+    const exportAction = canExportConsultPreplan(item)
+      ? '<div class="smart-consult-preplan-actions"><button type="button" data-consult-export>导出课表</button></div>'
+      : '';
+    return '<div class="smart-consult-preplan"><div class="smart-consult-preplan-heading"><h4>预排课表</h4>'+exportAction+'</div>'+
       (completed?'<div class="smart-consult-preplan-dates"><span>开课日期：<strong>'+display(item.start)+'</strong></span><span>结课日期：<strong>'+display(endDate)+'</strong></span></div>':'')+
       '<div class="smart-consult-preplan-table-wrap"><table class="smart-consult-preplan-table"><thead><tr><th>上课时间</th><th>星期</th><th>课程</th><th>授课老师</th><th>授课模式</th><th>授课校区</th><th>课节时长</th><th>备注</th></tr></thead><tbody>'+(rows||'<tr><td colspan="8" class="smart-consult-preplan-empty">暂无预排课程</td></tr>')+'</tbody></table></div></div>';
   }
 
   function openConsultExportModal() {
-    const item=consults.find(entry=>entry.id===currentId);
-    if(!item || educatorMode || item.transferredToEducator)return;
+    const item=current();
+    if(drawerMode!=='view'||!canExportConsultPreplan(item))return;
     const courses=item.courses||[];
-    byId('consultExportCourses').innerHTML=courses.map((course,index)=>
-      '<label class="smart-consult-export-course"><input type="checkbox" data-consult-export-course="'+index+'" checked><span>'+safe(consultCourseName(course)||course.subject||'课程 '+(index+1))+'</span></label>'
+    const scheduledCourses=new Set(item.preview.lessons.map(lesson=>Number(lesson.courseIndex)));
+    byId('consultExportCourses').innerHTML=courses.map((course,index)=>scheduledCourses.has(index)
+      ? '<label class="smart-consult-export-course"><input type="checkbox" data-consult-export-course="'+index+'" checked><span>'+safe(consultCourseName(course)||course.subject||'课程 '+(index+1))+'</span></label>'
+      : ''
     ).join('');
     byId('consultExportAll').checked=true;
     byId('consultExportAll').indeterminate=false;
@@ -1403,7 +1412,10 @@
     const planRemove=event.target.closest('[data-consult-plan-remove]');
     if(planRemove){planUploadFiles.splice(Number(planRemove.dataset.consultPlanRemove),1);byId('consultEducatorPlanImageList').innerHTML=planImageMarkup(planUploadFiles,true);return;}
     if (event.target.closest('[data-consult-add-order]')) return;
-    if (event.target.closest('[data-consult-export]')) return;
+    if (event.target.closest('[data-consult-export]')) {
+      openConsultExportModal();
+      return;
+    }
     const formalOrderLink = event.target.closest('[data-consult-order-detail]');
     if (formalOrderLink) {
       const orderId = Number(formalOrderLink.dataset.consultOrderDetail);
