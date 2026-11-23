@@ -3,8 +3,8 @@
   grid-template-columns: 108px repeat(var(--formal-day-count), 245px);
 }
 .formal-schedule-page .formal-calendar-scroll {
-  height: 590px;
-  min-height: 590px;
+  height: auto;
+  min-height: 0;
   max-height: 590px;
 }
 .formal-schedule-page .formal-calendar-head {

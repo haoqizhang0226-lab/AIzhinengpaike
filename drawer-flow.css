@@ -1,4 +1,4 @@
-/* The first three steps use the wide side drawer; the result detail keeps its modal. */
+/* 排课流程和结果详情使用同一右侧抽屉。 */
 body.flow-drawer-open { overflow: hidden; }
 #modalBackdrop.flow-drawer-backdrop {
   align-items: stretch;
@@ -8,7 +8,8 @@ body.flow-drawer-open { overflow: hidden; }
 }
 #modalBackdrop.flow-drawer-backdrop .wizard[data-step="1"],
 #modalBackdrop.flow-drawer-backdrop .wizard[data-step="2"],
-#modalBackdrop.flow-drawer-backdrop .wizard[data-step="3"] {
+#modalBackdrop.flow-drawer-backdrop .wizard[data-step="3"],
+#modalBackdrop.flow-drawer-backdrop .wizard[data-step="4"] {
   width: min(1120px, calc(100vw - 48px));
   height: 100vh;
   height: 100dvh;
@@ -142,7 +143,8 @@ body.flow-drawer-open { overflow: hidden; }
 @media (max-width: 960px) {
   #modalBackdrop.flow-drawer-backdrop .wizard[data-step="1"],
   #modalBackdrop.flow-drawer-backdrop .wizard[data-step="2"],
-  #modalBackdrop.flow-drawer-backdrop .wizard[data-step="3"] { width: 100vw; }
+  #modalBackdrop.flow-drawer-backdrop .wizard[data-step="3"],
+  #modalBackdrop.flow-drawer-backdrop .wizard[data-step="4"] { width: 100vw; }
   .supplement-teacher-grid { grid-template-columns: 1fr; }
   #modalBackdrop.flow-drawer-backdrop .candidate-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

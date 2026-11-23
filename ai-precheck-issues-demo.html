@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>排课要求智能分析｜逐条补充 Demo</title>
+  <link rel="stylesheet" href="workspace-tabs.css?v=20261110g">
+  <link rel="stylesheet" href="prototype-notes.css?v=20261116-full-tabs">
+  <link rel="stylesheet" href="ai-precheck-issues-demo.css?v=20261115c">
+</head>
+<body class="sales-workspace prototype-nav-active">
+  <nav class="prototype-global-nav" aria-label="工作台切换"><div class="workspace-tabs">
+    <a class="workspace-tab active" href="index.html" aria-current="page">销售工作台</a>
+    <a class="workspace-tab" href="教务端/index.html">教务工作台</a>
+    <a class="workspace-tab" href="homeroom-workspace.html">班主任工作台</a><a class="workspace-tab" href="teaching-workspace.html">教学工作台</a>
+    <a class="workspace-tab" href="dingtalk-workspace.html">钉钉工作台</a>
+    <a class="workspace-tab" href="wecom-sidebar.html">企微侧边栏</a>
+    <a class="workspace-tab" href="business-flow.html">业务流程</a>
+    <a class="workspace-tab" href="scheduling-algorithm.html">排课算法</a>
+  </div></nav>
+  <aside class="demo-behind" aria-hidden="true"><div class="demo-brand">Ⓐ <span>VISION ACADEMY<small>惟 寻 国 际 教 育</small></span></div><div class="demo-menu">销售首页</div><div class="demo-menu">客户资源</div><div class="demo-menu selected">我的排课</div><div class="demo-menu">售前咨单</div></aside>
+  <div class="demo-shade" aria-hidden="true"></div>
+  <main id="aiPrecheckIssuesDemoPage" class="ai-demo-drawer" aria-label="排课单 AI 提示 Demo">
+    <header class="ai-demo-header"><a href="index.html" aria-label="关闭并返回销售工作台" class="ai-demo-close">×</a><h1>排课要求智能分析</h1><span class="ai-demo-header-tag">排课单暂未发起</span></header>
+    <div class="ai-demo-columns">
+      <section class="ai-demo-form-column" aria-label="只读排课单信息">
+        <div class="ai-demo-form-intro"><div><strong>排课单信息</strong><p>左侧展示本次提交的排课单内容。请在右侧处理 AI 提示的问题。</p></div><button type="button" id="viewOriginal">查看原始提交版本</button></div>
+        <section class="ai-demo-section"><h2>学生信息</h2><div class="ai-demo-student-line"><span>学生姓名：</span><strong>刘大礼</strong></div>
+          <div class="ai-demo-info-grid">
+            <div><span>学生编号：</span>VA100078710</div><div><span>英文名：</span>Ella Du</div><div><span>性别：</span>女</div><div><span>出生日期：</span>1998-03-13</div>
+            <div><span>登记年龄：</span>16岁</div><div><span>意向国家：</span>英国</div><div><span>在读年级：</span>12</div><div><span>学生手机号：</span>139****8976</div>
+            <div><span>学生微信：</span>2****4</div><div><span>学生邮箱：</span>13917694897@163.com</div><div class="wide"><span>在读学校：</span>上海市浦东新区建平路中心高级学习西校区</div>
+          </div>
+        </section>
+        <section class="ai-demo-section"><div class="ai-demo-section-head"><h2>课程信息</h2><span>排课总课时：<b id="courseHoursTotal">24</b></span></div>
+          <article class="ai-demo-package"><div class="ai-demo-package-top"><strong>英联邦-英联邦学科-雅思-1V1</strong><span>目前(期望)成绩：听力:1 (5); 口语:1 (6); 写作:1 (4); 阅读:1 (20); 总分:1 (60)</span></div>
+            <div class="ai-demo-stats"><div>购买课时<strong>100</strong></div><div>已排课时<strong>23.25</strong></div><div>已上课时<strong>25</strong></div><div>可排课时<strong>25</strong></div><div>本次所需课时<strong id="requiredHoursTotal">24</strong></div></div>
+            <div class="ai-demo-course-heading"><strong>包含课程</strong></div>
+            <div class="ai-demo-table-scroll"><table><thead><tr><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>学生水平</th><th>期望成绩</th><th>授课模式</th><th>历史授课老师</th><th>校区</th><th>课时</th></tr></thead><tbody>
+              <tr><td>听力</td><td>--</td><td>--</td><td>高端测试0012</td><td>听力-基础段</td><td>5</td><td>线下</td><td>李春玲</td><td>舜元校区</td><td>8</td></tr>
+              <tr><td>口语</td><td>--</td><td>--</td><td>高端测试0012</td><td>口语-基础段</td><td>6</td><td>线上</td><td>李春玲</td><td>--</td><td>8</td></tr>
+              <tr><td>写作</td><td>--</td><td>--</td><td>--</td><td>写作-基础段</td><td>4</td><td>线下</td><td>无</td><td>舜元校区</td><td>8</td></tr>
+            </tbody></table></div>
+          </article>
+        </section>
+        <section class="ai-demo-section"><h2>排课单详情</h2>
+          <div class="ai-demo-detail-grid">
+            <div><small>排课类型</small><strong>此科目续排</strong></div><div><small>开课日期</small><strong>2026-11-20</strong></div>
+            <div><small>结课日期</small><strong id="endReadonly">排完全部课程结束</strong></div><div><small>教师风格</small><strong id="styleReadonly">可全英文、温柔耐心</strong></div>
+            <div><small>教师性别</small><strong id="genderReadonly">女老师</strong></div><div><small>预计/已报名时间</small><strong>2026-11-13</strong></div>
+            <div class="wide"><small>排课时间要求原文</small><p id="scheduleReadonly">每周二或周五晚上尽量排课，时间灵活。</p></div>
+            <div class="wide"><small>时间要求相关图片</small><strong>时间要求图片1.png</strong></div>
+            <div class="wide"><small>目前校内进度/需要听的知识点</small><p>雅思听力已完成基础训练，口语需要加强表达。</p></div>
+            <div class="wide"><small>其他排课要求</small><p id="otherReadonly">希望考试前学完；老师男女都可以；希望老师严格严肃。</p></div>
+          </div>
+        </section>
+        <section class="ai-demo-section"><h2>其他信息</h2><div class="ai-demo-detail-grid"><div><small>学习目的</small><strong>校内备考</strong></div><div><small>家庭与学习关系</small><strong>父母主导</strong></div><div class="wide"><small>课程备注</small><p>优先安排晚间课程。</p></div><div class="wide"><small>凭证</small><strong>凭证1.png</strong></div></div></section>
+      </section>
+      <aside class="ai-demo-result-column" aria-label="智能分析结果">
+        <div class="ai-demo-result-scroll"><div class="ai-demo-result-head"><h2>智能分析结果</h2><span>请补充以下信息</span></div>
+          <div class="ai-demo-result-summary"><strong>本次发现 4 类待处理问题</strong><p>结课日期、老师风格和老师性别直接修改字段；排课要求填写独立补充内容。</p><div class="ai-demo-progress"><span id="progressTextCount">已处理 0/4</span><span id="progressPending">4 类待处理</span></div></div>
+          <div class="ai-demo-issue-list">
+            <article class="ai-demo-issue" data-issue="end"><div class="ai-demo-issue-top"><span class="ai-demo-number">1</span><div><strong>结课日期</strong><small>字段冲突 · 直接修改</small></div><em class="ai-demo-state">待处理</em></div><p class="ai-demo-quote">排课单原值：“排完全部课程结束”；其他要求：“希望考试前学完”</p><p class="ai-demo-question">请确认最晚结课日期。修改后将覆盖左侧排课单中的原值。</p><label class="ai-demo-answer-label" for="endInlineMode">结课日期</label><select id="endInlineMode"><option value="natural">排完全部课程结束</option><option value="date">指定结课日期</option></select><input id="endInlineDate" type="date" aria-label="最晚结课日期" hidden></article>
+            <article class="ai-demo-issue" data-issue="style"><div class="ai-demo-issue-top"><span class="ai-demo-number">2</span><div><strong>老师风格</strong><small>字段冲突 · 直接修改</small></div><em class="ai-demo-state">待处理</em></div><p class="ai-demo-quote">排课单原值：“可全英文”“温柔耐心”；其他要求：“希望老师严格严肃”</p><p class="ai-demo-question">请重新选择老师风格。修改后将覆盖左侧排课单中的原选项。</p><div class="ai-demo-answer-label">老师风格</div><div id="styleRightOptions" class="ai-demo-choice-list ai-demo-choice-grid"></div></article>
+            <article class="ai-demo-issue" data-issue="gender"><div class="ai-demo-issue-top"><span class="ai-demo-number">3</span><div><strong>老师性别</strong><small>字段冲突 · 直接修改</small></div><em class="ai-demo-state">待处理</em></div><p class="ai-demo-quote">排课单原值：“女老师”；其他要求：“老师男女都可以”</p><p class="ai-demo-question">请重新选择老师性别。修改后将覆盖左侧排课单中的原值。</p><div class="ai-demo-answer-label">老师性别</div><div id="genderRightOptions" class="ai-demo-choice-list"></div></article>
+            <article class="ai-demo-issue" data-issue="time"><div class="ai-demo-issue-top"><span class="ai-demo-number">4</span><div><strong>排课要求补充</strong><small>独立补充字段 · 不覆盖原文</small></div><em class="ai-demo-state">待处理</em></div><p class="ai-demo-quote">排课原文：“每周二或周五晚上尽量排课，时间灵活”</p><ol class="ai-demo-subissues"><li>“周二或周五”是固定、仅限，还是优先时段？</li><li>晚上具体可上课的起止时间是什么？</li></ol><label class="ai-demo-answer-label" for="timeSupplement">补充排课要求</label><textarea id="timeSupplement" rows="4" placeholder="例如：周二、周五优先，18:30—20:30可排课"></textarea></article>
+          </div>
+          <div class="ai-demo-history-note">左侧排课单只读展示修改后的当前值。原始提交版本仍可查看；补充排课要求作为独立字段保存。</div>
+        </div>
+      </aside>
+    </div>
+    <footer class="ai-demo-footer"><span id="actionHint" role="status">请处理右侧全部 4 个问题。</span><a href="index.html">取消</a><button type="button" id="retrySubmit">重新分析并发起排课单</button></footer>
+  </main>
+  <dialog id="demoDialog" class="ai-demo-dialog"><header><strong id="demoDialogTitle"></strong><button type="button" id="closeDemoDialog" aria-label="关闭">×</button></header><div id="demoDialogBody"></div><footer><button type="button" id="dialogDone">关闭</button></footer></dialog>
+  <script src="ai-precheck-issues-demo.js?v=20261116a"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+.class-management-page{min-height:calc(100vh - 44px);padding:16px 18px 36px;background:#f7f8fa;color:#26344a;font-size:12px}
+.legacy-nav>#classMenu.active{background:#3285f5;border-left:0;padding-left:16px;color:#fff}
+.class-management-page[hidden]{display:none!important}
+.class-management-crumb{margin-bottom:13px;color:#8993a4;font-size:13px}
+.class-management-card{min-width:0;padding:22px 18px 12px;background:#fff;border-radius:3px}
+.class-management-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px 22px;padding-bottom:18px;border-bottom:1px solid #dce3ed}
+.class-management-filters>label{display:flex;align-items:center;gap:12px;min-width:0;white-space:nowrap}
+.class-management-filters>label>input,.class-management-filters>label>select{width:100%;min-width:0;height:29px;padding:0 12px;border:1px solid #d4ddea;border-radius:3px;background:#fff;color:#354761;outline:none}
+.class-management-filters>label>input:focus,.class-management-filters>label>select:focus{border-color:#3984f5}
+.class-management-filters>label>input::placeholder{color:#b5bfce}
+.class-management-filter-actions{grid-column:4;display:flex;justify-content:flex-end;gap:10px}
+.class-management-filter-actions button,.class-management-toolbar button{height:30px;padding:0 15px;border:1px solid #d2dcea;border-radius:3px;background:#fff;color:#65758c}
+.class-management-filter-actions button[type=submit],.class-management-toolbar button{background:#3484ef;border-color:#3484ef;color:#fff}
+.class-management-toolbar{display:flex;justify-content:flex-end;gap:10px;padding:20px 0 18px}
+.class-management-table-scroll{max-width:100%;overflow-x:auto;border:1px solid #e1e7f0;scrollbar-color:#c9d1d9 #f0f2f5;scrollbar-width:thin}
+.class-management-table{width:100%;min-width:1780px;table-layout:fixed;border-collapse:collapse;font-size:11px}
+.class-management-table th,.class-management-table td{height:42px;padding:6px 8px;border-right:1px solid #e1e7f0;border-bottom:1px solid #e1e7f0;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#26344a}
+.class-management-table th{height:40px;background:#fff;color:#182437;font-weight:700}
+.class-management-table tbody tr:nth-child(even){background:#fafafa}
+.class-management-table tbody tr:hover{background:#f0f6ff}
+.class-management-table tbody tr:last-child td{border-bottom:0}
+.class-management-table th:last-child,.class-management-table td:last-child{border-right:0}
+.class-management-table th:nth-child(1){width:42px}.class-management-table th:nth-child(2){width:165px}.class-management-table th:nth-child(3){width:210px}.class-management-table th:nth-child(4){width:72px}.class-management-table th:nth-child(5){width:108px}.class-management-table th:nth-child(6){width:72px}.class-management-table th:nth-child(7){width:108px}.class-management-table th:nth-child(8){width:165px}.class-management-table th:nth-child(9){width:102px}.class-management-table th:nth-child(10){width:92px}.class-management-table th:nth-child(11){width:108px}.class-management-table th:nth-child(12){width:142px}.class-management-table th:nth-child(13){width:225px}.class-management-table th:nth-child(14){width:125px}.class-management-table th:nth-child(15){width:46px}
+.class-management-table td.class-management-remark{color:#ad5d18}
+.class-management-table input[type=checkbox]{width:13px;height:13px;accent-color:#3184f4}
+.class-management-number,.class-management-action{padding:0;border:0;background:transparent;color:#277cf0;white-space:nowrap}
+.class-management-number:hover,.class-management-action:hover{text-decoration:underline}
+#classColumnSettings{width:25px;height:25px;border:1px solid #dce4f0;border-radius:50%;background:#fff;color:#72839b}
+.class-management-empty{height:80px!important;color:#9aa6b6!important}
+.class-management-pagination{display:flex;align-items:center;justify-content:flex-end;gap:11px;min-height:50px;color:#65758c;white-space:nowrap}
+#classManagementPages{display:flex;align-items:center;gap:5px}
+#classManagementPages button{width:26px;height:26px;padding:0;border:0;background:#f3f5f8;color:#64758b}
+#classManagementPages button.active{background:#3684ef;color:#fff}
+.class-management-pagination select,.class-management-pagination input{height:27px;border:1px solid #d4deeb;border-radius:2px;background:#fff;color:#65758c;text-align:center}
+.class-management-pagination select{min-width:92px}.class-management-pagination input{width:40px}
+.class-management-notice{position:fixed;z-index:100;left:50%;bottom:32px;transform:translate(-50%,12px);padding:10px 16px;border-radius:4px;background:#243954;color:#fff;box-shadow:0 6px 18px #16243b44;opacity:0;pointer-events:none;transition:.2s}
+.class-management-notice.show{opacity:1;transform:translate(-50%,0)}
+.class-management-modal-backdrop{position:fixed;inset:0;z-index:99;display:grid;place-items:center;background:#1b2c4580}
+.class-management-modal-backdrop[hidden]{display:none!important}
+.class-management-modal{width:min(440px,calc(100vw - 32px));background:#fff;border-radius:5px;box-shadow:0 15px 55px #14264255;color:#26344a;font-size:13px}
+.class-management-modal header,.class-management-modal footer{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #e5eaf1}
+.class-management-modal header button{border:0;background:transparent;font-size:23px;color:#7a8798}
+.class-management-modal label{display:flex;align-items:center;gap:12px;padding:22px 20px}.class-management-modal label input{flex:1;min-width:0;height:34px;padding:0 10px;border:1px solid #cfd9e6;border-radius:3px}
+.class-management-modal footer{justify-content:flex-end;gap:10px;border-top:1px solid #e5eaf1;border-bottom:0}.class-management-modal footer button{height:31px;padding:0 17px;border:1px solid #ccd7e5;border-radius:3px;background:#fff;color:#52667f}.class-management-modal footer button.primary{border-color:#3484ef;background:#3484ef;color:#fff}
+@media(max-width:1250px){.class-management-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.class-management-filter-actions{grid-column:2}}
+@media(max-width:740px){.class-management-page{padding:12px}.class-management-card{padding:14px 10px}.class-management-filters{grid-template-columns:1fr}.class-management-filter-actions{grid-column:1}.class-management-pagination{flex-wrap:wrap}}

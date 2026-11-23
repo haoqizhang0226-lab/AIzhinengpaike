@@ -1,0 +1,97 @@
+/* 教务工作台排课单详情：按详情设计稿呈现。 */
+#orderPage{background:#f7f8fa;color:#303030;font-size:13px}
+#orderPage[hidden]{display:none!important}
+#orderPage .legacy-page{padding:12px 20px 92px}
+#orderPage .educator-detail-crumb{height:42px;gap:10px;color:#303030}
+#orderPage .educator-detail-crumb i{height:18px;border-left:1px solid #d7dce4}
+#orderPage .educator-detail-crumb strong{font-weight:500}
+#orderPage .legacy-layout{grid-template-columns:210px minmax(0,1fr);gap:20px;margin-top:2px;align-items:stretch}
+#orderPage .legacy-left-column{display:block}
+#orderPage .legacy-card{border:0;border-radius:0;background:#fff;min-width:0}
+#orderPage .legacy-card-title{min-height:54px;padding:0 20px;border-bottom:1px solid #f0f1f3;color:#232323;font-size:16px;font-weight:600}
+#orderPage .educator-detail-side{height:100%;min-height:calc(100vh - 175px)}
+#orderPage .educator-detail-classes{display:grid;gap:10px;padding:20px 10px 0}
+#orderPage .educator-detail-class{display:grid;gap:28px;padding:12px 10px;background:#f0f6ff;border-radius:3px}
+#orderPage .educator-detail-class div,#orderPage .educator-detail-student div{min-width:0}
+#orderPage .educator-detail-class small,#orderPage .educator-detail-student small{display:block;margin-bottom:5px;color:#858585;font-size:12px;font-weight:400}
+#orderPage .educator-detail-class strong,#orderPage .educator-detail-student strong{display:block;color:#333;font-size:13px;font-weight:500;line-height:1.65;overflow-wrap:anywhere}
+#orderPage .educator-detail-student{display:grid;gap:26px;padding:10px 20px 26px}
+#orderPage .educator-consult-card[hidden]{display:none!important}
+#orderPage .educator-detail-main{min-height:calc(100vh - 175px);padding-bottom:12px}
+#orderPage .legacy-status-grid{display:grid;grid-template-columns:repeat(3,minmax(110px,160px));gap:0;padding:34px 20px 24px}
+#orderPage .legacy-status-grid label{margin-bottom:8px;color:#878787;font-size:12px;font-weight:400}
+#orderPage .legacy-status-grid strong{color:#333;font-size:13px;font-weight:600}
+#orderPage #flowPackageClasses{display:none!important}
+#orderPage .flow-course-groups{display:grid;gap:18px;padding:0 20px}
+#orderPage .flow-course-group{border:0;border-radius:0;background:#fff;min-width:0;overflow:hidden}
+#orderPage .flow-course-group-head{display:inline-flex;min-height:47px;max-width:100%;gap:8px;align-items:center;padding:0 14px;background:#eff6ff;border:1px solid #e4eaf2;border-radius:5px 5px 0 0;color:#333;font-size:13px;font-weight:500;overflow-wrap:anywhere}
+#orderPage .flow-course-group-head span:not(.educator-course-bag){border:0;background:none;padding:0;color:inherit;font-weight:500}
+#orderPage .educator-course-bag{color:#1680ff;font-size:18px;line-height:1}
+#orderPage .flow-course-group-scroll{overflow-x:auto}
+#orderPage .flow-course-group table{width:100%;min-width:870px;border-collapse:collapse;table-layout:auto;background:#fff}
+#orderPage .flow-course-group th,#orderPage .flow-course-group td{height:49px;padding:8px 7px;border:1px solid #e9e9e9;text-align:center;white-space:nowrap;color:#404040;font-size:12px;font-weight:400;line-height:1.45}
+#orderPage .flow-course-group th{background:#fafafa}
+#orderPage .flow-course-group tbody tr:nth-child(even){background:#fafafa}
+#orderPage .flow-course-group th:nth-child(8),#orderPage .flow-course-group th:nth-child(9){min-width:116px}
+#orderPage .educator-detail-facts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 20px;padding:52px 20px 30px}
+#orderPage .educator-detail-dates{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+#orderPage .educator-detail-facts>.educator-detail-fact{grid-column:1/-1}
+#orderPage .educator-detail-fact{display:flex;align-items:flex-start;min-width:0;min-height:48px;padding:11px 0;color:#777;font-size:13px;line-height:1.65}
+#orderPage .educator-detail-label{flex:0 0 145px;color:#777}
+#orderPage .educator-detail-long-label .educator-detail-label{flex-basis:205px}
+#orderPage .educator-detail-colon{flex:none;margin-right:9px;color:#777}
+#orderPage .educator-detail-value{min-width:0;color:#373737;white-space:pre-wrap;overflow-wrap:anywhere}
+#orderPage .educator-detail-supplement{margin-top:8px}
+#orderPage .educator-detail-supplement:first-child{margin-top:0}
+#orderPage .educator-detail-supplement small{display:inline;margin-right:8px;color:#777;font-size:12px}
+#orderPage .educator-detail-supplement div{display:inline;color:#373737}
+#orderPage .educator-detail-attachment{color:#3181ed}
+#orderPage .flow-supplements[hidden]{display:none!important}
+#orderPage .legacy-fixed-actions{min-height:70px;padding:10px 30px;background:#fff;border-top:1px solid #e8e8e8}
+#orderPage .legacy-fixed-actions>div:first-child>strong{font-size:13px;font-weight:400;white-space:nowrap}
+#orderPage .legacy-fixed-actions textarea{height:31px;max-width:480px;padding:6px 12px;border-radius:2px;font-size:12px}
+#orderPage .legacy-fixed-actions button{height:31px;min-height:31px;border-radius:3px;font-size:13px}
+#orderPage .legacy-fixed-actions .reject-button{width:88px}
+#orderPage .legacy-fixed-actions .legacy-primary{width:100px}
+#orderPage .legacy-fixed-actions .legacy-manual{width:88px}
+@media(max-width:1100px){#orderPage .legacy-layout{grid-template-columns:185px minmax(0,1fr);gap:12px}#orderPage .legacy-page{padding-inline:12px}#orderPage .legacy-status-grid{grid-template-columns:repeat(3,minmax(0,1fr))}#orderPage .educator-detail-facts{padding-top:42px;grid-template-columns:1fr}#orderPage .educator-detail-dates{grid-template-columns:1fr}#orderPage .educator-detail-fact{grid-column:1/-1}}
+@media(max-width:700px){#orderPage .legacy-layout{grid-template-columns:1fr}#orderPage .educator-detail-side{min-height:0}#orderPage .educator-detail-main{min-height:0}#orderPage .legacy-fixed-actions{padding-inline:10px}#orderPage .educator-detail-label{flex-basis:125px}#orderPage .educator-detail-long-label .educator-detail-label{flex-basis:165px}}
+
+/* 自组班排课单使用独立的班级信息、课程信息和学生列表布局。 */
+#orderPage.self-class-detail .legacy-layout{grid-template-columns:252px minmax(0,1fr);gap:18px;margin-top:20px}
+#orderPage.self-class-detail .educator-detail-side{min-height:calc(100vh - 205px);height:auto}
+#orderPage.self-class-detail .educator-detail-classes{display:grid;gap:15px;padding:16px 18px 28px}
+#orderPage.self-class-detail .self-class-detail-side-field small{display:block;margin-bottom:5px;color:#777;font-size:12px}
+#orderPage.self-class-detail .self-class-detail-side-field strong{display:block;color:#242424;font-size:13px;font-weight:600;line-height:1.4;overflow-wrap:anywhere;white-space:pre-wrap}
+#orderPage.self-class-detail .educator-detail-student,#orderPage.self-class-detail .educator-detail-main>.legacy-card-title,#orderPage.self-class-detail .legacy-status-grid,#orderPage.self-class-detail .flow-course-groups,#orderPage.self-class-detail .educator-detail-facts{display:none!important}
+#orderPage.self-class-detail .educator-detail-main{min-height:0;padding:0;background:transparent;overflow:visible}
+#orderPage.self-class-detail .self-class-detail-content{display:grid;gap:12px}
+#orderPage.self-class-detail .self-class-detail-card{min-width:0;background:#fff;border-radius:4px;box-shadow:0 2px 10px #233b5a12}
+#orderPage.self-class-detail .self-class-detail-card>header{min-height:50px;display:flex;align-items:center;gap:7px;padding:0 18px;border-bottom:1px solid #e8ebf1;color:#202020;font-size:15px;font-weight:600}
+#orderPage.self-class-detail .self-class-detail-card>header em{padding:2px 7px;border-radius:10px;background:#f1a922;color:#fff;font-size:11px;font-style:normal;font-weight:500}
+#orderPage.self-class-detail .self-class-detail-card-body{padding:18px}
+#orderPage.self-class-detail .self-class-detail-course-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+#orderPage.self-class-detail .self-class-detail-course-meta small{display:block;margin-bottom:5px;color:#777;font-size:12px}
+#orderPage.self-class-detail .self-class-detail-course-meta strong{color:#202020;font-size:13px;font-weight:600}
+#orderPage.self-class-detail .self-class-detail-card h3{margin:0 0 14px;color:#202020;font-size:13px}
+#orderPage.self-class-detail .self-class-detail-table-scroll{overflow-x:auto}
+#orderPage.self-class-detail table{width:100%;min-width:800px;border-collapse:collapse;table-layout:fixed}
+#orderPage.self-class-detail th,#orderPage.self-class-detail td{height:38px;padding:7px 8px;border:1px solid #e4eaf2;text-align:center;color:#343434;font-size:11px;font-weight:400;white-space:nowrap}
+#orderPage.self-class-detail th{background:#fff;color:#151515;font-weight:600}
+#orderPage.self-class-detail tbody tr:nth-child(even){background:#fafafa}
+#orderPage.self-class-detail .self-class-detail-facts{display:grid;gap:0;padding:14px 18px 28px}
+#orderPage.self-class-detail .self-class-detail-fact-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#orderPage.self-class-detail .self-class-detail-fact-row:nth-child(2){grid-template-columns:repeat(2,minmax(0,1fr))}
+#orderPage.self-class-detail .self-class-detail-fact{display:flex;align-items:flex-start;min-width:0;gap:9px;min-height:30px;padding:4px 0;color:#777;font-size:12px;line-height:1.65}
+#orderPage.self-class-detail .self-class-detail-fact>span{flex:none}
+#orderPage.self-class-detail .self-class-detail-fact>b{font-weight:400}
+#orderPage.self-class-detail .self-class-detail-fact>strong{min-width:0;color:#242424;font-weight:600;white-space:pre-wrap;overflow-wrap:anywhere}
+#orderPage.self-class-detail .legacy-fixed-actions{height:162px;min-height:162px;align-items:flex-start;padding:12px 8px}
+#orderPage.self-class-detail .legacy-fixed-actions>div:first-child{display:grid;grid-template-columns:78px minmax(0,506px);gap:12px;max-width:calc(100% - 90px)}
+#orderPage.self-class-detail .legacy-fixed-actions>div:first-child>strong{grid-column:1/-1}
+#orderPage.self-class-detail .legacy-fixed-actions textarea{grid-column:2;width:100%;max-width:506px;height:44px}
+#orderPage.self-class-detail .legacy-fixed-actions .reject-button{grid-column:2;justify-self:end;width:66px}
+#orderPage.self-class-detail .legacy-fixed-actions .legacy-primary:not(.self-class-assign),#orderPage.self-class-detail .legacy-fixed-actions .legacy-manual{display:none!important}
+#orderPage.self-class-detail .legacy-fixed-actions .self-class-assign{width:66px;background:#3485f5;color:#fff;border-color:#3485f5}
+@media(max-width:1000px){#orderPage.self-class-detail .legacy-layout{grid-template-columns:210px minmax(0,1fr);gap:12px}#orderPage.self-class-detail .self-class-detail-course-meta{grid-template-columns:repeat(2,minmax(0,1fr))}#orderPage.self-class-detail .self-class-detail-fact-row{grid-template-columns:1fr}#orderPage.self-class-detail .self-class-detail-fact-row:nth-child(2){grid-template-columns:1fr}}
+@media(max-width:700px){#orderPage.self-class-detail .legacy-layout{grid-template-columns:1fr}#orderPage.self-class-detail .educator-detail-side{min-height:0}#orderPage.self-class-detail .legacy-fixed-actions>div:first-child{grid-template-columns:1fr}#orderPage.self-class-detail .legacy-fixed-actions textarea,#orderPage.self-class-detail .legacy-fixed-actions .reject-button{grid-column:1}}

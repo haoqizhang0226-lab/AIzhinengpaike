@@ -257,7 +257,7 @@
   <div class="ai-precheck-backdrop" id="aiPrecheckBackdrop" hidden></div>
   <aside class="ai-precheck-drawer" id="aiPrecheckDrawer" role="dialog" aria-modal="true" aria-label="排课要求智能分析" hidden>
     <div class="ai-precheck-header"><button type="button" id="closeAiPrecheck" aria-label="关闭排课要求智能分析">×</button><div><strong>排课要求智能分析</strong></div></div>
-    <div class="ai-precheck-loading" id="aiPrecheckLoading" role="status" aria-live="polite" hidden><div class="ai-precheck-loading-card"><img class="ai-precheck-loading-avatar" src="ai-dialog-avatar.png" alt="" aria-hidden="true"><strong id="aiPrecheckLoadingText">正在分析排课单要求</strong><p>识别全局与各科目要求，输出自然语言及结构化策略</p><div class="ai-precheck-progress" aria-hidden="true"><span></span></div><button type="button" id="deferAiPrecheck" hidden>稍后查看</button></div></div>
+    <div class="ai-precheck-loading" id="aiPrecheckLoading" role="status" aria-live="polite" hidden><div class="ai-precheck-loading-card"><img class="ai-precheck-loading-avatar" src="ai-dialog-avatar.png" alt="" aria-hidden="true"><strong id="aiPrecheckLoadingText">正在分析排课策略</strong><p>核对排课要求，生成全局与各科目的排课策略</p><div class="ai-precheck-progress" aria-hidden="true"><span></span></div><button type="button" id="deferAiPrecheck" hidden>稍后查看</button></div></div>
     <div class="ai-precheck-body" id="aiPrecheckBody">
       <section class="ai-precheck-left" id="aiPrecheckLeft" aria-label="只读排课单信息"></section>
       <section class="ai-precheck-right" aria-label="智能分析结果与修改区"><div class="ai-precheck-right-scroll"><div class="ai-precheck-result-heading"><h2>智能分析结果</h2><span>请确认以下信息</span></div>
@@ -268,7 +268,7 @@
       </div></section>
     </div>
     <div class="ai-precheck-footer" id="aiPrecheckFooter"><button type="button" id="dismissAiPrecheck">取消</button><button type="button" class="ai-precheck-submit" id="submitAiPrecheckReply">发起排课单</button></div>
-    <div class="ai-precheck-success-view" id="aiPrecheckSuccess" hidden><div class="ai-precheck-success-card"><span class="ai-precheck-success-icon" aria-hidden="true">✓</span><h2>排课单提交成功</h2><p>AI分析通过，排课单已发送</p><button type="button" id="closeAiPrecheckSuccess">关闭</button></div></div>
+    <div class="ai-precheck-success-view" id="aiPrecheckSuccess" hidden><div class="ai-precheck-success-card"><span class="ai-precheck-success-icon" aria-hidden="true">✓</span><h2>排课单提交成功</h2><p>排课策略已生成，排课单已发送至教务工作台</p><button type="button" id="closeAiPrecheckSuccess">关闭</button></div></div>
   </aside>
   <section class="self-class-wizard" id="selfClassWizard" role="dialog" aria-modal="true" aria-labelledby="selfClassWizardTitle" hidden>
     <header><strong id="selfClassWizardTitle">创建自组班</strong><button type="button" id="selfClassClose" aria-label="关闭">×</button></header>
@@ -280,13 +280,13 @@
   <aside class="self-class-ai-drawer" id="selfClassAiDrawer" role="dialog" aria-modal="true" aria-label="智能排课提示" hidden><header><strong>智能排课提示</strong><button type="button" id="selfClassAiClose" aria-label="关闭">×</button></header><div id="selfClassAiContent"></div></aside>
   <div class="self-class-course-backdrop" id="selfClassCourseBackdrop" hidden></div><section class="self-class-course-modal" id="selfClassCourseModal" role="dialog" aria-modal="true" aria-label="添加课程" hidden><header><strong>添加课程</strong><button type="button" id="selfClassCourseClose" aria-label="关闭">×</button></header><div class="self-class-course-body" id="selfClassCourseBody"></div><footer><button type="button" class="btn plain" id="selfClassCourseCancel">取消</button><button type="button" class="btn primary" id="selfClassCourseConfirm">确认添加</button></footer></section>
   <script src="flow-demo-order.js?v=20261114a"></script>
-  <script src="app.js?v=20261116a"></script>
+  <script src="app.js?v=20261120-strategy"></script>
   <script src="create-order-groups.js?v=20261114d"></script>
   <script src="create-order-form.js?v=20261114a"></script>
   <script src="consult-preplan-pdf.js?v=20261112c"></script>
   <script src="smart-consult.js?v=20261117-export"></script>
   <script src="class-remarks.js?v=20261114b"></script>
-  <script src="self-class.js?v=20261114d"></script>
+  <script src="self-class.js?v=20261120-strategy"></script>
   <script src="prototype-nav.js?v=20261114c"></script>
 </body>
 </html>

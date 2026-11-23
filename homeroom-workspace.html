@@ -1,5 +1,294 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>班主任工作台｜智慧排课原型</title><link rel="stylesheet" href="prototype-docs.css?v=20261116-tabs"><link rel="stylesheet" href="workspace-placeholders.css?v=20261116-tabs"></head>
-<body class="prototype-doc-page"><header class="prototype-doc-topbar"><nav aria-label="原型导航"><a href="index.html">销售工作台</a><a href="教务端/index.html">教务工作台</a><a class="active" aria-current="page" href="homeroom-workspace.html">班主任工作台</a><a href="teaching-workspace.html">教学工作台</a><a href="dingtalk-workspace.html">钉钉工作台</a><a href="wecom-sidebar.html">企微侧边栏</a><a href="business-flow.html">业务流程</a><a href="scheduling-algorithm.html">排课算法</a></nav></header><main class="prototype-doc-main"><section class="workspace-placeholder"><div class="workspace-placeholder-inner"><h1>班主任工作台</h1><p>页面内容待补充</p></div></section></main></body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>班主任工作台｜智慧排课原型</title>
+  <link rel="stylesheet" href="prototype-docs.css?v=20261116-tabs">
+  <link rel="stylesheet" href="homeroom-workspace.css?v=20261123-batch-ai">
+  <script src="homeroom-workspace.js?v=20261123-batch-ai" defer></script>
+</head>
+<body class="prototype-doc-page homeroom-page">
+  <header class="prototype-doc-topbar"><nav aria-label="原型导航"><a href="index.html">销售工作台</a><a href="教务端/index.html">教务工作台</a><a class="active" aria-current="page" href="homeroom-workspace.html">班主任工作台</a><a href="teaching-workspace.html">教学工作台</a><a href="dingtalk-workspace.html">钉钉工作台</a><a href="wecom-sidebar.html">企微侧边栏</a><a href="business-flow.html">业务流程</a><a href="scheduling-algorithm.html">排课算法</a></nav></header>
+
+  <div class="hr-shell">
+    <aside class="hr-sidebar" aria-label="班主任工作台菜单">
+      <div class="hr-brand">
+        <span class="hr-brand-mark" aria-hidden="true">A</span>
+        <span><strong>VISION ACADEMY</strong><small>唯 寻 国 际 教 育</small></span>
+      </div>
+      <nav class="hr-side-menu">
+        <span><i>◷</i>待办</span>
+        <span><i>⌂</i>学员课表</span>
+        <a href="homeroom-workspace.html" aria-current="page"><i>♙</i>学员</a>
+        <span><i>▣</i>班级</span>
+        <span><i>▤</i>服务<b>⌄</b></span>
+        <span><i>♧</i>转介绍资源</span>
+        <span><i>▣</i>课消记录</span>
+        <span><i>♧</i>管理<b>⌄</b></span>
+        <span><i>▤</i>计划</span>
+        <span><i>▹</i>讲解视频</span>
+        <span><i>▧</i>班课作业</span>
+        <span><i>▱</i>看板<b>⌄</b></span>
+        <span><i>♧</i>活动配置<b>⌄</b></span>
+      </nav>
+      <div class="hr-side-watermark" aria-hidden="true">A</div>
+      <span class="hr-side-collapse" aria-hidden="true">☷</span>
+    </aside>
+
+    <main class="hr-main">
+      <header class="hr-topbar">
+        <div class="hr-top-title"><button type="button" id="hrRefresh" class="hr-header-icon" aria-label="刷新">⟳</button><h1>班主任工作台</h1><span class="hr-first-lesson"><i aria-hidden="true">◖))</i> 当日首课 <b>0</b> 人<span>，</span>一周内首课 <b>0</b> 人</span></div>
+        <div class="hr-top-actions"><span class="hr-share">▤&nbsp; 分享反馈</span><span class="hr-share hr-share-schedule">▦&nbsp; 分享课表</span><span class="hr-header-icon" aria-label="下载">⇩</span><span class="hr-header-icon hr-notifications" aria-label="57 条通知">♧<sup>57</sup></span><span class="hr-avatar" aria-hidden="true">A</span><span>李春玲</span><span class="hr-exit">退出</span></div>
+      </header>
+
+      <div class="hr-content">
+        <section id="hrListPage" class="hr-panel" aria-label="学员列表">
+          <nav class="hr-scope-tabs" aria-label="学员分组">
+            <button type="button" data-scope="mine" aria-pressed="true">我的</button><button type="button" data-scope="matched" aria-pressed="false">已匹配</button><button type="button" data-scope="error" aria-pressed="false">匹配异常 <span class="hr-red-badge">99+</span></button><button type="button" data-scope="pending" aria-pressed="false">待激活</button>
+          </nav>
+          <div class="hr-list-card">
+            <div class="hr-role">班主任角色: <span id="hrClassRole">班课班主任</span><button type="button" class="hr-role-switch" role="switch" aria-label="专属班主任" aria-checked="true"></button><span id="hrDedicatedRole">专属班主任</span></div>
+            <form id="hrFilters" class="hr-filters">
+              <label>学生姓名:<input name="student" placeholder="请输入" value="授课反馈"></label>
+              <label>学员编号:<input name="studentNo" placeholder="请输入"></label>
+              <label>客户编号:<input name="customerNo" placeholder="请输入"></label>
+              <label>就读学校:<input name="school" placeholder="请输入"></label>
+              <label>年级:<select name="grade"><option value="">请选择在读年级</option><option>7年级</option><option>8年级</option><option>9年级</option><option>10年级</option><option>11年级</option><option>12年级</option></select></label>
+              <label>班主任:<input name="teacher" placeholder="请输入搜索"></label>
+              <label>学员标签:<select name="tag"><option value="">请选择</option><option>黑金</option></select></label>
+              <div class="hr-filter-actions"><button type="reset" class="hr-button">重置</button><button type="submit" class="hr-button hr-primary">查询</button></div>
+            </form>
+            <div class="hr-list-actions"><span class="hr-button hr-orange">新增HBAS学员</span></div>
+            <nav class="hr-segments" aria-label="上课状态">
+              <button type="button" data-student-status="all" aria-pressed="true">全部</button><button type="button" data-student-status="active" aria-pressed="false">在读</button><button type="button" data-student-status="waiting" aria-pressed="false">未开课 (0)</button><button type="button" data-student-status="closed" aria-pressed="false">已结课</button>
+            </nav>
+            <div class="hr-table-scroll">
+              <table class="hr-table hr-student-table">
+                <colgroup><col style="width:108px"><col style="width:117px"><col style="width:55px"><col style="width:72px"><col style="width:72px"><col style="width:144px"><col style="width:72px"><col style="width:90px"><col style="width:144px"><col style="width:144px"><col style="width:91px"><col style="width:137px"><col style="width:90px"><col style="width:137px"><col style="width:72px"><col style="width:45px"></colgroup>
+                <thead><tr><th>客户编号</th><th>姓名</th><th>年级</th><th>归属学校</th><th>升学规划<br>师</th><th>课程顾问</th><th>专属班主<br>任</th><th>上课状态</th><th>首课时间 <span class="hr-sort">⏶<br>⏷</span></th><th>结课时间 <span class="hr-sort">⏶<br>⏷</span></th><th>家校通</th><th>家校通最近登录时间</th><th>唯寻网校</th><th>唯寻网校最近登录时间</th><th>HBAS学员</th><th><span class="hr-table-settings" aria-label="列表设置">☷</span></th></tr></thead>
+                <tbody id="hrStudentRows">
+                  <tr id="hrStudentRow"><td>VA100078710</td><td><div class="hr-name-cell"><span class="hr-tier">黑金</span><a href="#student=VA100078710" title="授课反馈产品验收">授课反馈产品验收</a></div></td><td>8年级</td><td>唯寻西南</td><td>李春玲</td><td>李春玲</td><td>李春玲</td><td>未排课</td><td>--</td><td>--</td><td>已绑定</td><td>2026-10-26 13:22:08</td><td>已绑定</td><td>2026-10-12 14:31:37</td><td>否</td><td></td></tr>
+                  <tr id="hrStudentEmpty" hidden><td colspan="16" class="hr-empty">暂无学员</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="hr-pagination"><button type="button" disabled aria-label="上一页">‹</button><span class="hr-page-current">1</span><button type="button" disabled aria-label="下一页">›</button><select aria-label="每页条数"><option>10条/页</option><option>20条/页</option><option>50条/页</option></select><span>共 <b id="hrStudentCount">1</b> 条</span><label>前往 <input aria-label="前往页码" value="1" readonly> 页</label></div>
+          </div>
+        </section>
+
+        <section id="hrDetailPage" class="hr-panel hr-detail" aria-label="学员详情" hidden>
+          <a class="hr-back" href="homeroom-workspace.html">‹ 返回</a>
+          <div class="hr-student-strip"><span>学员姓名: <span class="hr-tier">黑金</span> <strong>授课反馈产品验收(VA100078710)</strong></span><span>学员手机号: <strong>138****9993</strong></span><span class="hr-toolbox">✣ 工具栏</span></div>
+          <div class="hr-detail-navigation"><button type="button" id="hrTabsLeft" aria-label="向左查看详情标签">‹</button><nav id="hrDetailTabs" aria-label="学员详情标签"><span>基本信息</span><span>订单信息</span><span>报名信息</span><span>培训经历</span><span class="active" aria-current="page">课表</span><span>考试记录</span><span>竞赛成绩</span><span>笔试成绩</span><span>科目成绩</span><span>语言成绩</span><span>论文文书信息</span><span>申请记录</span><span>访谈记录</span><span>学情报告</span><span>督学课</span><span>作业</span><span>模考</span><span>考试报名</span><span>唯寻实考</span><span>学习记录</span></nav><button type="button" id="hrTabsRight" aria-label="向右查看详情标签">›</button><span aria-hidden="true">♢</span></div>
+          <div class="hr-timetable">
+            <div class="hr-timetable-toolbar">
+              <nav class="hr-segments" aria-label="课表课程类型"><button type="button" data-lesson-type="all" aria-pressed="true">全部</button><button type="button" data-lesson-type="regular" aria-pressed="false">正式课</button><button type="button" data-lesson-type="supervised" aria-pressed="false">督学课</button></nav>
+              <button type="button" class="hr-button hr-primary" id="hrBatchChange" aria-haspopup="dialog" aria-controls="hrBatchDialog">批量变更</button>
+            </div>
+            <div class="hr-table-scroll"><table class="hr-table hr-lesson-table" id="hrLessonTable">
+              <colgroup><col style="width:9.2%"><col style="width:9%"><col style="width:13.5%"><col style="width:13.5%"><col style="width:8.9%"><col style="width:9%"><col style="width:9%"><col style="width:9%"><col style="width:9%"><col style="width:10%"></colgroup>
+              <thead><tr><th>日期</th><th>时间</th><th>课程</th><th>教师</th><th>班级名称</th><th>班级编号</th><th>上课地点</th><th>班课班主任</th><th>状态</th><th>操作</th></tr></thead>
+              <tbody id="hrLessonRows"></tbody>
+            </table></div>
+            <div class="hr-pagination hr-lesson-pagination"><span>共 <b id="hrLessonCount">10</b> 条</span><button type="button" disabled aria-label="上一页">‹</button><span class="hr-page-current">1</span><button type="button" disabled aria-label="下一页">›</button></div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <dialog class="hr-lesson-dialog hr-batch-dialog" id="hrBatchDialog" aria-labelledby="hrBatchTitle">
+    <header><h2 id="hrBatchTitle">批量变更</h2><button type="button" class="hr-dialog-close" data-close-batch aria-label="关闭" autofocus>×</button></header>
+    <nav class="hr-segments hr-batch-courses" id="hrBatchCourses" aria-label="按课程筛选"></nav>
+    <div class="hr-lesson-dialog-fields hr-batch-list">
+      <div class="hr-table-scroll"><table class="hr-table hr-batch-table" aria-label="可变更课节">
+        <thead><tr><th scope="col"><input id="hrSelectLessons" type="checkbox" aria-label="全选当前列表课节"></th><th scope="col">日期</th><th scope="col">时间 ↓</th><th scope="col">课程</th><th scope="col">教师</th><th scope="col">班级名称</th><th scope="col">上课地点</th></tr></thead>
+        <tbody id="hrBatchRows"></tbody>
+      </table></div>
+    </div>
+    <footer aria-label="批量变更操作栏">
+      <span id="hrBatchCount" aria-live="polite"></span>
+      <div class="hr-batch-footer-actions">
+        <button type="button" class="hr-button" data-close-batch>取消</button>
+        <button type="button" class="hr-button" data-batch-action="cancel" aria-haspopup="dialog" disabled>取消课节</button>
+        <button type="button" class="hr-button" id="hrBatchLocation" data-batch-action="location" aria-haspopup="dialog" aria-controls="hrBatchLocationDialog" disabled>修改授课模式、校区</button>
+        <button type="button" class="hr-button hr-primary" data-batch-action="time" aria-haspopup="dialog" disabled>修改上课时间／时长</button>
+        <button type="button" class="hr-button" data-batch-action="subject" aria-haspopup="dialog" disabled>同体系换科目</button>
+        <button type="button" class="hr-button" data-batch-action="system" aria-haspopup="dialog" disabled>换课程体系</button>
+        <button type="button" class="hr-button" data-batch-action="order" aria-haspopup="dialog" disabled>换订单</button>
+      </div>
+    </footer>
+  </dialog>
+  <dialog class="hr-lesson-dialog" id="hrBatchLocationDialog" aria-labelledby="hrBatchLocationTitle">
+    <form id="hrBatchLocationForm">
+      <header><h2 id="hrBatchLocationTitle">修改授课模式、校区</h2><button type="button" class="hr-dialog-close" data-close-batch-location aria-label="关闭">×</button></header>
+      <div class="hr-lesson-dialog-fields">
+        <label class="hr-lesson-field">授课模式<select name="mode" required autofocus>
+          <option value="">请选择授课模式</option><option>线上</option><option>线下</option><option>OMO</option>
+        </select></label>
+        <label class="hr-lesson-field" id="hrBatchCampusField" hidden>授课校区<select name="campus" required disabled>
+          <option value="">请选择授课校区</option>
+        </select></label>
+        <div id="hrBatchLocationReasons"></div>
+        <p class="hr-room-status" id="hrBatchLocationMessage" role="alert"></p>
+      </div>
+      <footer><button type="button" class="hr-button" data-close-batch-location>取消</button><button type="submit" class="hr-button hr-primary" id="hrSubmitBatchLocation" disabled>确认</button></footer>
+    </form>
+  </dialog>
+  <dialog class="hr-lesson-dialog hr-batch-operation" id="hrBatchOperationDialog" aria-labelledby="hrBatchOperationTitle">
+    <form id="hrBatchOperationForm">
+      <header><h2 id="hrBatchOperationTitle"></h2><button type="button" class="hr-dialog-close" data-close-batch-operation aria-label="关闭">×</button></header>
+      <div class="hr-batch-operation-body">
+        <section class="hr-batch-ai-card">
+          <div class="hr-batch-ai-heading"><h3>本次选中的原课节</h3><span id="hrBatchOperationTotal"></span></div>
+          <div class="hr-table-scroll"><table class="hr-table" aria-label="本次选中的原课节">
+            <thead><tr><th>课程</th><th>上课日期</th><th>原时段</th><th>时长</th><th>老师</th></tr></thead>
+            <tbody id="hrBatchOperationRows"></tbody>
+          </table></div>
+        </section>
+        <fieldset id="hrBatchAiFields" class="hr-batch-ai-card" hidden disabled>
+          <legend>补充排课要求</legend>
+          <label class="hr-sr-only" for="hrBatchRequirement">排课时间／时长变更要求</label>
+          <textarea id="hrBatchRequirement" name="requirement" rows="5" maxlength="2000" required placeholder="例如：保留每节课的原开始时间，前 1 小时照常上，拆出的课节安排在下周二或周四 18:30 以后。"></textarea>
+        </fieldset>
+        <fieldset id="hrBatchTargetFields" class="hr-batch-ai-card" hidden disabled>
+          <legend>目标课程</legend>
+          <label class="hr-lesson-field" id="hrBatchTargetSystemField">课程体系<select name="targetSystem"></select></label>
+          <label class="hr-lesson-field">科目<select name="targetSubject" required></select></label>
+        </fieldset>
+        <p id="hrBatchOperationNotice" class="hr-original-lesson" hidden></p>
+        <div id="hrBatchOperationReasons"></div>
+        <section id="hrBatchAnalysisPreview" class="hr-change-preview" aria-live="polite" hidden></section>
+      </div>
+      <footer><button type="button" class="hr-button" data-close-batch-operation>返回批量变更</button><button type="submit" class="hr-button hr-primary" id="hrSubmitBatchOperation" disabled></button></footer>
+    </form>
+  </dialog>
+  <dialog class="hr-lesson-dialog" id="hrLessonDialog" aria-labelledby="hrLessonDialogTitle">
+    <form id="hrLessonEditForm">
+      <header><h2 id="hrLessonDialogTitle">变更课节</h2><button type="button" class="hr-dialog-close" data-close-lesson-edit aria-label="关闭">×</button></header>
+      <div class="hr-lesson-dialog-fields">
+        <div id="hrOriginalLesson" class="hr-original-lesson"></div>
+        <fieldset class="hr-change-types">
+          <legend>选择变更类型</legend>
+          <label><input name="changeType" type="radio" value="cancel"><span>取消课节</span></label>
+          <label><input name="changeType" type="radio" value="time" checked><span>修改上课时间／时长</span></label>
+          <label><input name="changeType" type="radio" value="location"><span>修改授课模式／校区</span></label>
+          <label><input name="changeType" type="radio" value="subject"><span>同体系换科目</span></label>
+          <label><input name="changeType" type="radio" value="system"><span>换课程体系</span></label>
+          <label><input name="changeType" type="radio" value="order"><span>换订单</span></label>
+        </fieldset>
+        <div id="hrTargetCourseFields" hidden>
+          <label class="hr-lesson-field" id="hrTargetSystemField">目标课程体系<select name="targetSystem"></select></label>
+          <label class="hr-lesson-field">目标科目<select name="targetSubject"></select></label>
+          <p class="hr-room-status" id="hrTargetBalance"></p>
+          <label id="hrChangeTargetTime"><input type="checkbox" name="changeTargetTime"> 另选上课时段</label>
+        </div>
+        <p id="hrCancelChangeSummary" class="hr-original-lesson" hidden></p>
+        <fieldset class="hr-change-time" id="hrChangeTimeFields">
+        <div class="hr-lesson-field">
+          <span id="hrLessonTimeLabel">上课时间</span>
+          <div class="hr-lesson-time" role="group" aria-labelledby="hrLessonTimeLabel">
+            <div class="hr-time-modes">
+              <label><input type="radio" name="timeMode" value="standard">标准时段</label>
+              <label><input type="radio" name="timeMode" value="custom" checked>自定义</label>
+            </div>
+            <div class="hr-time-controls">
+              <input type="date" name="date" aria-label="上课日期" required>
+              <select name="standardPeriod" aria-label="标准时段" required hidden disabled>
+                <option value="">请选择标准时段</option>
+                <option>08:20-10:20</option>
+                <option>10:30-12:30</option>
+                <option>13:30-15:30</option>
+                <option>16:00-18:00</option>
+                <option>18:30-20:30</option>
+              </select>
+              <div class="hr-custom-time" id="hrCustomLessonTime">
+                <input type="time" name="startTime" aria-label="开始时间" required>
+                <span>至</span>
+                <input type="time" name="endTime" aria-label="结束时间" required>
+              </div>
+            </div>
+          </div>
+        </div>
+        </fieldset>
+        <div id="hrSplitLessonOption" class="hr-split-option">
+          <label><input type="checkbox" name="splitLesson"> 拆出一节，另选上课时间</label>
+          <fieldset class="hr-change-time hr-split-fields" id="hrSplitLessonFields" hidden disabled>
+            <label class="hr-lesson-field">日期<input type="date" name="splitDate" required></label>
+            <div class="hr-lesson-field"><span>拆出课节时段</span><div class="hr-custom-time">
+              <input type="time" name="splitStart" aria-label="拆出课节开始时间" required><span>至</span>
+              <input type="time" name="splitEnd" aria-label="拆出课节结束时间" required>
+            </div></div>
+          </fieldset>
+        </div>
+        <label class="hr-lesson-field" id="hrChangeModeField">授课模式<select name="mode"><option>线上</option><option>线下</option><option>OMO</option></select></label>
+        <div class="hr-location-fields" id="hrLessonLocationFields" hidden>
+          <label class="hr-lesson-field">授课校区<input name="campus" list="hrCampusOptions" placeholder="请选择或输入授课校区" autocomplete="off" disabled></label>
+          <label class="hr-lesson-field">教室<input name="room" list="hrRoomOptions" placeholder="请选择教室" autocomplete="off" disabled></label>
+          <datalist id="hrCampusOptions"><option value="舜元中心"><option value="雅仕校区"><option value="鸿寿校区"><option value="浦东校区"><option value="苏悦校区"></datalist>
+          <datalist id="hrRoomOptions"></datalist>
+          <div class="hr-room-actions" id="hrRoomActions" hidden>
+            <button type="button" class="hr-button" id="hrChooseRoom" aria-expanded="false" aria-controls="hrManualRoomField">手动选择教室</button>
+            <button type="button" class="hr-button hr-primary" id="hrMatchRoom">系统自动匹配</button>
+          </div>
+          <label class="hr-lesson-field" id="hrManualRoomField" hidden>可用教室<select id="hrManualRoom"></select></label>
+          <p class="hr-room-status" id="hrRoomStatus" role="status"></p>
+        </div>
+        <section class="hr-lesson-conflict" id="hrLessonConflict" hidden>
+          <p id="hrLessonConflictMessage" role="alert" tabindex="-1"></p>
+        </section>
+        <fieldset class="hr-change-reasons" id="hrLessonReasons" hidden disabled>
+          <legend><span aria-hidden="true">*</span> 变更原因<span class="hr-sr-only">（必填，至少选择一项）</span></legend>
+          <div class="hr-reason-group" role="group" aria-labelledby="hrTeacherReasonTitle"><span id="hrTeacherReasonTitle">老师原因</span><div class="hr-reason-options">
+            <label><input type="checkbox" name="changeReason" value="老师原因/病假">病假</label>
+            <label><input type="checkbox" name="changeReason" value="老师原因/休假">休假</label>
+            <label><input type="checkbox" name="changeReason" value="老师原因/公司活动">公司活动</label>
+            <label><input type="checkbox" name="changeReason" value="老师原因/课程冲突">课程冲突</label>
+            <label><input type="checkbox" name="changeReason" value="老师原因/原老师时间不合适">原老师时间不合适</label>
+            <label><input type="checkbox" name="changeReason" value="老师原因/授课风格与学生不符">授课风格与学生不符</label>
+            <label><input type="checkbox" name="changeReason" value="老师原因/课程内容讲完">课程内容讲完</label>
+          </div></div>
+          <div class="hr-reason-group" role="group" aria-labelledby="hrStudentReasonTitle"><span id="hrStudentReasonTitle">学生原因</span><div class="hr-reason-options">
+            <label><input type="checkbox" name="changeReason" value="学生原因/私事">私事</label>
+            <label><input type="checkbox" name="changeReason" value="学生原因/病假">病假</label>
+            <label><input type="checkbox" name="changeReason" value="学生原因/学校活动">学校活动</label>
+            <label><input type="checkbox" name="changeReason" value="学生原因/与学校上课时间冲突">与学校上课时间冲突</label>
+            <label><input type="checkbox" name="changeReason" value="学生原因/忘记上课">忘记上课</label>
+            <label><input type="checkbox" name="changeReason" value="学生原因/客诉">客诉</label>
+            <label><input type="checkbox" name="changeReason" value="学生原因/调整上课频次">调整上课频次</label>
+          </div></div>
+          <div class="hr-reason-group" role="group" aria-labelledby="hrInternalReasonTitle"><span id="hrInternalReasonTitle">内部原因</span><div class="hr-reason-options">
+            <label><input type="checkbox" name="changeReason" value="内部原因/教务">教务</label>
+            <label><input type="checkbox" name="changeReason" value="内部原因/顾问">顾问</label>
+            <label><input type="checkbox" name="changeReason" value="内部原因/班主任">班主任</label>
+            <label><input type="checkbox" name="changeReason" value="内部原因/升学规划师">升学规划师</label>
+            <label><input type="checkbox" name="changeReason" value="内部原因/系统">系统</label>
+          </div></div>
+        </fieldset>
+        <fieldset class="hr-change-reasons" id="hrCancelLessonReasons" hidden disabled>
+          <legend><span aria-hidden="true">*</span> 变更原因<span class="hr-sr-only">（必填，至少选择一项）</span></legend>
+          <div class="hr-reason-group" role="group" aria-labelledby="hrCancelObjectiveTitle"><span id="hrCancelObjectiveTitle">不可抗力客观原因</span><div class="hr-reason-options">
+            <label><input type="checkbox" name="changeReason" value="不可抗力客观原因/突发疾病">突发疾病</label>
+            <label><input type="checkbox" name="changeReason" value="不可抗力客观原因/校内安排冲突">校内安排冲突</label>
+            <label><input type="checkbox" name="changeReason" value="不可抗力客观原因/drop科目">drop科目</label>
+            <label><input type="checkbox" name="changeReason" value="不可抗力客观原因/换排标签">换排标签</label>
+          </div></div>
+          <div class="hr-reason-group" role="group" aria-labelledby="hrCancelPlanningTitle"><span id="hrCancelPlanningTitle">课时规划变动内部原因</span><div class="hr-reason-options">
+            <label><input type="checkbox" name="changeReason" value="课时规划变动内部原因/老师无法上课">老师无法上课</label>
+            <label><input type="checkbox" name="changeReason" value="课时规划变动内部原因/无需更多课时">无需更多课时</label>
+          </div></div>
+          <div class="hr-reason-group" role="group" aria-labelledby="hrCancelCustomerTitle"><span id="hrCancelCustomerTitle">客户原因</span><div class="hr-reason-options">
+            <label><input type="checkbox" name="changeReason" value="客户原因/状态不佳">状态不佳</label>
+            <label><input type="checkbox" name="changeReason" value="客户原因/个人安排冲突">个人安排冲突</label>
+            <label><input type="checkbox" name="changeReason" value="客户原因/家庭矛盾">家庭矛盾</label>
+            <label><input type="checkbox" name="changeReason" value="客户原因/客诉退费">客诉退费</label>
+          </div></div>
+        </fieldset>
+        <p class="hr-reason-required" id="hrLessonReasonRequired" role="status" hidden>请至少选择一项变更原因</p>
+        <section class="hr-change-preview" id="hrChangePreview" aria-live="polite" hidden></section>
+      </div>
+      <footer><button type="button" class="hr-button" data-close-lesson-edit>取消</button><button type="submit" class="hr-button hr-primary" id="hrSubmitLessonEdit" disabled>提交</button></footer>
+    </form>
+  </dialog>
+</body>
 </html>

@@ -74,12 +74,21 @@
   function submission(){const courses=draft.courses.map(course=>({...course,name:course.subject,system:draft.system,item:draft.item,classType:draft.classType,studentLevel:'--',historicalTeacher:'--',currentTeacher:course.teacher,teacherDiscussed:course.discussed}));return {student:draft.students[0],studentInfo:{name:draft.students[0],number:'VA100078710',grade:'8年级'},package:`${draft.division}-${draft.system}-${draft.item}`,packages:[{name:`${draft.division}-${draft.system}-${draft.item}`,system:draft.system,item:draft.item,courses}],courses,start:draft.start,endMode:'SPECIFIED_DATE',end:draft.end,type:'此科目新排',time:draft.description,requirement:draft.description,extra:{courseNote:draft.notes,vouchers:uploaded.map(file=>file.name)},selfClass:{...draft,uploaded:uploaded.map(file=>file.name)}};}
   function setAiContent(markup){get('selfClassAiContent').innerHTML=markup;}
   function closeAi(){get('selfClassAiDrawer').hidden=true;get('selfClassAiBackdrop').hidden=true;}
-  function openAi(){get('selfClassAiDrawer').hidden=false;get('selfClassAiBackdrop').hidden=false;setAiContent('<div class="self-class-ai-loading"><span>✦</span><strong>AI正在分析排课要求</strong><div class="self-class-ai-progress"><i></i></div></div>');setTimeout(()=>{if(get('selfClassAiDrawer').hidden)return;const issue=demoPrecheckIssues({requirement:draft.description});if(issue)showIssue(issue);else completeSubmission('');},1600);}
-  function showIssue(issue){setAiContent(`<div class="self-class-ai-columns"><section><h2>班级信息</h2><p><b>课程项</b>${safe(draft.item)}　<b>班型</b>${safe(draft.classType)}</p><h2>学员信息</h2><p>${draft.students.map(safe).join('、')}</p><h2>课程信息</h2><table><thead><tr><th>科目</th><th>考试局</th><th>年级</th><th>模式</th><th>课时</th></tr></thead><tbody>${draft.courses.map(course=>`<tr><td>${safe(course.subject)}</td><td>${safe(course.board)}</td><td>${safe(course.grade)}</td><td>${safe(course.mode)}</td><td>${safe(course.hours)}</td></tr>`).join('')}</tbody></table><h2>排课信息</h2><p>${safe(draft.description)}</p></section><section><h2>AI分析结果 <small>待确认</small></h2><p class="self-class-ai-issue">${safe(issue)}</p><label>补充说明<textarea id="selfClassAiReply" placeholder="请一次性补充所有待确认的排课信息"></textarea></label><div class="self-class-ai-actions"><button type="button" class="btn plain" id="selfClassAiCancel">取消</button><button type="button" class="btn primary" id="selfClassAiSubmit">提交排课</button></div></section></div>`);}
-  function completeSubmission(supplement){
+  function analyzeSelfClass(supplement=''){
+    setAiContent('<div class="self-class-ai-loading"><span>✦</span><strong>正在分析排课策略</strong><div class="self-class-ai-progress"><i></i></div></div>');
     const data=submission();
+    setTimeout(()=>{
+      if(get('selfClassAiDrawer').hidden)return;
+      const {issues,strategy}=analyzeDemoOrderStrategy(data,supplement);
+      if(issues.length)showIssue(issues.map(issue=>issue.text).join('；'));
+      else completeSubmission(data,supplement,strategy);
+    },1600);
+  }
+  function openAi(){get('selfClassAiDrawer').hidden=false;get('selfClassAiBackdrop').hidden=false;analyzeSelfClass();}
+  function showIssue(issue){setAiContent(`<div class="self-class-ai-columns"><section><h2>班级信息</h2><p><b>课程项</b>${safe(draft.item)}　<b>班型</b>${safe(draft.classType)}</p><h2>学员信息</h2><p>${draft.students.map(safe).join('、')}</p><h2>课程信息</h2><table><thead><tr><th>科目</th><th>考试局</th><th>年级</th><th>模式</th><th>课时</th></tr></thead><tbody>${draft.courses.map(course=>`<tr><td>${safe(course.subject)}</td><td>${safe(course.board)}</td><td>${safe(course.grade)}</td><td>${safe(course.mode)}</td><td>${safe(course.hours)}</td></tr>`).join('')}</tbody></table><h2>排课信息</h2><p>${safe(draft.description)}</p></section><section><h2>AI分析结果 <small>待确认</small></h2><p class="self-class-ai-issue">${safe(issue)}</p><label>补充说明<textarea id="selfClassAiReply" placeholder="请一次性补充所有待确认的排课信息"></textarea></label><div class="self-class-ai-actions"><button type="button" class="btn plain" id="selfClassAiCancel">取消</button><button type="button" class="btn primary" id="selfClassAiSubmit">提交排课</button></div></section></div>`);}
+  function completeSubmission(data,supplement,strategy){
     window.clearPendingConsultId?.();
-    const order=createDemoOrder(data,supplement?[{time:currentTimestamp(),text:supplement}]:[]);
+    const order=createDemoOrder(data,supplement?[{time:currentTimestamp(),text:supplement}]:[],[],null,strategy);
     order.type='自组班排课单';
     order.course=`${draft.students[0]}-${draft.system}-${draft.item}-${draft.courses.map(course=>course.subject).join('&')}-${draft.classType}-新增`;
     const item={id:'self-'+Date.now(),name:order.course,number:`010778${new Date().toISOString().slice(2,10).replace(/-/g,'')}-0001`,type:'自组班',status:'新班',registration:'可报名',classType:draft.classType,hours:draft.courses.reduce((sum,course)=>sum+Number(course.hours||0),0),price:'--',teacher:draft.courses[0]?.teacher||'--',students:draft.students.length};
@@ -107,7 +116,14 @@
   get('selfClassCourseBody').addEventListener('click',event=>{if(event.target.id==='selfClassCourseSearch')renderCatalog();});
   get('selfClassCourseConfirm').onclick=()=>{for(const index of selectedCourseKeys){const course=catalog[index];if(!draft.courses.some(item=>item.subject===course.subject&&item.board===course.board&&item.mode===course.mode))draft.courses.push({...course,currentGrade:'',expectedGrade:'',campus:course.mode==='线上'?'/':'雅仕校区',hours:10,teacher:'无',discussed:'是'});}courseModal(false);renderWizard();};
   get('selfClassAiClose').onclick=closeAi;get('selfClassAiBackdrop').onclick=closeAi;
-  get('selfClassAiContent').addEventListener('click',event=>{if(event.target.id==='selfClassAiCancel'||event.target.id==='selfClassAiDone'){closeAi();return;}if(event.target.id==='selfClassAiSubmit'){const answer=get('selfClassAiReply').value.trim();if(!answer){toast('请填写补充说明');return;}setAiContent('<div class="self-class-ai-loading"><span>✦</span><strong>AI正在分析排课要求</strong><div class="self-class-ai-progress"><i></i></div></div>');setTimeout(()=>{const issue=demoSupplementIssues(answer);if(issue)showIssue(issue);else completeSubmission(answer);},1600);}});
+  get('selfClassAiContent').addEventListener('click',event=>{
+    if(event.target.id==='selfClassAiCancel'||event.target.id==='selfClassAiDone'){closeAi();return;}
+    if(event.target.id==='selfClassAiSubmit'){
+      const answer=get('selfClassAiReply').value.trim();
+      if(!answer){toast('请填写补充说明');return;}
+      analyzeSelfClass(answer);
+    }
+  });
   get('selfClassSearch').onclick=()=>{filters={name:get('selfClassNameFilter').value.trim(),teacher:get('selfClassTeacherFilter').value.trim(),type:get('selfClassTypeFilter').value,vacancy:get('selfClassVacancyFilter').value};page=1;renderList();};
   get('selfClassReset').onclick=()=>{['selfClassNameFilter','selfClassTeacherFilter'].forEach(id=>get(id).value='');['selfClassVacancyFilter','selfClassSchoolFilter','selfClassCampusFilter','selfClassTypeFilter'].forEach(id=>get(id).selectedIndex=0);filters={};page=1;renderList();};
   get('selfClassPrev').onclick=()=>{page=Math.max(1,page-1);renderList();};get('selfClassNext').onclick=()=>{page++;renderList();};get('selfClassPageSize').onchange=()=>{page=1;renderList();};
