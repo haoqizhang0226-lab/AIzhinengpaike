@@ -1,8 +1,8 @@
 (() => {
   const source = document.getElementById('algorithmDocument');
-  const contents = document.getElementById('algorithmContents');
   const escape = value => String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
   const inline = value => escape(value)
+    .replace(/\[([^\]]+)\]\(\.\/[^)]+\)/g,'$1')
     .replace(/`([^`]+)`/g,'<code>$1</code>')
     .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
     .replace(/\*([^*]+)\*/g,'<em>$1</em>');
@@ -11,7 +11,6 @@
   function render(markdown) {
     const lines = markdown.replace(/\r\n?/g,'\n').split('\n');
     const output = [];
-    const headings = [];
     let paragraph = [];
     let list = [];
     let listType = '';
@@ -37,7 +36,6 @@
         const label = heading[2];
         if (level === 1 && output.length === 0) continue;
         const id = 'algorithm-section-' + headingIndex++;
-        if (level === 2) headings.push({id,label});
         output.push('<h' + level + ' id="' + id + '">' + inline(label) + '</h' + level + '>');
         continue;
       }
@@ -67,7 +65,6 @@
     }
     flushParagraph(); flushList();
     source.innerHTML = output.join('\n');
-    contents.innerHTML = '<strong>本页目录</strong><div>' + headings.map(item => '<a href="#' + item.id + '">' + inline(item.label) + '</a>').join('') + '</div>';
   }
-  fetch('algorithm-source.md').then(response => { if (!response.ok) throw new Error(); return response.text(); }).then(render).catch(() => { source.textContent = '算法方案加载失败，请检查本地原型服务。'; });
+  fetch('algorithm-source.md',{cache:'no-cache'}).then(response => { if (!response.ok) throw new Error(); return response.text(); }).then(render).catch(() => { source.textContent = '算法方案加载失败，请检查本地原型服务。'; });
 })();

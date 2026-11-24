@@ -1,225 +1,171 @@
 <!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>智能排课V3.2：AI算法排课</title>
-  <style>
-    :root{font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif;color:#213653;background:#f3f6fb}
-    *{box-sizing:border-box}body{margin:0}.sheet{width:min(1240px,calc(100% - 32px));margin:28px auto 50px}
-    .hero{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:27px 34px;border:1px solid #dbe6f6;border-radius:14px;background:linear-gradient(115deg,#fff 48%,#e9f6ff);box-shadow:0 10px 30px #23476e0b}
-    .hero h1{margin:0;font-size:26px}.hero-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-left:auto}.hero-actions a{padding:8px 12px;border:1px solid #cdddf2;border-radius:6px;color:#276fc8;background:#fff;font-size:12px;text-decoration:none;white-space:nowrap}.hero-actions a:hover{background:#edf5ff}
-    .legend{display:flex;gap:16px;flex-wrap:wrap;margin:17px 5px;color:#667d98;font-size:12px}.legend span{display:inline-flex;align-items:center;gap:6px}.legend i{width:9px;height:9px;border-radius:50%}.sales{background:#e58b30}.ai{background:#7054d8}.edu{background:#169e79}.sys{background:#397bea}
-    .flow{padding:0 12px}.node{display:block}
-    .step-badge{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:25px;margin-right:9px;padding:0 7px;border-radius:5px;background:#397bea;color:#fff;font-size:12px;font-weight:800;vertical-align:1px}.step-badge.sales-step{background:#e58b30}.step-badge.ai-step{background:#7054d8}.step-badge.edu-step{background:#169e79}.step-badge.system-step{background:#397bea}
-    .card{overflow:hidden;border:1px solid #dfe8f4;border-radius:11px;background:#fff;box-shadow:0 4px 15px #24456b0a}
-    .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:54px;padding:13px 19px;border-bottom:1px solid #ecf1f8}
-    .card-head h2{margin:0;font-size:17px}.actor{padding:5px 9px;border-radius:20px;background:#edf4ff;color:#376fbc;font-size:11px;font-weight:700}
-    .actor.sales-actor{background:#fff1e1;color:#ac631f}.actor.ai-actor{background:#f0eaff;color:#684bbd}.actor.edu-actor{background:#e4f7f0;color:#15795e}.actor.sys-actor{background:#e8f1ff;color:#2c67b8}
-    .card-body{padding:16px 19px 18px}.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-    .field{padding:11px 13px;border-radius:7px;background:#f7f9fd;font-size:12px;line-height:1.7;color:#435c79}.field b{display:block;margin-bottom:3px;color:#295078;font-size:12px}
-    .connector{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:56px;color:#6787ab;font-size:11px;font-weight:700}
-    .connector:before{content:"";position:absolute;top:0;bottom:13px;left:50%;border-left:2px solid #adc6e5}.connector:after{content:"";position:absolute;bottom:8px;left:calc(50% - 4px);width:7px;height:7px;border-right:2px solid #729fd6;border-bottom:2px solid #729fd6;transform:rotate(45deg)}
-    .connector span{z-index:1;padding:4px 10px;border:1px solid #d8e8f8;border-radius:20px;background:#f3f8fe}
-    .parallel-label{text-align:center;margin:2px 0 12px;color:#6d83a0;font-size:12px;font-weight:700}
-    .parallel{display:grid;grid-template-columns:1fr 1fr;gap:18px}.lane{border:1px solid #dce7f5;border-radius:11px;background:#fff;overflow:hidden;box-shadow:0 4px 15px #24456b0a}
-    .teacher-pair{display:grid;grid-template-columns:1fr 1.3fr;gap:18px}.teacher-pair .card{height:100%}.teacher-pair .card-head{align-items:flex-start}.teacher-pair .card-body{display:grid;gap:9px}.teacher-pair .field{min-width:0}.teacher-pair .teacher-source{border-left:4px solid #169e79}.teacher-pair .teacher-recommend{border-left:4px solid #397bea}
-    .lane-head{padding:14px 17px;color:#fff;font-weight:800;font-size:15px}.lane-head.ai-blue{background:linear-gradient(90deg,#7054d8,#9674e7)}.lane-head.ai-purple{background:linear-gradient(90deg,#6248c6,#8268df)}.lane-head .step-badge{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.45);vertical-align:0}
-    .lane-content{padding:15px 17px}.lane-content p{margin:0 0 10px;color:#455d79;font-size:12px;line-height:1.75}.lane-content strong{color:#263f61}
-    .diamond{margin:12px 0;padding:9px 12px;border:1px solid #d8c9f4;border-radius:6px;background:#f7f2ff;color:#6849b5;text-align:center;font-size:12px;font-weight:800}
-    .outcomes{display:grid;gap:8px}.outcome{padding:9px 11px;border-left:3px solid #72b1e9;border-radius:4px;background:#f7faff;color:#4c6581;font-size:12px;line-height:1.65}.outcome b{color:#2866a9}
-    .outcome.warn{border-color:#e7a452;background:#fff8ef}.outcome.warn b{color:#aa712d}
-    .outcome.good{border-color:#43bda2;background:#f0fbf7}.outcome.good b{color:#238774}
-    .merge{margin-left:0}.callout{padding:13px 17px;border:1px dashed #a8caec;border-radius:8px;background:#eff7ff;color:#45729f;font-size:12px;line-height:1.7;text-align:center}
-    .decision-row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13px}.decision-row span{padding:10px;border-radius:6px;background:#f5f9fe;color:#476986;font-size:12px;line-height:1.65}
-    .decision-row b{display:block;color:#2d6ea9}.finish{padding:15px 20px;border-radius:9px;background:linear-gradient(90deg,#eafaf5,#e9f3ff);border:1px solid #c8eadd;color:#287a69;font-size:14px;font-weight:800;text-align:center}
-    .precheck-branches{display:grid;grid-template-columns:1fr 1fr;gap:12px}.precheck-branches .outcome{min-height:84px}.precheck-branches .outcome b{display:block;margin-bottom:4px}
-    .card[data-detail]{cursor:pointer;transition:border-color .18s,box-shadow .18s,transform .18s}.card[data-detail]:hover{border-color:#8ab7ed;box-shadow:0 10px 25px #24456b18;transform:translateY(-2px)}.card[data-detail]:focus-visible{outline:3px solid #3b82f6;outline-offset:3px}.card[data-detail] .card-head{flex-wrap:wrap}.card[data-detail] .card-head:after{content:"查看详情 ↗";order:3;color:#377acf;font-size:11px;font-weight:700;white-space:nowrap}.card[data-detail] .card-head .actor{margin-left:auto}
-    .detail-backdrop{position:fixed;inset:0;z-index:1000;background:#142b49a8}.detail-drawer{position:fixed;inset:0 0 0 auto;z-index:1001;display:flex;flex-direction:column;width:min(700px,100vw);height:100vh;height:100dvh;background:#f6f9fd;box-shadow:-15px 0 40px #0e27404a}.detail-backdrop[hidden],.detail-drawer[hidden]{display:none!important}body.detail-open{overflow:hidden}.detail-header{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;padding:20px 24px;border-bottom:1px solid #dce6f3;background:#fff}.detail-header small{display:block;margin-bottom:5px;color:#6480a2;font-size:11px;letter-spacing:.08em}.detail-header h2{margin:0;color:#203a5d;font-size:20px;line-height:1.4}.detail-close{display:grid;place-items:center;flex:none;width:34px;height:34px;border:1px solid #d5e2f2;border-radius:7px;background:#fff;color:#466486;font-size:24px;line-height:1;cursor:pointer}.detail-close:hover{background:#eaf3ff;color:#1465bd}.detail-body{flex:1;overflow:auto;padding:24px}.detail-section{margin-bottom:16px;padding:18px 20px;border:1px solid #dfe8f4;border-radius:10px;background:#fff;box-shadow:0 3px 12px #24456b08}.detail-section h3{margin:0 0 12px;padding-left:10px;border-left:3px solid #397bea;color:#254a73;font-size:15px}.detail-section p,.detail-section li{color:#455e7b;font-size:13px;line-height:1.8}.detail-section p{margin:0 0 8px}.detail-section p:last-child{margin-bottom:0}.detail-section ul,.detail-section ol{margin:0;padding-left:20px}.detail-section li+li{margin-top:6px}.detail-section strong{color:#234c78}.detail-note{padding:11px 13px;border-left:3px solid #8a70e1;border-radius:5px;background:#f5f1ff;color:#574a83;font-size:12px;line-height:1.8}.detail-example{padding:11px 13px;border-radius:6px;background:#eff7ff;color:#365d83;font-size:12px;line-height:1.8}.detail-footer{display:flex;justify-content:flex-end;padding:13px 24px;border-top:1px solid #dce6f3;background:#fff}.detail-footer a{padding:8px 12px;border:1px solid #cdddf2;border-radius:6px;color:#276fc8;text-decoration:none;font-size:12px}.detail-footer a:hover{background:#edf5ff}
-    @media(max-width:850px){.sheet{width:min(100% - 18px,1240px);margin:10px auto}.hero{flex-wrap:wrap;padding:19px}.hero h1{font-size:21px}.hero-actions{width:100%;justify-content:flex-start;margin-left:0}.flow{padding:0}.fields,.precheck-branches{grid-template-columns:1fr}.parallel,.teacher-pair{grid-template-columns:1fr}.decision-row{grid-template-columns:1fr}.card-head h2{font-size:15px}}
-    @media print{body{background:#fff}.sheet{width:100%;margin:0}.hero,.card,.lane{box-shadow:none}.hero-actions,.detail-backdrop,.detail-drawer{display:none!important}.flow{break-inside:avoid}.node,.parallel,.lane{break-inside:avoid}}
-  </style>
-</head>
-<body>
-<main class="sheet">
-  <header class="hero">
-    <h1>智能排课V3.2：AI算法排课</h1>
-    <div class="hero-actions"><a href="index.html" target="_blank" rel="noopener">查看原型</a><a href="scheduling-algorithm.html" target="_blank" rel="noopener">查看算法方案</a><a href="ai-config-source.md" target="_blank" rel="noopener">查看AI配置</a></div>
-  </header>
-  <div class="legend"><span><i class="sales"></i>顾问／学管</span><span><i class="ai"></i>AI 分析</span><span><i class="edu"></i>教务</span><span><i class="sys"></i>系统算法</span></div>
-  <div class="flow">
-    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge sales-step">01</span>发起并提交排课单</h2><span class="actor sales-actor">顾问／学管</span></div><div class="card-body fields"><div class="field"><b>输入</b>课程、总课时、开结课日期、排课要求及相关信息。</div><div class="field"><b>处理</b>提交排课单，触发AI异步预处理排课要求。</div><div class="field"><b>输出</b>提交成功后返回列表；排课单进入教务待处理，AI 结果完成后回填。</div></div></article></section>
-    <div class="connector"><span>提交后异步触发，顾问／学管无需等待分析完成</span></div>
-    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge ai-step">02</span>AI 预处理排课要求</h2><span class="actor ai-actor">AI · 异步任务</span></div><div class="card-body"><div class="field"><b>检查与输出</b>读取已提交的课程信息和原始排课要求，一次性找出全部模糊、逻辑混乱、前后冲突及待确认事项；返回预处理状态“通过”或“待确认”。技术异常单独重试，不判为通过。</div><div class="diamond">预处理状态是否通过？</div><div class="precheck-branches"><div class="outcome good"><b>通过 → 教务工作台自动触发策略分析</b>没有待确认内容，系统自动分析排课策略；教务打开排课单时可查看分析结果。</div><div class="outcome warn"><b>待确认 → 暂不触发策略分析</b>通过 Web 与移动端一次性提示顾问／学管全部问题。顾问补充后重新预处理；若顾问未补充，教务打开排课单时须先补充信息并重新预处理。排课单仍可查看和处理。</div></div></div></article></section>
-    <div class="connector"><span>仅预处理通过后，自动触发 AI 排课策略分析</span></div>
-    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge ai-step">03</span>AI 分析排课策略</h2><span class="actor ai-actor">AI · 条件触发</span></div><div class="card-body"><div class="field"><b>触发条件与输入</b>预处理状态为“通过”；读取排课单原文、课程信息及已收到的顾问或教务补充内容，拆解全局要求与各科分段策略。</div><div class="decision-row"><span><b>分析成功</b>输出结构化策略并通过结构与业务校验，供教务确认和编辑。</span><span><b>业务问题</b>一次性列出全部已识别的问题，由教务补充或联系发起人后重新分析。</span><span><b>技术故障</b>提示系统故障并重试，不作为业务问题展示。</span></div></div></article></section>
-    <div class="connector merge"><span>预处理结果、补充内容和策略结果汇入教务端</span></div>
-    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge edu-step">04</span>教务打开排课单并启动智能排课</h2><span class="actor edu-actor">教务</span></div><div class="card-body"><div class="fields"><div class="field"><b>详情页</b>展示原始要求、预处理状态、顾问补充的内容与时间。</div><div class="field"><b>策略已生成</b>点击“智能排课”后进入确认排课策略页。</div><div class="field"><b>没有可用策略</b>先进入补充排课要求页，重新分析成功后进入策略页。</div></div><div class="decision-row"><span><b>确认策略</b>查看原要求与补充内容、全局及单科分段策略。</span><span><b>需要调整</b>可补充排课要求并重新分析、编辑策略或逐科指定授课老师。</span><span><b>收到新补充</b>补充内容留存排课单；教务可重新分析策略和推荐。</span></div></div></article></section>
-    <div class="connector"><span>确认策略后生成学生计划并推荐教师</span></div>
-    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge edu-step">05</span>确认排课策略</h2><span class="actor edu-actor">教务</span></div><div class="card-body fields"><div class="field"><b>查看</b>查看原始与补充要求、全局与单科分段策略。</div><div class="field"><b>调整</b>补充要求后重新分析；编辑策略；逐科指定当前、历史或其他授课老师。</div><div class="field"><b>输出</b>已确认策略与指定老师，供学生计划和教师推荐使用。</div></div></article></section>
-    <div class="connector"><span>系统按最新策略与真实日程测算</span></div>
-    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge system-step">06</span>自动生成学生排课计划</h2><span class="actor sys-actor">系统算法</span></div><div class="card-body fields"><div class="field"><b>周期要求</b>按策略日期、频次和有效天数折算每周期目标。</div><div class="field"><b>候选时段</b>结合学生日程、停排与时段规则生成可排时间。</div><div class="field"><b>输出</b>学生排课要求、可排容量、暂定计划量与缺口；选师页可按课程展开。</div></div></article></section>
-    <div class="connector"><span>学生计划与已维护的教师规则共同输入推荐</span></div>
-    <section class="teacher-pair" aria-label="教师组织配置与系统推荐">
-      <article class="card teacher-source"><div class="card-head"><h2><span class="step-badge edu-step">07A</span>配置教师组织架构优先级</h2><span class="actor edu-actor">基础数据维护</span></div><div class="card-body"><div class="field"><b>维护时机</b>教务预先配置并持续维护；无需为每张排课单重复设置。</div><div class="field"><b>配置内容</b>按课程项、授课模式及授课校区／发起人架构配置可参与的教师组织、优先级和审批提示。</div><div class="field"><b>输出</b>校验通过的有效规则供系统读取；未命中规则的场景使用既定兜底筛选。</div></div></article>
-      <article class="card teacher-recommend"><div class="card-head"><h2><span class="step-badge system-step">07B</span>系统推荐并由教务选择老师</h2><span class="actor sys-actor">每张排课单执行</span></div><div class="card-body"><div class="field"><b>候选与准入</b>先按课程资格、老师要求和命中的组织范围筛选；教师剩余可排节数须达到该科尚需节数的 50%。</div><div class="field"><b>逐级推荐</b>按组织优先级逐级求师生时段覆盖度，每个保留层级最多展示 4 位；低优先级层级只保留覆盖度高于最近保留层级最高值的老师，达到 80% 后停止向下查找。</div><div class="field"><b>输出</b>教务为未指定老师的课程选择老师；需要架构审批时展示自定义提示。已配置但无人入围时显示“暂无可用教师”。</div></div></article>
-    </section>
-    <div class="connector"><span>选师后按最新师生日程重算</span></div>
-    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge system-step">08</span>多课程联合排课</h2><span class="actor sys-actor">系统算法</span></div><div class="card-body fields"><div class="field"><b>输入</b>已确认策略、学生候选、所选教师日程与已有课程。</div><div class="field"><b>处理</b>重新求师生交集，处理固定任务、时段争抢和多科共享额度。</div><div class="field"><b>输出</b>排课方案、具体课节及未满足要求的差额。</div></div></article></section>
-    <div class="connector"><span>教务核查并提交课节</span></div>
-    <section class="node"><article class="card"><div class="card-head"><h2><span class="step-badge edu-step">09</span>核查结果并写入正式课节</h2><span class="actor edu-actor">教务 · 系统</span></div><div class="card-body fields"><div class="field"><b>教务</b>查看课表与差额，按需手动补排、调整、保存方案。</div><div class="field"><b>系统</b>按每节实际日期换算北京时间；跨天时拆分系统记录。</div><div class="field"><b>完成</b>校验冲突与写入结果，保留课节、方案和操作记录。</div></div></article></section>
-    <div class="connector"><span>排课处理完成</span></div>
-    <div class="finish">正式课节进入系统，顾问与教务可查看对应排课单及处理结果</div>
-  </div>
-</main>
-<div class="detail-backdrop" id="detail-backdrop" hidden></div>
-<aside class="detail-drawer" id="detail-drawer" role="dialog" aria-modal="true" aria-labelledby="detail-title" hidden>
-  <div class="detail-header"><div><small id="detail-step"></small><h2 id="detail-title"></h2></div><button class="detail-close" id="detail-close" type="button" aria-label="关闭详情">×</button></div>
-  <div class="detail-body" id="detail-body"></div>
-  <div class="detail-footer"><a id="detail-source" href="scheduling-algorithm.html" target="_blank" rel="noopener">查看完整方案</a></div>
-</aside>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>智慧排课全流程泳道图</title><style>:root{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;color:#19344f;background:#f4f7fb}*{box-sizing:border-box}body{margin:0}main{width:min(1180px,100%);margin:0 auto;padding:20px 22px 32px}h1{font-size:clamp(21px,3vw,28px);margin:0 0 14px;line-height:1.3}h2{font-size:16px;margin:16px 0 9px;color:#274668}.switch{display:flex;flex-wrap:wrap;gap:7px;border-bottom:1px solid #cedbea;padding-bottom:10px}.switch button{font:inherit;font-size:13px;line-height:1.4;padding:7px 10px;border:1px solid #cad9e8;border-radius:6px;background:#fff;color:#24496e;text-align:left;cursor:pointer}.switch button.core{background:#e9f1fb}.switch button[aria-selected="true"]{border-color:#244d79;background:#244d79;color:white}:focus-visible{outline:2px solid #3474b6;outline-offset:2px}[hidden]{display:none!important}.viewport{overflow:auto;border:1px solid #cbd9e9;border-radius:9px;background:#fff}.sheet{width:1120px}.lanes{display:grid;grid-template-columns:repeat(4,280px);background:#244d79;color:#fff;font-weight:650;font-size:13px}.lanes div{padding:10px 14px 10px 26px;border-right:1px solid #53759a}.diagram{position:relative;width:1120px;background:repeating-linear-gradient(90deg,#f6f9fd 0px,#f6f9fd 279px,#dce8f3 279px,#dce8f3 280px)}.arrows{position:absolute;inset:0;pointer-events:none}.arrows>path{fill:none;stroke:#45739e;stroke-width:1.6}.arrows>path.back{stroke:#a06c35;stroke-dasharray:5 4}.arrows rect{fill:#fff;stroke:#c9dbea;stroke-width:.8}.arrows text{font:11px "Microsoft YaHei",sans-serif;fill:#32577a;text-anchor:middle}.node{position:absolute;width:220px;padding:10px 12px;border:1px solid #9fbad5;border-left:4px solid #6792bc;border-radius:8px;background:#fff;box-shadow:0 2px 5px #223f5b12}.node.decision{background:#fff5e2;border-color:#c99458}.node h3{font-size:14px;line-height:1.4;margin:0 0 4px}.node p{font-size:12px;line-height:1.5;margin:0 0 4px;overflow-wrap:anywhere}.node a{display:inline-block;margin-top:2px;font-size:11px;color:#1a5993}@media(max-width:670px){main{padding:14px 12px 24px}.switch button{font-size:12px}}.detail-diagram .node{width:246px;padding:10px 12px}.detail-diagram .node h3{font-size:14px;line-height:1.45}.detail-diagram .node p{font-size:12px;line-height:1.55}.detail-diagram .arrows text{font-size:11px}</style></head>
+<body><main><h1>智慧排课全流程泳道图</h1><div class="switch" role="tablist" aria-label="业务流程与排课步骤"><button class="" type="button" role="tab" id="tab-submit-to-education" aria-controls="panel-submit-to-education" aria-selected="true" tabindex="0">顾问/学管提交新增教务排课单</button>
+<button class="" type="button" role="tab" id="tab-self-service" aria-controls="panel-self-service" aria-selected="false" tabindex="-1">学管自己处理新增排课单</button>
+<button class="" type="button" role="tab" id="tab-advisor-change" aria-controls="panel-advisor-change" aria-selected="false" tabindex="-1">顾问变更排课</button>
+<button class="" type="button" role="tab" id="tab-homeroom-change" aria-controls="panel-homeroom-change" aria-selected="false" tabindex="-1">学管变更排课</button>
+<button class="" type="button" role="tab" id="tab-presales-consult" aria-controls="panel-presales-consult" aria-selected="false" tabindex="-1">顾问售前咨单</button>
+<button class="" type="button" role="tab" id="tab-homeroom-renewal" aria-controls="panel-homeroom-renewal" aria-selected="false" tabindex="-1">学管续排</button>
+<button class="core" type="button" role="tab" id="tab-student-candidates" aria-controls="panel-student-candidates" aria-selected="false" tabindex="-1">生成学生候选时段</button>
+<button class="core" type="button" role="tab" id="tab-teacher-recommendation" aria-controls="panel-teacher-recommendation" aria-selected="false" tabindex="-1">推荐老师</button>
+<button class="core" type="button" role="tab" id="tab-joint-scheduling" aria-controls="panel-joint-scheduling" aria-selected="false" tabindex="-1">联合排课</button></div>
+<section id="panel-submit-to-education" role="tabpanel" aria-labelledby="tab-submit-to-education"><h2>顾问/学管提交新增教务排课单</h2><div class="viewport" tabindex="0" role="region" aria-label="顾问/学管提交新增教务排课单泳道图"><div class="sheet"><div class="lanes"><div>顾问／学管</div><div>AI 分析</div><div>排课系统</div><div>教务／教学审批</div></div><div class="diagram" style="height:1070px"><svg class="arrows" viewBox="0 0 1120 1070" width="1120" height="1070" aria-hidden="true"><defs><marker id="submit-to-education-arrow" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#45739e"/></marker><marker id="submit-to-education-back" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#a06c35"/></marker></defs><path class="" d="M140,113 V137 H420 V161" marker-end="url(#submit-to-education-arrow)"/><path class="" d="M420,255 V279 H420 V303" marker-end="url(#submit-to-education-arrow)"/><path class="" d="M420,397 V421 H140 V445" marker-end="url(#submit-to-education-arrow)"/><path class="back" d="M140,521 V578 H14 V148 H420 V161" marker-end="url(#submit-to-education-back)"/><path class="" d="M420,397 V421 H700 V445" marker-end="url(#submit-to-education-arrow)"/><path class="" d="M420,397 V409 H574 V432 H980 V445" marker-end="url(#submit-to-education-arrow)"/><path class="back" d="M870,496.7 H810" marker-end="url(#submit-to-education-back)"/><path class="" d="M700,558 V582 H980 V606" marker-end="url(#submit-to-education-arrow)"/><path class="" d="M980,719 V743 H700 V767" marker-end="url(#submit-to-education-arrow)"/><path class="" d="M980,719 V743 H980 V767" marker-end="url(#submit-to-education-arrow)"/><path class="" d="M700,880 V904 H980 V928" marker-end="url(#submit-to-education-arrow)"/><path class="" d="M980,861 V904 H980 V928" marker-end="url(#submit-to-education-arrow)"/><g><rect x="233.5" y="402" width="93" height="18" rx="5"/><text x="280" y="415">未通过，可补充</text></g><g><rect x="58" y="579" width="38" height="18" rx="5"/><text x="77" y="592">复检</text></g><g><rect x="541" y="402" width="38" height="18" rx="5"/><text x="560" y="415">通过</text></g><g><rect x="450.5" y="410" width="93" height="18" rx="5"/><text x="497" y="423">连续三次未通过</text></g><g><rect x="810" y="473.7" width="60" height="18" rx="5"/><text x="840" y="486.7">策略就绪</text></g></svg><article class="node" id="submit-to-education-a" style="left:30px;top:19px;min-height:94px"><h3>填写并提交排课单</h3><p>可选多个课程包聚合提交。提交后按包生成排课单，一包一单一班。</p></article>
+<article class="node" id="submit-to-education-b" style="left:310px;top:161px;min-height:94px"><h3>分析排课要求</h3><p>使用当前课程、起止日期、原要求及有效补充。</p></article>
+<article class="node decision" id="submit-to-education-c" style="left:310px;top:303px;min-height:94px"><h3>策略分析通过？</h3><p>返回通过策略或待确认问题。技术异常可重试。</p></article>
+<article class="node" id="submit-to-education-d" style="left:30px;top:445px;min-height:76px"><h3>补充后重新提交</h3><p>修正结课日期，或补充时间要求和图片。</p></article>
+<article class="node" id="submit-to-education-e" style="left:590px;top:445px;min-height:113px"><h3>提交成功，流转教务</h3><p>先核对全局和科目的日、周额度。有额度才计算周期目标并确认可排时段，无额度目标为 0。</p><a href="#tab-student-candidates">查看流程 →</a></article>
+<article class="node" id="submit-to-education-f" style="left:870px;top:445px;min-height:94px"><h3>三次未通过转教务</h3><p>教务确认可执行策略后再生成候选。</p></article>
+<article class="node" id="submit-to-education-g" style="left:870px;top:606px;min-height:113px"><h3>手动推荐并逐科选师</h3><p>可指定老师，也可选择系统推荐。</p><a href="#tab-teacher-recommendation">查看流程 →</a></article>
+<article class="node" id="submit-to-education-h" style="left:590px;top:767px;min-height:113px"><h3>联合求解并逐节预排</h3><p>刷新师生日程，冲突时重算未落位课节。</p><a href="#tab-joint-scheduling">查看流程 →</a></article>
+<article class="node" id="submit-to-education-i" style="left:870px;top:767px;min-height:94px"><h3>检查教师和科目状态</h3><p>点击生成排课时自动触发适用审批，与预排并行。</p></article>
+<article class="node" id="submit-to-education-j" style="left:870px;top:928px;min-height:94px"><h3>按课时包校验审批，转正式</h3><p>适用审批通过后结单，未排课时退回。</p></article></div></div></div></section>
+<section id="panel-self-service" role="tabpanel" aria-labelledby="tab-self-service" hidden><h2>学管自己处理新增排课单</h2><div class="viewport" tabindex="0" role="region" aria-label="学管自己处理新增排课单泳道图"><div class="sheet"><div class="lanes"><div>学管</div><div>AI 分析</div><div>排课系统</div><div>教务工作台</div></div><div class="diagram" style="height:909px"><svg class="arrows" viewBox="0 0 1120 909" width="1120" height="909" aria-hidden="true"><defs><marker id="self-service-arrow" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#45739e"/></marker><marker id="self-service-back" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#a06c35"/></marker></defs><path class="" d="M140,113 V137 H420 V161" marker-end="url(#self-service-arrow)"/><path class="" d="M420,255 V279 H140 V303" marker-end="url(#self-service-arrow)"/><path class="back" d="M140,361 V436 H14 V148 H420 V161" marker-end="url(#self-service-back)"/><path class="" d="M420,255 V279 H700 V303" marker-end="url(#self-service-arrow)"/><path class="" d="M700,416 V440 H140 V464" marker-end="url(#self-service-arrow)"/><path class="" d="M140,558 V582 H980 V606" marker-end="url(#self-service-arrow)"/><path class="" d="M140,558 V582 H140 V606" marker-end="url(#self-service-arrow)"/><path class="" d="M980,700 V724 H700 V748" marker-end="url(#self-service-arrow)"/><path class="" d="M140,664 V724 H700 V748" marker-end="url(#self-service-arrow)"/><g><rect x="255.5" y="260" width="49" height="18" rx="5"/><text x="280" y="273">未通过</text></g><g><rect x="47" y="437" width="60" height="18" rx="5"/><text x="77" y="450">重新分析</text></g><g><rect x="541" y="260" width="38" height="18" rx="5"/><text x="560" y="273">通过</text></g><g><rect x="535.5" y="563" width="49" height="18" rx="5"/><text x="560" y="576">转教务</text></g><g><rect x="162" y="563" width="60" height="18" rx="5"/><text x="192" y="576">自行处理</text></g></svg><article class="node" id="self-service-a" style="left:30px;top:19px;min-height:94px"><h3>填写并提交排课单</h3><p>可选多个课程包聚合提交，按包生成排课单和对应班级，再补充排课要求。</p></article>
+<article class="node decision" id="self-service-b" style="left:310px;top:161px;min-height:94px"><h3>分析原要求和有效补充</h3><p>通过返回策略，未通过则提示补充。</p></article>
+<article class="node" id="self-service-c" style="left:30px;top:303px;min-height:58px"><h3>补充后复检</h3></article>
+<article class="node" id="self-service-d" style="left:590px;top:303px;min-height:113px"><h3>自动按科推荐</h3><p>有历史老师时同时测算历史老师；无历史老师仅走系统推荐。</p><a href="#tab-teacher-recommendation">查看流程 →</a></article>
+<article class="node decision" id="self-service-e" style="left:30px;top:464px;min-height:94px"><h3>查看结果，选师或转教务</h3><p>对推荐不满意时，学管可以转教务。</p></article>
+<article class="node" id="self-service-f" style="left:870px;top:606px;min-height:94px"><h3>教务接收完整信息并选师</h3><p>接收排课单、历次补充、策略、推荐和已选老师。</p></article>
+<article class="node" id="self-service-g" style="left:30px;top:606px;min-height:58px"><h3>学管确认各科老师</h3></article>
+<article class="node" id="self-service-h" style="left:590px;top:748px;min-height:113px"><h3>生成预排并确认正式</h3><p>并行触发适用审批，逐节校验，按课时包审核后转正式。</p><a href="#tab-joint-scheduling">查看流程 →</a></article></div></div></div></section>
+<section id="panel-advisor-change" role="tabpanel" aria-labelledby="tab-advisor-change" hidden><h2>顾问变更排课</h2><div class="viewport" tabindex="0" role="region" aria-label="顾问变更排课泳道图"><div class="sheet"><div class="lanes"><div>顾问</div><div>AI 分析</div><div>排课系统</div><div>教务工作台</div></div><div class="diagram" style="height:694px"><svg class="arrows" viewBox="0 0 1120 694" width="1120" height="694" aria-hidden="true"><defs><marker id="advisor-change-arrow" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#45739e"/></marker><marker id="advisor-change-back" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#a06c35"/></marker></defs><path class="" d="M140,77 V101 H140 V125" marker-end="url(#advisor-change-arrow)"/><path class="" d="M140,77 V101 H700 V125" marker-end="url(#advisor-change-arrow)"/><path class="" d="M140,201 V243 H980 V267" marker-end="url(#advisor-change-arrow)"/><path class="" d="M700,219 V243 H420 V267" marker-end="url(#advisor-change-arrow)"/><path class="" d="M420,343 V367 H140 V391" marker-end="url(#advisor-change-arrow)"/><path class="back" d="M140,449 V505 H14 V254 H420 V267" marker-end="url(#advisor-change-back)"/><path class="" d="M420,343 V367 H980 V391" marker-end="url(#advisor-change-arrow)"/><path class="" d="M980,485 V509 H980 V533" marker-end="url(#advisor-change-arrow)"/><path class="" d="M980,485 V509 H700 V533" marker-end="url(#advisor-change-arrow)"/><g><rect x="173" y="82" width="38" height="18" rx="5"/><text x="192" y="95">取消</text></g><g><rect x="390" y="82" width="60" height="18" rx="5"/><text x="420" y="95">其他变更</text></g><g><rect x="530" y="224" width="60" height="18" rx="5"/><text x="560" y="237">提交成功</text></g><g><rect x="255.5" y="348" width="49" height="18" rx="5"/><text x="280" y="361">未通过</text></g><g><rect x="58" y="506" width="38" height="18" rx="5"/><text x="77" y="519">复检</text></g><g><rect x="681" y="348" width="38" height="18" rx="5"/><text x="700" y="361">通过</text></g><g><rect x="1013" y="490" width="38" height="18" rx="5"/><text x="1032" y="503">老师</text></g><g><rect x="804.5" y="490" width="71" height="18" rx="5"/><text x="840" y="503">时间／时长</text></g></svg><article class="node" id="advisor-change-a" style="left:30px;top:19px;min-height:79px"><h3>选择课节和变更类型</h3><p>跨课程包聚合提交，按包生成变更单，一包一单一班。</p></article>
+<article class="node" id="advisor-change-b" style="left:30px;top:125px;min-height:76px"><h3>取消课节</h3><p>选择取消原因并提交。</p></article>
+<article class="node" id="advisor-change-c" style="left:590px;top:125px;min-height:94px"><h3>提交老师、时间或时长变更</h3><p>带入变更要求和原课节的「课程＋时段」。</p></article>
+<article class="node decision" id="advisor-change-d" style="left:310px;top:267px;min-height:76px"><h3>分析变更要求</h3><p>未通过时返回待确认问题。</p></article>
+<article class="node" id="advisor-change-e" style="left:30px;top:391px;min-height:58px"><h3>补充后重新提交</h3></article>
+<article class="node decision" id="advisor-change-f" style="left:870px;top:391px;min-height:94px"><h3>教务接单</h3><p>变更老师和变更时间／时长分流。</p></article>
+<article class="node" id="advisor-change-g" style="left:870px;top:267px;min-height:58px"><h3>教务直接删除取消的课节</h3></article>
+<article class="node" id="advisor-change-h" style="left:870px;top:533px;min-height:113px"><h3>变更老师</h3><p>手动触发推荐，确认老师后生成预排。</p><a href="#tab-teacher-recommendation">查看流程 →</a></article>
+<article class="node" id="advisor-change-i" style="left:590px;top:533px;min-height:94px"><h3>变更时间或时长</h3><p>确认策略，保存原时间版本后直接生成正式课节。</p></article></div></div></div></section>
+<section id="panel-homeroom-change" role="tabpanel" aria-labelledby="tab-homeroom-change" hidden><h2>学管变更排课</h2><div class="viewport" tabindex="0" role="region" aria-label="学管变更排课泳道图"><div class="sheet"><div class="lanes"><div>学管工作台</div><div>排课系统</div><div>AI／变更处理</div><div>审批／教务</div></div><div class="diagram" style="height:907px"><svg class="arrows" viewBox="0 0 1120 907" width="1120" height="907" aria-hidden="true"><defs><marker id="homeroom-change-arrow" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#45739e"/></marker><marker id="homeroom-change-back" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#a06c35"/></marker></defs><path class="" d="M140,95 V119 H420 V143" marker-end="url(#homeroom-change-arrow)"/><path class="" d="M420,237 V261 H140 V285" marker-end="url(#homeroom-change-arrow)"/><path class="" d="M420,237 V261 H420 V285" marker-end="url(#homeroom-change-arrow)"/><path class="" d="M420,237 V261 H700 V285" marker-end="url(#homeroom-change-arrow)"/><path class="" d="M420,237 V261 H980 V285" marker-end="url(#homeroom-change-arrow)"/><path class="" d="M140,361 V421 H140 V445" marker-end="url(#homeroom-change-arrow)"/><path class="" d="M420,397 V421 H420 V445" marker-end="url(#homeroom-change-arrow)"/><path class="" d="M700,361 V421 H700 V445" marker-end="url(#homeroom-change-arrow)"/><path class="" d="M700,361 V409 H574 V592 H420 V605" marker-end="url(#homeroom-change-arrow)"/><path class="" d="M700,361 V409 H854 V592 H700 V605" marker-end="url(#homeroom-change-arrow)"/><path class="" d="M980,379 V421 H980 V445" marker-end="url(#homeroom-change-arrow)"/><path class="" d="M700,361 V409 H854 V752 H980 V765" marker-end="url(#homeroom-change-arrow)"/><g><rect x="700" y="402" width="104" height="18" rx="5"/><text x="752" y="415">批量改时间／时长</text></g><g><rect x="585" y="410" width="104" height="18" rx="5"/><text x="637" y="423">单节换科目／体系</text></g><g><rect x="725" y="410" width="104" height="18" rx="5"/><text x="777" y="423">批量换科目／体系</text></g><g><rect x="736" y="410" width="82" height="18" rx="5"/><text x="777" y="423">符合条件可转</text></g></svg><article class="node" id="homeroom-change-a" style="left:30px;top:19px;min-height:76px"><h3>选择学员课表中的课节</h3><p>支持跨包选择课节并聚合提交，按包生成变更单，一包一单一班。</p></article>
+<article class="node decision" id="homeroom-change-b" style="left:310px;top:143px;min-height:94px"><h3>按变更类型及范围处理</h3><p>取消和换订单重排各自共用流程。</p></article>
+<article class="node" id="homeroom-change-c" style="left:30px;top:285px;min-height:76px"><h3>取消课节</h3><p>选择原因并提交。</p></article>
+<article class="node" id="homeroom-change-d" style="left:310px;top:285px;min-height:112px"><h3>模式／校区和单节快捷变更</h3><p>单节改模式、校区、时间、时长自动建变更单；批量改模式／校区直接提交检测。</p></article>
+<article class="node" id="homeroom-change-e" style="left:590px;top:285px;min-height:76px"><h3>时间／时长或换科目／体系</h3><p>选择单节或批量路径。</p></article>
+<article class="node" id="homeroom-change-f" style="left:870px;top:285px;min-height:94px"><h3>换订单重排</h3><p>生成虚拟排课单，占用原老师的原时段。</p></article>
+<article class="node" id="homeroom-change-g" style="left:30px;top:445px;min-height:76px"><h3>原流程审批通过后取消</h3><p>按规则释放课节占用。</p></article>
+<article class="node decision" id="homeroom-change-h" style="left:310px;top:445px;min-height:112px"><h3>提交时检测冲突</h3><p>通过即变更；单节冲突进入变更单，批量模式／校区冲突进入排课页。</p></article>
+<article class="node" id="homeroom-change-i" style="left:590px;top:445px;min-height:112px"><h3>批量改时间／时长</h3><p>AI 分析原课节和补充要求；保存原时间版本后直接生成正式排课。</p></article>
+<article class="node" id="homeroom-change-j" style="left:870px;top:445px;min-height:76px"><h3>关联课时包后转正式</h3><p>将确认课程排入原时段。</p></article>
+<article class="node" id="homeroom-change-k" style="left:310px;top:605px;min-height:112px"><h3>同体系换科目／换课程体系</h3><p>单节换科目可选历史老师；无历史则进入选师。换体系先查课时，充足后选师。</p></article>
+<article class="node" id="homeroom-change-l" style="left:590px;top:605px;min-height:112px"><h3>批量换科目或换体系</h3><p>带补充要求、原课时长及原时段给 AI，选师后排课；换体系先确认课时充足。</p></article>
+<article class="node" id="homeroom-change-m" style="left:870px;top:765px;min-height:94px"><h3>可选择转教务</h3><p>时间／时长、同体系换科目、课时充足的换体系可转教务。</p></article></div></div></div></section>
+<section id="panel-presales-consult" role="tabpanel" aria-labelledby="tab-presales-consult" hidden><h2>顾问售前咨单</h2><div class="viewport" tabindex="0" role="region" aria-label="顾问售前咨单泳道图"><div class="sheet"><div class="lanes"><div>顾问</div><div>AI 分析</div><div>推荐系统</div><div>教务工作台</div></div><div class="diagram" style="height:552px"><svg class="arrows" viewBox="0 0 1120 552" width="1120" height="552" aria-hidden="true"><defs><marker id="presales-consult-arrow" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#45739e"/></marker><marker id="presales-consult-back" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#a06c35"/></marker></defs><path class="" d="M140,77 V101 H420 V125" marker-end="url(#presales-consult-arrow)"/><path class="" d="M420,201 V225 H140 V249" marker-end="url(#presales-consult-arrow)"/><path class="back" d="M140,325 V382 H14 V112 H420 V125" marker-end="url(#presales-consult-back)"/><path class="" d="M420,201 V225 H700 V249" marker-end="url(#presales-consult-arrow)"/><path class="" d="M420,201 V213 H854 V397 H980 V410" marker-end="url(#presales-consult-arrow)"/><path class="" d="M700,362 V386 H140 V410" marker-end="url(#presales-consult-arrow)"/><path class="back" d="M250,461.7 H870" marker-end="url(#presales-consult-back)"/><g><rect x="255.5" y="206" width="49" height="18" rx="5"/><text x="280" y="219">未通过</text></g><g><rect x="58" y="383" width="38" height="18" rx="5"/><text x="77" y="396">复检</text></g><g><rect x="541" y="206" width="38" height="18" rx="5"/><text x="560" y="219">通过</text></g><g><rect x="585" y="214" width="104" height="18" rx="5"/><text x="637" y="227">三次未通过，可转</text></g><g><rect x="519" y="438.7" width="82" height="18" rx="5"/><text x="560" y="451.7">不满意，可转</text></g></svg><article class="node" id="presales-consult-a" style="left:30px;top:19px;min-height:58px"><h3>填写课程和咨单要求</h3></article>
+<article class="node decision" id="presales-consult-b" style="left:310px;top:125px;min-height:76px"><h3>AI 分析排课要求</h3><p>通过则自动启动推荐。</p></article>
+<article class="node" id="presales-consult-c" style="left:30px;top:249px;min-height:76px"><h3>补充后重新提交</h3><p>带入历次有效补充。</p></article>
+<article class="node" id="presales-consult-d" style="left:590px;top:249px;min-height:113px"><h3>按科输出覆盖度和可排时段</h3><p>计算各老师承接量，输出可排日期和起止时刻。</p><a href="#tab-teacher-recommendation">查看流程 →</a></article>
+<article class="node" id="presales-consult-e" style="left:30px;top:410px;min-height:94px"><h3>顾问查看结果</h3><p>认可即可完成顾问侧处理；不满意可转教务。</p></article>
+<article class="node" id="presales-consult-f" style="left:870px;top:410px;min-height:94px"><h3>接收咨单并处理</h3><p>三次未通过或顾问对推荐不满意时可转教务。</p></article></div></div></div></section>
+<section id="panel-homeroom-renewal" role="tabpanel" aria-labelledby="tab-homeroom-renewal" hidden><h2>学管续排</h2><div class="viewport" tabindex="0" role="region" aria-label="学管续排泳道图"><div class="sheet"><div class="lanes"><div>学管</div><div>排课系统</div><div>教师推荐</div><div>课表／正式排课</div></div><div class="diagram" style="height:1067px"><svg class="arrows" viewBox="0 0 1120 1067" width="1120" height="1067" aria-hidden="true"><defs><marker id="homeroom-renewal-arrow" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#45739e"/></marker><marker id="homeroom-renewal-back" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#a06c35"/></marker></defs><path class="" d="M140,95 V119 H140 V143" marker-end="url(#homeroom-renewal-arrow)"/><path class="" d="M140,201 V225 H700 V249" marker-end="url(#homeroom-renewal-arrow)"/><path class="" d="M700,362 V386 H140 V410" marker-end="url(#homeroom-renewal-arrow)"/><path class="" d="M140,468 V492 H420 V516" marker-end="url(#homeroom-renewal-arrow)"/><path class="" d="M420,611 V635 H140 V659" marker-end="url(#homeroom-renewal-arrow)"/><path class="back" d="M140,753 V773 H14 V130 H140 V143" marker-end="url(#homeroom-renewal-back)"/><path class="" d="M140,753 V777 H420 V801" marker-end="url(#homeroom-renewal-arrow)"/><path class="back" d="M420,877 V897 H574 V646 H140 V659" marker-end="url(#homeroom-renewal-back)"/><path class="" d="M420,877 V901 H980 V925" marker-end="url(#homeroom-renewal-arrow)"/><g><rect x="30.5" y="774" width="93" height="18" rx="5"/><text x="77" y="787">按要求重新排课</text></g><g><rect x="255.5" y="758" width="49" height="18" rx="5"/><text x="280" y="771">转正式</text></g><g><rect x="467" y="898" width="60" height="18" rx="5"/><text x="497" y="911">补齐关联</text></g><g><rect x="670" y="882" width="60" height="18" rx="5"/><text x="700" y="895">校验通过</text></g></svg><article class="node" id="homeroom-renewal-a" style="left:30px;top:19px;min-height:76px"><h3>选择已购课时包及扩科科目</h3><p>可聚合提交多个课程包和课程项。</p></article>
+<article class="node" id="homeroom-renewal-b" style="left:30px;top:143px;min-height:58px"><h3>填写各课程项排课要求</h3></article>
+<article class="node" id="homeroom-renewal-c" style="left:590px;top:249px;min-height:113px"><h3>按科测算与推荐</h3><p>有历史老师时同时给出历史覆盖度和系统推荐。</p><a href="#tab-teacher-recommendation">查看流程 →</a></article>
+<article class="node" id="homeroom-renewal-d" style="left:30px;top:410px;min-height:58px"><h3>逐科选定老师</h3></article>
+<article class="node" id="homeroom-renewal-e" style="left:310px;top:516px;min-height:95px"><h3>生成多课程项预排</h3><p>查看各科课节与缺口。</p><a href="#tab-joint-scheduling">查看流程 →</a></article>
+<article class="node decision" id="homeroom-renewal-f" style="left:30px;top:659px;min-height:94px"><h3>确认预排或按要求重排</h3><p>需要调整时补充要求，重新生成预排。</p></article>
+<article class="node decision" id="homeroom-renewal-g" style="left:310px;top:801px;min-height:76px"><h3>按课程项关联有效课时包</h3><p>转正式前核对科目及可用课时。</p></article>
+<article class="node" id="homeroom-renewal-h" style="left:870px;top:925px;min-height:94px"><h3>转为正式排课单</h3><p>各课程包分别对应一张正式排课单和一个班级，保留聚合关联。</p></article></div></div></div></section>
+<section id="panel-student-candidates" role="tabpanel" aria-labelledby="tab-student-candidates" hidden><h2>生成学生候选时段</h2><div class="viewport" tabindex="0" role="region" aria-label="先算周期额度再确认目标与时段"><div class="sheet"><div class="lanes"><div>科目与策略</div><div>可排时段</div><div>额度与周期目标</div><div>结果</div></div><div class="diagram detail-diagram" style="height:1288px"><svg class="arrows" viewBox="0 0 1120 1288" width="1120" height="1288" aria-hidden="true"><defs><marker id="student-candidates-arrow" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#45739e"/></marker></defs><path d="M125,128 V147 H692 V188" marker-end="url(#student-candidates-arrow)"/><path d="M685,318 V337 H708 V378" marker-end="url(#student-candidates-arrow)"/><path d="M685,488 V507 H428 V548" marker-end="url(#student-candidates-arrow)"/><path d="M700,488 V518 H708 V548" marker-end="url(#student-candidates-arrow)"/><path d="M715,488 V529 H972 V548" marker-end="url(#student-candidates-arrow)"/><path d="M405,658 V677 H428 V718" marker-end="url(#student-candidates-arrow)"/><path d="M685,658 V677 H708 V718" marker-end="url(#student-candidates-arrow)"/><path d="M405,848 V887 H972 V928" marker-end="url(#student-candidates-arrow)"/><path d="M685,868 V887 H972 V928" marker-end="url(#student-candidates-arrow)"/><path d="M965,1038 V1057 H988 V1098" marker-end="url(#student-candidates-arrow)"/><g><rect x="531" y="489" width="51" height="19" rx="5"/><text x="556.5" y="502">有额度</text></g><g><rect x="818" y="511" width="51" height="19" rx="5"/><text x="843.5" y="524">无额度</text></g></svg>
+<article class="node" id="student-candidates-a" style="left:17px;top:18px;min-height:110px"><h3>01 读取逐科策略和已占用课节</h3><p>按学生上课时区读取本科周期、阶段和用来核算额度的已发布课、有效预排。</p></article>
+<article class="node" id="student-candidates-d" style="left:577px;top:188px;min-height:130px"><h3>02 先计算四类剩余额度</h3><p>全局周、全局日、科目周、科目日余额＝各自上限－已发布－有效预排，最低为 0。同一逻辑课节只扣一次。</p></article>
+<article class="node decision" id="student-candidates-e" style="left:577px;top:378px;min-height:110px"><h3>03 当前科目周期还有额度？</h3><p>只要本周期内有一天四项余额都允许新增 1 节，即有额度。全局周余额为 0 时，当周各科均新增 0 节。</p></article>
+<article class="node" id="student-candidates-b" style="left:297px;top:548px;min-height:110px"><h3>04 确认可排时段</h3><p>有额度后按允许时长生成完整候选，剔除禁排、既有占用及额度为 0 的日期或自然周。</p></article>
+<article class="node" id="student-candidates-g" style="left:577px;top:548px;min-height:110px"><h3>04 计算本科周期目标</h3><p>按本科自然周、双周或公历月累计。双周以阶段起始周为锚点；一周额度耗尽只排除该周。</p></article>
+<article class="node" id="student-candidates-f" style="left:857px;top:548px;min-height:110px"><h3>04 无额度：周期目标为 0</h3><p>目标上下限均置 0，可排候选为空。保留明确强制要求并提示无法满足。</p></article>
+<article class="node" id="student-candidates-c" style="left:297px;top:718px;min-height:130px"><h3>05 标记时段并保留合法备选</h3><p>按科标记固定、优先、常规，记录跨科真实重叠。有额度但无合法时段时，实际可排为 0，周期目标仍保留。</p></article>
+<article class="node" id="student-candidates-h" style="left:577px;top:718px;min-height:150px"><h3>05 折算周期上下限</h3><p>周取 7 天、双周 14 天、月取公历实际天数。有效天数＝阶段与周期的重合天数－整天禁排。原频次乘有效天数再除以全周期天数，下限四舍五入，上限向上取整。指定节数或排完剩余时保留相应总量。</p></article>
+<article class="node" id="student-candidates-k" style="left:857px;top:928px;min-height:110px"><h3>06 输出周期目标和可排时段</h3><p>系统按自然周组织推荐和核算周额度；各科目标、合法时段在本科周期执行。未排需求留给后续合法周期。</p></article>
+<article class="node" id="student-candidates-l" style="left:857px;top:1098px;min-height:130px"><h3>07 逐科求学生可排上限 P</h3><p>仅用学生侧条件和全部合法候选求最多可排节数。学生侧缺口＝原待排目标 N－P。多科在联合排课时共用全局额度。</p></article>
+</div></div></div></section>
+<section id="panel-teacher-recommendation" role="tabpanel" aria-labelledby="tab-teacher-recommendation" hidden><h2>推荐老师</h2><div class="viewport" tabindex="0" role="region" aria-label="按教务和学管角色区分的教师推荐流程"><div class="sheet"><div class="lanes"><div>处理角色</div><div>指定老师</div><div>历史授课老师</div><div>系统推荐与结果</div></div><div class="diagram detail-diagram" style="height:2239px"><svg class="arrows" viewBox="0 0 1120 2239" width="1120" height="2239" aria-hidden="true"><defs><marker id="teacher-recommendation-arrow" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#45739e"/></marker><marker id="teacher-recommendation-back" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#a06c35"/></marker></defs><path class="" d="M140,108 V131 H140 V170" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M119,108 V139 H700 V170" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M140,240 V283 H420 V322" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M119,240 V281 H847 V309 H980 V322" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M700,260 V283 H399 V322" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M679,260 V291 H700 V322" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M721,260 V299 H959 V322" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M420,432 V475 H420 V514" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M420,644 V689 H420 V728" marker-end="url(#teacher-recommendation-arrow)"/><path class="back" d="M420,838 V870 H567 V301 H1001 V322" marker-end="url(#teacher-recommendation-back)"/><path class="" d="M399,838 V879 H287 V1839 H980 V1852" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M700,432 V475 H700 V514" marker-end="url(#teacher-recommendation-arrow)"/><path class="back" d="M700,624 V678 H842 V309 H1022 V322" marker-end="url(#teacher-recommendation-back)"/><path class="" d="M679,624 V687 H562 V1835 H959 V1852" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M980,452 V475 H980 V514" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M980,666 V689 H980 V728" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M980,858 V881 H980 V920" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M980,1030 V1053 H700 V1092" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M959,1030 V1061 H980 V1092" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M980,1202 V1225 H980 V1264" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M980,1334 V1357 H980 V1396" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M959,1334 V1355 H1111 V1831 H1001 V1852" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M980,1506 V1529 H980 V1568" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M980,1638 V1661 H980 V1700" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M959,1638 V1659 H1106 V1839 H1022 V1852" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M980,1790 V1813 H980 V1852" marker-end="url(#teacher-recommendation-arrow)"/><path class="" d="M980,2002 V2025 H140 V2064" marker-end="url(#teacher-recommendation-arrow)"/><g><rect x="178" y="113" width="40" height="19" rx="5"/><text x="198" y="126">教务</text></g><g><rect x="389.5" y="121" width="40" height="19" rx="5"/><text x="409.5" y="134">学管</text></g><g><rect x="249" y="265" width="62" height="19" rx="5"/><text x="280" y="278">指定老师</text></g><g><rect x="452" y="281" width="62" height="19" rx="5"/><text x="483" y="294">系统推荐</text></g><g><rect x="518.5" y="265" width="62" height="19" rx="5"/><text x="549.5" y="278">指定老师</text></g><g><rect x="695" y="273" width="84" height="19" rx="5"/><text x="737" y="286">历史授课老师</text></g><g><rect x="809" y="281" width="62" height="19" rx="5"/><text x="840" y="294">系统推荐</text></g><g><rect x="433" y="870" width="121" height="19" rx="5"/><text x="493.5" y="883">低于 90%，补充推荐</text></g><g><rect x="301" y="879" width="84" height="19" rx="5"/><text x="343" y="892">保留指定结果</text></g><g><rect x="740" y="678" width="62" height="19" rx="5"/><text x="771" y="691">同时推荐</text></g><g><rect x="578.5" y="687" width="84" height="19" rx="5"/><text x="620.5" y="700">汇总历史结果</text></g><g><rect x="818" y="1035" width="44" height="19" rx="5"/><text x="840" y="1048">P＝0</text></g><g><rect x="995" y="1043" width="44" height="19" rx="5"/><text x="1017" y="1056">P＞0</text></g><g><rect x="1023.5" y="1339" width="29" height="19" rx="5"/><text x="1038" y="1352">是</text></g><g><rect x="1020.5" y="1355" width="29" height="19" rx="5"/><text x="1035" y="1368">否</text></g><g><rect x="1023.5" y="1643" width="29" height="19" rx="5"/><text x="1038" y="1656">是</text></g><g><rect x="1018" y="1659" width="29" height="19" rx="5"/><text x="1032.5" y="1672">否</text></g></svg>
+<article class="node decision" id="teacher-recommendation-a" style="left:17px;top:18px;min-height:90px"><h3>推荐老师由谁处理？</h3><p>按自然周组织推荐。逐科读取本科周期目标、候选和日周余额。</p></article>
+<article class="node" id="teacher-recommendation-b" style="left:17px;top:170px;min-height:70px"><h3>教务处理排课单</h3><p>可指定老师，也可启动系统推荐。</p></article>
+<article class="node" id="teacher-recommendation-c" style="left:577px;top:170px;min-height:90px"><h3>学管处理排课单</h3><p>可指定老师、选历史授课老师，或使用系统推荐。</p></article>
+<article class="node" id="teacher-recommendation-d" style="left:297px;top:322px;min-height:110px"><h3>按指定老师口径生成候选</h3><p>原固定时段降为优先，其余合法空闲可排。日期、禁排、日周额度和节数／课时上限仍有效。</p></article>
+<article class="node" id="teacher-recommendation-e" style="left:297px;top:514px;min-height:130px"><h3>逐位测算指定老师</h3><p>同科多位指定老师共用放宽后的 P。根据每位老师日程求最大承接量 M，覆盖度＝M ÷ P × 100%。各位指定老师的结果均保留。</p></article>
+<article class="node decision" id="teacher-recommendation-f" style="left:297px;top:728px;min-height:110px"><h3>是否补充系统推荐？</h3><p>任一指定老师覆盖度低于 90% 时，本科补充推荐一次。恰好 90% 本身不触发。测算未确定时保持计算中。</p></article>
+<article class="node" id="teacher-recommendation-g" style="left:577px;top:322px;min-height:110px"><h3>读取该科历史授课老师</h3><p>按学管场景的学生时段条件逐位计算覆盖度、可排节数和时段，供学管选择。</p></article>
+<article class="node" id="teacher-recommendation-h" style="left:577px;top:514px;min-height:110px"><h3>保留历史老师的测算结果</h3><p>学管处理时，有历史老师也同时运行系统推荐；无历史老师时使用系统推荐。</p></article>
+<article class="node" id="teacher-recommendation-i" style="left:857px;top:322px;min-height:130px"><h3>系统推荐沿用学生原时段要求</h3><p>筛课程项、科目、考试局、年级、模块、授课模式等资格。线下／OMO 按授课校区匹配架构，线上按发起人架构。</p></article>
+<article class="node" id="teacher-recommendation-j" style="left:857px;top:514px;min-height:152px"><h3>读取老师日程，计算学生侧上限 P</h3><p>有结课日按实际日期；排完为止按页面预估日或 AI 原始预估日，再加一个月查询教师日程。使用学生侧约束求本科最多可排节数 P。</p></article>
+<article class="node" id="teacher-recommendation-k" style="left:857px;top:728px;min-height:130px"><h3>逐位求最大承接量 M</h3><p>按本科周期用候选与老师空闲求交，排除发布、预排和请假。CP-SAT 选互不重叠的完整课节，满足周期及日周额度，M ≤ P。</p></article>
+<article class="node decision" id="teacher-recommendation-l" style="left:857px;top:920px;min-height:110px"><h3>有学生侧可排机会？</h3><p>P＝0 时记录学生侧原因。P＞0 时用 M ÷ P × 100% 算覆盖度。未确定的结果继续计算或标记未完成。</p></article>
+<article class="node" id="teacher-recommendation-n" style="left:577px;top:1092px;min-height:90px"><h3>暂无学生侧可排机会</h3><p>P＝0 时覆盖度显示不适用，供处理人查看原因。</p></article>
+<article class="node" id="teacher-recommendation-m" style="left:857px;top:1092px;min-height:110px"><h3>L0 全标签匹配</h3><p>按系统填写的教师风格、性别等匹配。覆盖度达到 60% 才计入推荐人数，按未取整数值判断。</p></article>
+<article class="node decision" id="teacher-recommendation-o" style="left:857px;top:1264px;min-height:70px"><h3>L0 达标人数 ≤2 位？</h3><p>超过 2 位时直接进入结果。</p></article>
+<article class="node" id="teacher-recommendation-p" style="left:857px;top:1396px;min-height:110px"><h3>L1 放宽教师风格</h3><p>性别和其他条件照常执行。保留 L0 入选老师，追加达标候选并按教师 ID 去重。</p></article>
+<article class="node decision" id="teacher-recommendation-q" style="left:857px;top:1568px;min-height:70px"><h3>L0＋L1 去重后少于 5 位？</h3><p>累计达到 5 位时直接进入结果。</p></article>
+<article class="node" id="teacher-recommendation-r" style="left:857px;top:1700px;min-height:90px"><h3>L2 再放宽教师性别</h3><p>在 L1 基础上放宽性别，其他条件继续执行。追加达标且未入选的老师。</p></article>
+<article class="node" id="teacher-recommendation-s" style="left:857px;top:1852px;min-height:150px"><h3>汇总并展示各科可选老师</h3><p>系统名单按覆盖度、架构、教师排课状态、科目状态、负载饱和度排序，仍相同则随机。指定和历史测算分开显示可排节数、时段、缺口及审批标记。</p></article>
+<article class="node" id="teacher-recommendation-t" style="left:17px;top:2064px;min-height:113px"><h3>处理人逐科确认授课老师</h3><p>实际排课沿用选中老师对应的时段口径，再进入联合排课。</p><a href="#tab-joint-scheduling">查看联合排课 →</a></article>
+</div></div></div></section>
+<section id="panel-joint-scheduling" role="tabpanel" aria-labelledby="tab-joint-scheduling" hidden><h2>联合排课</h2><div class="viewport" tabindex="0" role="region" aria-label="联合排课详细流程"><div class="sheet"><div class="lanes"><div>教务与策略</div><div>联合求解</div><div>预排写入</div><div>审批与结单</div></div><div class="diagram detail-diagram" style="height:2090px"><svg class="arrows" viewBox="0 0 1120 2090" width="1120" height="2090" aria-hidden="true"><defs><marker id="joint-scheduling-arrow" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#45739e"/></marker><marker id="joint-scheduling-back" viewBox="0 0 10 10" markerWidth="6" markerHeight="6" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#a06c35"/></marker></defs><path class="" d="M130,128 V150 H410 V190" marker-end="url(#joint-scheduling-arrow)"/><path class="" d="M150,128 V159 H970 V190" marker-end="url(#joint-scheduling-arrow)"/><path class="" d="M410,300 V342 H410 V382" marker-end="url(#joint-scheduling-arrow)"/><path class="" d="M410,492 V514 H410 V554" marker-end="url(#joint-scheduling-arrow)"/><path class="" d="M410,684 V706 H410 V746" marker-end="url(#joint-scheduling-arrow)"/><path class="" d="M410,876 V898 H410 V938" marker-end="url(#joint-scheduling-arrow)"/><path class="" d="M410,1108 V1130 H410 V1170" marker-end="url(#joint-scheduling-arrow)"/><path class="" d="M410,1320 V1342 H690 V1382" marker-end="url(#joint-scheduling-arrow)"/><path class="" d="M430,1320 V1342 H7 V1368 H130 V1382" marker-end="url(#joint-scheduling-arrow)"/><path class="" d="M690,1472 V1514 H410 V1554" marker-end="url(#joint-scheduling-arrow)"/><path class="back" d="M410,1664 V1677 H282 V172 H430 V190" marker-end="url(#joint-scheduling-back)"/><path class="" d="M710,1472 V1523 H690 V1554" marker-end="url(#joint-scheduling-arrow)"/><path class="back" d="M690,1664 V1677 H562 V1364 H710 V1382" marker-end="url(#joint-scheduling-back)"/><path class="" d="M710,1664 V1695 H970 V1726" marker-end="url(#joint-scheduling-arrow)"/><path class="" d="M970,320 V333 H1106 V1708 H990 V1726" marker-end="url(#joint-scheduling-arrow)"/><path class="" d="M970,1836 V1858 H970 V1898" marker-end="url(#joint-scheduling-arrow)"/><path class="" d="M990,1836 V1867 H690 V1898" marker-end="url(#joint-scheduling-arrow)"/><path class="back" d="M690,1988 V2041 H847 V1704 H980 V1726" marker-end="url(#joint-scheduling-back)"/><g><rect x="540" y="140" width="40" height="19" rx="5"/><text x="560" y="153">并行</text></g><g><rect x="508" y="1323" width="84" height="19" rx="5"/><text x="550" y="1336">有待落位课节</text></g><g><rect x="182" y="1324" width="73" height="19" rx="5"/><text x="218.5" y="1337">无可用课节</text></g><g><rect x="513.5" y="1495" width="73" height="19" rx="5"/><text x="550" y="1508">出现新冲突</text></g><g><rect x="315" y="1659" width="62" height="19" rx="5"/><text x="346" y="1672">刷新快照</text></g><g><rect x="741" y="1504" width="40" height="19" rx="5"/><text x="761" y="1517">通过</text></g><g><rect x="600.5" y="1659" width="51" height="19" rx="5"/><text x="626" y="1672">下一节</text></g><g><rect x="803.5" y="1676" width="73" height="19" rx="5"/><text x="840" y="1689">已逐节处理</text></g><g><rect x="1007" y="315" width="62" height="19" rx="5"/><text x="1038" y="328">审批结果</text></g><g><rect x="990" y="1839" width="62" height="19" rx="5"/><text x="1021" y="1852">全部通过</text></g><g><rect x="803.5" y="1848" width="73" height="19" rx="5"/><text x="840" y="1861">仍有未通过</text></g><g><rect x="737.5" y="2023" width="62" height="19" rx="5"/><text x="768.5" y="2036">重新检查</text></g></svg>
+<article class="node" id="joint-scheduling-a" style="left:17px;top:18px;min-height:110px"><h3>01 逐科确认老师并生成排课</h3><p>固定所选老师、课程、选师方式和策略版本。选指定老师沿用放宽口径，选系统推荐老师沿用学生原时段。</p></article>
+<article class="node" id="joint-scheduling-b" style="left:297px;top:190px;min-height:110px"><h3>02 刷新师生日程并冻结本轮快照</h3><p>计入本单和其他单的已发布、有效预排、请假及禁排。已落位课节计入完成量，同一逻辑课节只算一次。</p></article>
+<article class="node" id="joint-scheduling-c" style="left:297px;top:382px;min-height:110px"><h3>03 准备全单候选和剩余任务</h3><p>按科带入自己的周期目标及全部合法候选，与所选老师空闲求交。自然周统计共享额度，双周、月目标在原周期累计。</p></article>
+<article class="node" id="joint-scheduling-d" style="left:297px;top:554px;min-height:130px"><h3>04 建立 CP-SAT 硬约束</h3><p>按真实起止时间校验师生互斥、课程固定专属、禁排和截止日。每节同时占用全单和本科日周额度。约束节数、课时上限及明确强制周期要求。</p></article>
+<article class="node" id="joint-scheduling-e" style="left:297px;top:746px;min-height:130px"><h3>05 按业务目标选择整单方案</h3><p>先守硬约束，再尽量完成全量目标，然后减少已纳入周期的缺口。无额度周期目标为 0；有额度但无时段时保留目标和缺口。</p></article>
+<article class="node decision" id="joint-scheduling-f" style="left:297px;top:938px;min-height:170px"><h3>06 多科抢同一时段怎么比较？</h3><p>比较各科可用备选、让出后的全量与周期影响。让出增量缺口＝让出后缺口－保留时缺口。全量和周期相同，再用适用的优先时段及交叉排课规则判断；仍并列时按适用规则随机并记录。</p></article>
+<article class="node" id="joint-scheduling-g" style="left:297px;top:1170px;min-height:150px"><h3>07 输出解、缺口和求解状态</h3><p>周期缺口＝max（0，周期下限－本周期合规节数）。本周期至少需争取＝max（0，尚需节数－后续最多可排节数）。限时有可行解可输出，未证无解则标记未完成。</p></article>
+<article class="node" id="joint-scheduling-none" style="left:17px;top:1382px;min-height:110px"><h3>记录无可发布的新增课节</h3><p>已证明无解时记录约束原因。限时未找到解时标记计算未完成，保留已有合法预排。</p></article>
+<article class="node decision" id="joint-scheduling-h" style="left:577px;top:1382px;min-height:90px"><h3>08 逐节写入前实时复核</h3><p>核对学生和所选老师最新占用、额度与课时。</p></article>
+<article class="node" id="joint-scheduling-i" style="left:297px;top:1554px;min-height:110px"><h3>09 发现新冲突</h3><p>保留已写入且仍合法的课节。将本单、其他单最新占用带入下一轮，重算剩余课节。</p></article>
+<article class="node" id="joint-scheduling-j" style="left:577px;top:1554px;min-height:110px"><h3>09 校验通过，写入双方预排占用</h3><p>校验和占用同一提交内完成，防止并发抢占。按逻辑课节 ID 去重。仍有待落位课节则继续实时复核。</p></article>
+<article class="node" id="joint-scheduling-k" style="left:857px;top:190px;min-height:130px"><h3>02 同时判断是否发起审批</h3><p>选定老师或科目为待审批时，点击生成排课触发。超 8 小时、跑校区等按实际课表判断，可申请的异常由教务手动发起。</p></article>
+<article class="node decision" id="joint-scheduling-l" style="left:857px;top:1726px;min-height:110px"><h3>10 按课时包复核适用审批</h3><p>同一课程包需要审批的课程均通过后才满足审批条件。等待或驳回时预排仍占用，手动删除才释放。</p></article>
+<article class="node" id="joint-scheduling-m" style="left:857px;top:1898px;min-height:130px"><h3>11 转正式并结单</h3><p>同一逻辑课节由预排转正式，沿用占用。允许按已排部分结单，未排课时退回。正式确认后为适用的线下、OMO 课节匹配教室。</p></article>
+<article class="node" id="joint-scheduling-n" style="left:577px;top:1898px;min-height:90px"><h3>11 暂缓结单，等待处理</h3><p>核对审批状态，保留仍有效的预排。处理后重新检查。</p></article>
+</div></div></div></section>
+</main><script>(() => {
+  const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+  const panels = tabs.map((tab) => document.getElementById(tab.getAttribute('aria-controls')));
 
-<template id="detail-01">
-  <section class="detail-section"><h3>输入</h3><ul><li>顾问或学管填写课程信息、课程总课时、开结课日期及原始排课要求，提交排课单。</li><li>排课要求可包含课程频次、日期、时段、老师偏好等自然语言内容。</li></ul></section>
-  <section class="detail-section"><h3>提交与流转</h3><ol><li>系统先保存排课单并立即返回列表。</li><li>提交动作触发 AI 异步预处理排课要求；顾问或学管无需留在页面等待结果。</li><li>排课单同时进入教务待处理列表；AI 结果完成后回填到该排课单。</li></ol></section>
-  <section class="detail-section"><h3>输出</h3><p>形成可追溯的原始排课单和预处理任务。后续的顾问补充、教务补充与分析结果都关联同一张排课单。</p></section>
-</template>
-
-<template id="detail-02">
-  <section class="detail-section"><h3>输入与检查范围</h3><p>读取已提交的课程信息和原始排课要求，对整张排课单一次性检查模糊表述、前后冲突、逻辑不完整和需要确认的条件；应把识别到的全部业务问题一起返回。</p></section>
-  <section class="detail-section"><h3>预处理状态</h3><ul><li><strong>通过：</strong>没有待确认内容，教务工作台自动触发 AI 排课策略分析。</li><li><strong>待确认：</strong>返回具体问题，暂不触发策略分析。排课单仍可进入教务工作台查看。</li><li><strong>技术异常：</strong>由系统记录并重试；不能当作“通过”，也不能向顾问展示为业务错误。</li></ul></section>
-  <section class="detail-section"><h3>待确认后的补充路径</h3><ol><li>Web 工作台和移动端向顾问或学管一次性展示全部待确认问题。</li><li>顾问补充后，单独保存内容及补充时间，并重新预处理。</li><li>若顾问尚未补充，教务打开排课单时可自行补充；重新预处理通过后才自动分析策略。</li></ol><p class="detail-note">待确认限制的是自动策略分析的启动，不阻断排课单提交和教务查看。</p></section>
-</template>
-
-<template id="detail-03">
-  <section class="detail-section"><h3>触发条件与输入</h3><p>仅在预处理状态为“通过”后，由教务工作台自动启动。读取课程信息、原排课单文字、已收到的顾问或教务补充内容及相关图片；使用教务手动选择的上课时区理解日期和时段。</p></section>
-  <section class="detail-section"><h3>分析内容</h3><ul><li>识别全局要求：学生总日／周课节上限及多课程排课方式。</li><li>逐课程匹配完整课程名称，识别课节时长和多个分段策略：日期、频次或指定课节数、时段状态、不可排时段等。</li><li>课程没有单独开课日期时，将全单开课日期写入策略；课程有自己的明确日期时按课程要求执行。</li><li>老师相关要求保留在单科自然语言说明中，供后续教务选师参考。</li></ul></section>
-  <section class="detail-section"><h3>输出与校验</h3><ul><li><strong>成功：</strong>输出结构化的全局与单科策略，经结构和业务校验后供教务确认和编辑。</li><li><strong>业务问题：</strong>一次性列出全部已识别的具体原因，不输出半成品策略。</li><li><strong>技术故障：</strong>系统提示故障并重试，不作为业务问题展示。</li></ul></section>
-</template>
-
-<template id="detail-04">
-  <section class="detail-section"><h3>教务看到的内容</h3><p>排课单详情展示原始要求、预处理状态、顾问收到提示后补充的文字及补充时间，以及已有的 AI 策略分析结果或问题说明。</p></section>
-  <section class="detail-section"><h3>处理路径</h3><ul><li><strong>已有可用策略：</strong>点击“智能排课”后进入确认排课策略页；确认后生成学生计划并推荐教师。</li><li><strong>没有可用策略：</strong>教务先进入补充排课要求页，补充信息并重新分析；成功后进入策略页。</li><li><strong>策略分析仍有业务问题：</strong>教务查看全部问题，补充要求或联系发起人，重新分析。</li><li><strong>策略生成后又收到补充：</strong>提示教务查看新内容，可选择重新生成策略；补充内容保留在排课单中。</li></ul></section>
-</template>
-
-<template id="detail-05">
-  <section class="detail-section"><h3>统一入口</h3><p>点击智能排课后，已有可用策略就进入确认排课策略页；没有可用策略就先补充要求并重新分析。确认策略后生成学生计划并进入选择老师页。</p></section>
-  <section class="detail-section"><h3>全局策略</h3><p>策略页展示学生所有课程合计的每日、每周总课节上限，以及多课程排课方式；学生未作要求时，默认使用随机排课。</p></section>
-  <section class="detail-section"><h3>单科分段策略</h3><ul><li>每门课可有多条有序策略，包含课程课节时长、开始与结束日期、按频次／指定课节数／排完剩余课节的方式。</li><li>频次可按自然周、自然双周或自然月设置上下限；按课节数和排完剩余课节时，使用相应的日／周上限约束。</li><li>时段可分别标为固定、仅限、优先或常规；不可排时段独立记录日期范围、星期、全天或具体起止时间。</li><li>末段在“排完为止”条件下可没有结束日期；非末段必须有结束日期，阶段不得重叠。</li></ul></section>
-  <section class="detail-section"><h3>指定授课老师</h3><p>策略页逐科提供“指定老师”，可选择当前、历史授课老师，也可输入老师姓名或工号。指定老师在选师页采用与推荐老师相同的卡片形式并默认选中；仍需校验真实师生日程和不可放宽的硬约束。</p></section>
-  <section class="detail-section"><h3>调整与校验</h3><p>教务在策略页查看原始及补充要求、编辑策略、继续补充要求。补充后重新分析并更新计划与推荐；编辑策略后重新校验固定、仅限、禁排、频次、日期和课节时长。选师页只展示老师要求、学生计划及候选老师。</p></section>
-</template>
-<template id="detail-06">
-  <section class="detail-section"><h3>第一步：折算周期排课要求</h3><p>只读取已确认策略、阶段日期、全天停排日期及课程尚需量。按自然周、自然双周或自然月划分原生周期；有效天数等于阶段与周期相交的日历天数，减去全天停排天数。局部禁排、已有课或日上限已满不从有效天数中扣除。</p><p class="detail-example">频次为每周 2—4 节，某周只有 2 个有效天：下限 2×2÷7≈0.57，四舍五入为 1；上限 4×2÷7≈1.14，向上取整为 2。本周要求为 1—2 节。各周期独立折算，小数不结转。</p></section>
-  <section class="detail-section"><h3>第二步：生成学生候选时段</h3><p>结合策略日期、固定／仅限／优先／常规时段、不可排时段、学生已有课、总日／周上限及单科上限，列出具体当地日期和真实起止时间。候选集合保留全部合法选择，不按本周期频次上限提前裁剪。</p><p>学生已有课按每节实际日期换算至上课时区，以真实时间判冲突；非北京时区的候选还要预检最终写入北京时间时的合法性。</p></section>
-  <section class="detail-section"><h3>第三步：合并容量并生成暂定计划</h3><p>单科学生可排容量是在本周期仅排这一门课时，满足时间互斥、已有课、日／周上限、频次上限和剩余量后的最多逻辑课节数。随后多门课程共同分配学生时段与总额度，形成暂定计划，不读取老师日程。</p><p>每科每周期输出：排课日期、有效天数、学生排课要求、学生可排容量、学生侧计划量、要求缺口与候选时段。频次周期的要求缺口为“折算下限减去学生侧计划量”，负值按 0。</p><p class="detail-note">学生计划是选师前的测算。选定老师后还需重新计算师生交集，最终以联合排课结果为准。</p></section>
-</template>
-
-<template id="detail-07A">
-  <section class="detail-section"><h3>配置维度</h3><p>教师排课管理按课程项维护大规则；线下／OMO小规则按授课校区命中，线上小规则按排课单发起人组织架构命中。同一条小规则可对应多个校区或发起人架构。</p></section>
-  <section class="detail-section"><h3>教师组织优先级</h3><p>每条小规则配置有顺序的教师组织层级；同一优先级可多选组织架构。每级可设置“排课需审批”和共用的自定义提示文案。命中规则后，只有该规则配置的组织老师进入候选。</p></section>
-  <section class="detail-section"><h3>保存校验与兜底</h3><ul><li>校验同一课程项跨大规则重复、小规则条件重叠、线上父子架构交叉命中及教师架构范围交叉。</li><li>勾选排课需审批时，提示文案不能为空；保存后有效规则立即供推荐读取。</li><li>未命中规则时，线下／OMO按授课校区、线上按授课模式兜底筛选。已命中规则但无人合格时不扩大到未配置的组织。</li></ul><p class="detail-note">这是预先维护的基础数据，不需要为每张排课单重新配置。</p></section>
-</template>
-
-<template id="detail-07B">
-  <section class="detail-section"><h3>资格与评估窗口</h3><p>先按课程项、科目、考试局、年级、模块及教务设置的授课模式、校区、教师级别、试听、诊断、自组班等老师要求筛选。明确结束日期时用课程开始日至结束日；排完为止时，以学生侧暂定计划估算结束日，再加两个完整自然周作为顺延评估区。</p><p>教师已有课、休假与不可排时间按各节真实日期换算到学生上课时区。所有老师使用相同评估窗口与该科尚需逻辑课节数。</p></section>
-  <section class="detail-section"><h3>50% 准入与覆盖度</h3><p>先计算教师自身剩余可排课节数，不与学生时段求交。只有达到该科尚需节数的一半，向上取整，才进入覆盖计算。例如尚需 15 节，老师可排 7 节被剔除，可排 8 节才继续评估。</p><p>通过准入后计算师生可共同安排的最多逻辑课节数；<strong>覆盖度＝共同可安排节数 ÷ 本科尚需节数</strong>。固定任务和真实日程冲突还要单独校验；覆盖度不是联合排课的实际结果。</p></section>
-  <section class="detail-section"><h3>按组织层级逐级推荐</h3><ol><li>从最高优先级开始找第一个有合格老师的层级，按覆盖度取前 4 位。</li><li>若该层级最高覆盖度已达到 80%，停止向下检索。</li><li>不足 80% 时继续看下一层级；低优先级老师只有个人覆盖度<strong>严格高于最近保留层级的最高值</strong>才展示，每层级最多 4 位。</li><li>若新保留层级最高覆盖度达到 80% 则停止，否则继续，直到层级耗尽。</li></ol><p class="detail-example">浦西最高 75%：保留；浦东最高 70%：跳过；橡沐最高 81%：保留并停止。橡沐层级仅展示个人覆盖度高于 75% 的老师。</p></section>
-  <section class="detail-section"><h3>选师结果</h3><p>教务在策略页指定老师，在选师页为未指定课程选择老师；指定老师与推荐老师采用相同卡片形式并默认选中。老师姓名后展示排课状态；需架构审批时，在选师按钮上显示提醒及自定义文案。已配置规则但全部层级无人入围，显示“暂无可用教师”，教务可修改老师要求重新推荐。已指定老师仍须校验硬冲突。</p></section>
-</template>
-
-<template id="detail-08">
-  <section class="detail-section"><h3>输入与决策单位</h3><p>输入已确认的多科策略、学生候选时段与计划、逐科选定的老师及最新日程、已有课、教室等独占资源和课程尚需课时。选师后先重读日程，重新求师生真实可排交集。</p><p>对每个合法的“课程＋师生可排时段”建立一个是否选择该课节的决策。排课日期、星期和周期按学生上课时区的当地时间归属；时间重叠按同一真实时间基准判断。</p></section>
-  <section class="detail-section"><h3>先满足的硬约束</h3><ul><li>学生、老师及独占教室的真实上课时间不得重叠；同一时段至多安排一节。</li><li>学生全部课程合计日／周上限、单科日／周上限均扣除已有课后校验。</li><li>遵守策略阶段日期、每个原生周期的频次上限、课程剩余总量、固定任务、仅限与不可排时段。</li><li>候选须能合法写入系统；北京时间写入映射不能增加师生真实可排容量。</li></ul></section>
-  <section class="detail-section"><h3>目标的先后顺序</h3><ol><li>绝不突破硬约束，尽量减少有明确截止课程的总量、阶段和周期下限差额。</li><li>开放式排完课程尽量早完成；仍有余量时，频次课程向本周期上限靠拢。</li><li>再考虑优先时段、课程交叉或随机方式、均匀分布等偏好。后一级收益不能抵消前一级目标。</li></ol><p>固定时段先尝试、优先时段随后尝试、常规时段最后尝试；这是可回退的搜索顺序，不能把先选课节永久锁死。</p></section>
-  <section class="detail-section"><h3>截止前的必需量</h3><p>对有明确截止日期的课程，先计算<strong>后续真实最多还能安排多少节</strong>，同时考虑师生交集和所有单科硬限制。用“课程尚欠节数－后续最大容量”得到本周期至少要争取的数量，并与本周期独立折算下限、阶段目标的必要量比较，取其中较大者；负值按 0。</p><p class="detail-example">还欠 8 节，本周期允许 1—3 节，后续真实最多排 6 节，本周期至少争取 2 节；若后续最多 5 节，本周期至少争取 3 节。没有明确截止的课程不把当前预览窗口当成截止日。</p></section>
-  <section class="detail-section"><h3>时段争抢与回退</h3><p>系统分别假设“今天完全不排这门课”和“只放弃当前具体时段”，检查周期内剩余真实容量。若放弃后无法满足本周期必需量，今天或该时段就不可完全让出。两种假设分开计算。</p><p>在同一天，对全部合法“课程＋时段”联合选择，受学生剩余日容量、单科日上限和真实时间互斥共同限制。试选一个组合后，重新检查受影响课程的周期容量和截止前必要量；若失败，撤销该组合并尝试其他时段、其他课程，必要时回退更早日期的安排。</p><p class="detail-example">学生今日剩余日容量为 2：08:20 时段可排 A 或 B，10:30 时段只可排 C。合法两节组合是 A＋C 或 B＋C；A 与 B 不能同时占用 08:20。若 A、B 都被前瞻判为今日必需，系统需回退早先安排或报告冲突。</p></section>
-  <section class="detail-section"><h3>输出</h3><p>输出完整或最大合法部分的排课方案、每节真实上课时间、未满足的周期／阶段目标及差额。应区分已排完、部分完成、已证明无解、运行超时和输入已变化；必要的单科容量检查不能代替最终多科联合可行性判断。</p></section>
-</template>
-
-<template id="detail-09">
-  <section class="detail-section"><h3>教务核查</h3><p>按课程和策略阶段查看排课方案、课表、实际课节、本周期差额和课程总量待补。教务可手动补排或调整，系统必须重新校验时间冲突、课节上限及课程剩余总量。</p><p>频次课程的本周期差额＝本周期独立折算下限减去本周期实际排课节数，负值按 0。各周期差额不能直接相加代替课程总量待补。</p></section>
-  <section class="detail-section"><h3>上课时区与北京写入</h3><p>逻辑课节按学生所选上课时区的真实日期和时段统计。正式写入时，根据<strong>每节实际上课日期</strong>的时区规则换算为北京时间，不能用排课当天的固定时差。</p><p>若北京时间跨零点，系统按日期拆成两条不跨天记录，分别满足 0.25 课时粒度；如需为录入粒度做时间偏移，课节标记“换时区偏移”并展示原北京时间。偏移不改变师生真实上课时间。</p></section>
-  <section class="detail-section"><h3>提交校验与留痕</h3><ul><li>提交前重新读取排课要求、学生及老师日程、课程剩余课时和时区规则的最新版本。</li><li>真实师生与教室占用、北京时间写入占用、跨天拆分和全部系统记录写入应在同一事务完成；任一记录失败则整体回滚。</li><li>跨天的两条系统记录共用同一逻辑课节标识，课时扣减、课节数和课程总量仍只按原来的一个逻辑课节计算。</li><li>保存方案、原真实时间、换算与偏移信息、操作记录及未完成原因，供后续核查和改课使用。</li></ul></section>
-</template>
-
-<script>
-  (() => {
-    const drawer = document.getElementById('detail-drawer');
-    const backdrop = document.getElementById('detail-backdrop');
-    const closeButton = document.getElementById('detail-close');
-    const title = document.getElementById('detail-title');
-    const stepLabel = document.getElementById('detail-step');
-    const body = document.getElementById('detail-body');
-    const source = document.getElementById('detail-source');
-    let returnFocus = null;
-
-    function openDetail(step, card) {
-      const template = document.getElementById(`detail-${step}`);
-      if (!template) return;
-      returnFocus = card;
-      title.textContent = card.querySelector('h2').textContent.replace(step, '').trim();
-      stepLabel.textContent = `流程步骤 ${step}`;
-      body.replaceChildren(template.content.cloneNode(true));
-      body.scrollTop = 0;
-      if (step === '01' || step === '02' || step === '04') {
-        source.href = '智能排课V3.2_业务流程图.md';
-        source.textContent = '查看业务流程说明';
-      } else if (step === '03') {
-        source.href = 'ai-config-source.md';
-        source.textContent = '查看 AI 配置';
-      } else if (step === '07A' || step === '07B') {
-        source.href = '智能排课V3.2_教师推荐流程.html';
-        source.textContent = '查看教师推荐流程';
-      } else {
-        source.href = 'scheduling-algorithm.html';
-        source.textContent = '查看完整算法方案';
-      }
-      backdrop.hidden = false;
-      drawer.hidden = false;
-      document.body.classList.add('detail-open');
-      closeButton.focus();
-    }
-
-    function closeDetail() {
-      if (drawer.hidden) return;
-      drawer.hidden = true;
-      backdrop.hidden = true;
-      document.body.classList.remove('detail-open');
-      if (returnFocus) returnFocus.focus();
-    }
-
-    for (const card of document.querySelectorAll('.flow article.card')) {
-      const step = card.querySelector('.step-badge')?.textContent.trim();
-      if (!step || !document.getElementById(`detail-${step}`)) continue;
-      card.dataset.detail = step;
-      card.setAttribute('role', 'button');
-      card.setAttribute('tabindex', '0');
-      card.setAttribute('aria-haspopup', 'dialog');
-      card.setAttribute('aria-label', `查看${step} ${card.querySelector('h2').textContent.replace(step, '').trim()}的详细内容`);
-      card.addEventListener('click', () => openDetail(step, card));
-      card.addEventListener('keydown', event => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          openDetail(step, card);
-        }
-      });
-    }
-
-    closeButton.addEventListener('click', closeDetail);
-    backdrop.addEventListener('click', closeDetail);
-    document.addEventListener('keydown', event => {
-      if (drawer.hidden) return;
-      if (event.key === 'Escape') { closeDetail(); return; }
-      if (event.key !== 'Tab') return;
-      const focusable = [...drawer.querySelectorAll('button, a[href]')];
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  function select(index, focus = false) {
+    tabs.forEach((tab, i) => {
+      const current = i === index;
+      tab.setAttribute('aria-selected', String(current));
+      tab.tabIndex = current ? 0 : -1;
+      panels[i].hidden = !current;
     });
-  })();
-</script>
-</body>
-</html>
+    if (focus) tabs[index].focus();
+  }
 
+  function followHash() {
+    const id = window.location.hash.slice(1);
+    const target = document.getElementById(id);
+    const tabIndex = tabs.indexOf(target);
+    if (tabIndex >= 0) {
+      select(tabIndex);
+      return;
+    }
+    const panelIndex = panels.findIndex((panel) => target && panel.contains(target));
+    if (panelIndex >= 0) {
+      select(panelIndex);
+      target.scrollIntoView();
+    } else {
+      select(0);
+    }
+  }
+
+  tabs.forEach((tab, index) => {
+    function activate() {
+      select(index, true);
+      if (typeof history.replaceState === 'function') {
+        history.replaceState(null, '', '#' + tab.id);
+      }
+    }
+
+    tab.addEventListener('click', activate);
+    tab.addEventListener('keydown', (event) => {
+      let next;
+      if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+      else if (event.key === 'ArrowLeft') next = (index + tabs.length - 1) % tabs.length;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = tabs.length - 1;
+      else return;
+      event.preventDefault();
+      tabs[next].click();
+    });
+  });
+
+  window.addEventListener('hashchange', followHash);
+  followHash();
+})();</script></body></html>
