@@ -4,12 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>智慧排课V3.2｜顾问发起</title>
-  <script>if(new URLSearchParams(location.search).has('embed-consult'))document.documentElement.classList.add('embedded-consult');</script>
+  <script>
+    const previewParams = new URLSearchParams(location.search);
+    if (previewParams.has('embed-consult')) document.documentElement.classList.add('embedded-consult');
+    if (previewParams.has('embed-homeroom-order') && window.parent !== window) {
+      document.documentElement.classList.add('embedded-homeroom-order');
+    }
+  </script>
   <link rel="stylesheet" href="styles.css?v=20261110g">
+  <link rel="stylesheet" href="order-list-mode.css?v=20261124-homeroom-handler">
   <link rel="stylesheet" href="detail-drawer.css?v=20261110g">
   <link rel="stylesheet" href="package-order.css?v=20261110g">
   <link rel="stylesheet" href="create-order.css?v=20261110g">
   <link rel="stylesheet" href="precheck.css?v=20261116a">
+  <link rel="stylesheet" href="analysis-motion.css?v=20261126-success">
   <link rel="stylesheet" href="flow-integration.css?v=20261110g">
   <link rel="stylesheet" href="workspace-tabs.css?v=20261110g">
   <link rel="stylesheet" href="workspace-unified.css?v=20261110g">
@@ -20,7 +28,7 @@
   <link rel="stylesheet" href="embedded-consult.css?v=20261116c">
   <link rel="stylesheet" href="consult-list-v32.css?v=20261116h">
   <link rel="stylesheet" href="prototype-notes.css?v=20261116-full-tabs">
-  <link rel="stylesheet" href="sales-order-detail-v32.css?v=20261114f">
+  <link rel="stylesheet" href="sales-order-detail-v32.css?v=20261126-order-sections">
   <link rel="stylesheet" href="precheck-four-categories.css?v=20261115d">
 </head>
 <body class="sales-workspace">
@@ -70,7 +78,13 @@
           <label class="filter-group date-filter"><span>开课时间</span><span class="date-range"><span class="calendar-icon">▦</span><input id="startFrom" type="text" placeholder="开始日期" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"><span class="date-to">至</span><input id="startTo" type="text" placeholder="结束日期" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"></span></label>
           <div class="filter-actions"><button class="btn plain" id="resetFilters">重置</button><button class="btn primary" id="applyFilters">查询</button></div>
         </div>
-        <div class="list-toolbar"><button class="btn primary create-btn" id="createOrder">发起排课单</button></div>
+        <div class="list-toolbar">
+          <div id="salesOrderListMode" class="order-list-mode" role="group" aria-label="排课单列表视图">
+            <button type="button" data-order-mode="combined" aria-pressed="false">组合排课单</button>
+            <button type="button" data-order-mode="individual" aria-pressed="true">排课单</button>
+          </div>
+          <button class="btn primary create-btn" id="createOrder">发起排课单</button>
+        </div>
         <div class="table-scroll"><table class="order-table"><colgroup><col class="col-order-number"><col class="col-order-name"><col class="col-created"><col class="col-type"><col class="col-attribute"><col class="col-handler"><col class="col-status"><col class="col-finished"><col class="col-applicant"><col class="col-action"><col class="col-settings"></colgroup><thead><tr><th>排课单编号</th><th>排课单名称</th><th>发起时间</th><th>排课单类型</th><th>排课单属性</th><th>处理人名称</th><th>排课单状态</th><th>完成时间</th><th>申请人名称</th><th>操作</th><th><button class="table-settings" aria-label="表格设置">☷</button></th></tr></thead><tbody id="orderRows"></tbody></table></div>
         <div class="pagination"><button class="page-arrow" id="prevPage" aria-label="上一页">‹</button><div id="pageNumbers" class="page-numbers"></div><button class="page-arrow" id="nextPage" aria-label="下一页">›</button><select id="pageSize"><option value="10">10条/页</option><option value="20">20条/页</option><option value="50">50条/页</option></select><span id="totalCount">共 2024 条</span><span class="jump-label">前往</span><input type="number" id="jumpPage" min="1" value="1"><span>页</span></div>
       </section>
@@ -179,7 +193,7 @@
         <section class="student-card"><div class="student-card-header"><strong>学生信息</strong></div><div class="student-card-fields" id="studentFields"></div></section>
         <section class="order-consult-card" aria-label="售前咨单"><div class="order-consult-header"><strong>售前咨单</strong></div><div class="order-consult-body" id="orderConsultBody"></div><div class="order-consult-actions" id="orderConsultActions"><button type="button" id="orderConsultLinkButton">关联售前咨单</button></div></section>
       </div>
-      <div class="order-drawer-main"><section class="drawer-card course-card"><div class="drawer-card-title"><strong>课程信息</strong></div><div class="order-package-summary" id="detailPackages"></div></section><section class="drawer-card order-info-card"><div class="drawer-card-title"><strong>排课单详情</strong></div><div class="order-info-grid" id="detailOrderInfo"></div></section></div>
+      <div class="order-drawer-main"><section class="drawer-card course-card"><div class="drawer-card-title"><strong>课程信息</strong></div><div class="order-package-summary" id="detailPackages"></div></section><div id="detailOrderInfo"></div></div>
     </div>
   </aside>
   <div class="order-consult-modal-backdrop" id="orderConsultModalBackdrop" hidden></div>
@@ -209,6 +223,13 @@
           </div>
         </section>
 
+        <div class="create-handler" id="createHandler" hidden>
+          <span id="createHandlerLabel">排课单处理人</span>
+          <div class="order-list-mode" role="group" aria-labelledby="createHandlerLabel">
+            <button type="button" data-order-handler="self" aria-pressed="true">由我来排课</button>
+            <button type="button" data-order-handler="educator" aria-pressed="false">由教务排课</button>
+          </div>
+        </div>
         <section class="create-course-section"><h2>课程信息</h2><div class="create-course-awaiting-student" id="createCourseAwaitingStudent">请先选择学生</div><div id="createCourseGroups"><div class="create-course-package" data-package-group><div class="course-package-line"><span>选择课时包</span><select aria-label="选择课时包"><option value="">请选择课时包</option></select><span class="create-gold-tag">★ 金牌</span><span class="package-total-hours">排课单总课时：<strong data-package-total>0</strong></span><button type="button" class="create-blue-btn" data-add-package-course>添加课程</button><button type="button" class="create-remove-package" data-remove-package hidden>移除课时包</button><div class="course-hours-summary"><div><span>购买课时</span><strong>600</strong></div><div><span>已排课时</span><strong>120.5</strong></div><div><span>已上课时</span><strong>202.5</strong></div><div><span>可排课时</span><strong>277</strong></div><div class="course-needed-summary"><span>班级所需课时</span><strong data-package-needed>20</strong></div></div></div>
           <div class="create-course-table-scroll"><table class="create-course-table"><colgroup><col style="width:204px"><col style="width:133px"><col style="width:133px"><col style="width:162px"><col style="width:162px"><col style="width:162px"><col style="width:133px"><col style="width:108px"><col style="width:108px"><col style="width:144px"><col style="width:144px"><col style="width:146px"><col style="width:54px"></colgroup><thead><tr><th>科目</th><th>考试局</th><th>年级</th><th>模块</th><th>学生水平</th><th>期望成绩</th><th>授课模式</th><th>历史授课老师</th><th>校区</th><th>课时</th><th>当前授课老师</th><th>老师时间是否已沟通</th><th>操作</th></tr></thead><tbody>
             <tr><td>商务</td><td>OCR</td><td>AS</td><td><select class="create-cell-select" aria-label="商务模块"><option>P1</option></select></td><td><select class="create-cell-select" aria-label="商务学生水平"><option>先修/同步-B及以上</option></select></td><td><select class="create-cell-select" aria-label="商务期望成绩"><option>先修/同步-B及以上</option></select></td><td>线上</td><td class="truncate">李春玲、成兴玲...</td><td>/</td><td><span class="hours-stepper"><button type="button" data-hour-step="-1">−</button><input type="text" value="10.0" aria-label="商务课时"><button type="button" data-hour-step="1">+</button></span></td><td><input class="teacher-input" value="无" aria-label="商务当前授课老师"></td><td><select class="create-cell-select" aria-label="商务老师时间是否已沟通"><option>是</option><option>否</option></select></td><td><button type="button" class="remove-course" aria-label="删除商务课程">−</button></td></tr>
@@ -231,6 +252,10 @@
           <label class="create-other-field full"><span class="create-other-label">其他排课要求</span><span class="create-other-textarea"><textarea id="createOtherRequirement" maxlength="500" placeholder="请输入"></textarea><small data-counter-for="createOtherRequirement">0/500</small></span></label>
           </div>
         </div></section>
+        <div class="create-homeroom-owner" id="createHomeroomOwner" hidden>
+          <label for="createClassOwner">班课班主任</label><span>（留空时默认分配给学生的专属班主任）</span>
+          <select id="createClassOwner"><option value="">默认专属班主任</option><option selected>李春玲(VA000261)</option><option>常竞文</option></select>
+        </div>
         <section class="create-other-section"><h2>其他信息</h2><div class="create-other-grid">
           <label class="create-other-field create-exam-date-field"><span class="create-other-label">预计/已报名考试时间</span><input id="createExamDate" type="date" aria-label="预计或已报名考试时间"></label>
           <div class="create-other-field"><span class="create-other-label">学习目的</span><div class="create-choice-list" id="createStudyPurposes"><label><input type="checkbox" value="兴趣引导">兴趣引导</label><label><input type="checkbox" value="校内备考" checked>校内备考</label><label><input type="checkbox" value="国际备考">国际备考</label><label><input type="checkbox" value="竞赛先修">竞赛先修</label></div></div>
@@ -257,7 +282,7 @@
   <div class="ai-precheck-backdrop" id="aiPrecheckBackdrop" hidden></div>
   <aside class="ai-precheck-drawer" id="aiPrecheckDrawer" role="dialog" aria-modal="true" aria-label="排课要求智能分析" hidden>
     <div class="ai-precheck-header"><button type="button" id="closeAiPrecheck" aria-label="关闭排课要求智能分析">×</button><div><strong>排课要求智能分析</strong></div></div>
-    <div class="ai-precheck-loading" id="aiPrecheckLoading" role="status" aria-live="polite" hidden><div class="ai-precheck-loading-card"><img class="ai-precheck-loading-avatar" src="ai-dialog-avatar.png" alt="" aria-hidden="true"><strong id="aiPrecheckLoadingText">正在分析排课策略</strong><p>核对排课要求，生成全局与各科目的排课策略</p><div class="ai-precheck-progress" aria-hidden="true"><span></span></div><button type="button" id="deferAiPrecheck" hidden>稍后查看</button></div></div>
+    <div class="analysis-motion-layer" id="aiPrecheckLoading" hidden><div class="analysis-motion-wave" aria-hidden="true"></div><div class="analysis-motion-status" role="status" aria-live="polite"><span class="analysis-motion-spinner" aria-hidden="true"></span><strong id="aiPrecheckLoadingText">正在分析排课策略</strong><p>核对排课要求，生成全局与各科目的排课策略</p><button type="button" id="deferAiPrecheck" hidden>稍后查看</button></div></div>
     <div class="ai-precheck-body" id="aiPrecheckBody">
       <section class="ai-precheck-left" id="aiPrecheckLeft" aria-label="只读排课单信息"></section>
       <section class="ai-precheck-right" aria-label="智能分析结果与修改区"><div class="ai-precheck-right-scroll"><div class="ai-precheck-result-heading"><h2>智能分析结果</h2><span>请确认以下信息</span></div>
@@ -268,7 +293,7 @@
       </div></section>
     </div>
     <div class="ai-precheck-footer" id="aiPrecheckFooter"><button type="button" id="dismissAiPrecheck">取消</button><button type="button" class="ai-precheck-submit" id="submitAiPrecheckReply">发起排课单</button></div>
-    <div class="ai-precheck-success-view" id="aiPrecheckSuccess" hidden><div class="ai-precheck-success-card"><span class="ai-precheck-success-icon" aria-hidden="true">✓</span><h2>排课单提交成功</h2><p>排课策略已生成，排课单已发送至教务工作台</p><button type="button" id="closeAiPrecheckSuccess">关闭</button></div></div>
+    <div class="submission-success-view" id="aiPrecheckSuccess" hidden><div class="submission-success" role="status"><span class="submission-success-mark" aria-hidden="true">✓</span><h2>排课单提交成功</h2><p>已发送至教务工作台</p></div></div>
   </aside>
   <section class="self-class-wizard" id="selfClassWizard" role="dialog" aria-modal="true" aria-labelledby="selfClassWizardTitle" hidden>
     <header><strong id="selfClassWizardTitle">创建自组班</strong><button type="button" id="selfClassClose" aria-label="关闭">×</button></header>
@@ -280,13 +305,16 @@
   <aside class="self-class-ai-drawer" id="selfClassAiDrawer" role="dialog" aria-modal="true" aria-label="智能排课提示" hidden><header><strong>智能排课提示</strong><button type="button" id="selfClassAiClose" aria-label="关闭">×</button></header><div id="selfClassAiContent"></div></aside>
   <div class="self-class-course-backdrop" id="selfClassCourseBackdrop" hidden></div><section class="self-class-course-modal" id="selfClassCourseModal" role="dialog" aria-modal="true" aria-label="添加课程" hidden><header><strong>添加课程</strong><button type="button" id="selfClassCourseClose" aria-label="关闭">×</button></header><div class="self-class-course-body" id="selfClassCourseBody"></div><footer><button type="button" class="btn plain" id="selfClassCourseCancel">取消</button><button type="button" class="btn primary" id="selfClassCourseConfirm">确认添加</button></footer></section>
   <script src="flow-demo-order.js?v=20261114a"></script>
-  <script src="app.js?v=20261120-strategy"></script>
-  <script src="create-order-groups.js?v=20261114d"></script>
+  <script src="analysis-motion.js?v=20261126-success"></script>
+  <script src="order-analysis-summary.js?v=20261126-order-sections"></script>
+  <script src="app.js?v=20261126-order-sections"></script>
+  <script src="create-order-groups.js?v=20261125-student-slot-locks"></script>
   <script src="create-order-form.js?v=20261114a"></script>
   <script src="consult-preplan-pdf.js?v=20261112c"></script>
-  <script src="smart-consult.js?v=20261117-export"></script>
+  <script src="course-catalog.js?v=20261124-renewal"></script>
+  <script src="smart-consult.js?v=20261126-analysis-motion"></script>
   <script src="class-remarks.js?v=20261114b"></script>
-  <script src="self-class.js?v=20261120-strategy"></script>
+  <script src="self-class.js?v=20261126-success"></script>
   <script src="prototype-nav.js?v=20261114c"></script>
 </body>
 </html>

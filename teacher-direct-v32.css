@@ -31,3 +31,80 @@
 .flow-requirements-content .teacher-direct-designation label{display:flex;align-items:center;gap:12px;margin-top:17px;color:#446181}
 .flow-requirements-content #teacherDirectName{flex:1;min-width:0;height:35px;padding:0 10px;border:1px solid #cbdced;border-radius:5px;color:#233d60}
 @media(max-width:880px){.wizard[data-step="3"] .teacher-direct-toolbar{align-items:flex-start;flex-direction:column}.wizard[data-step="3"] .teacher-direct-course-actions{width:100%;justify-content:flex-end}.wizard[data-step="3"] .content-card-header{flex-wrap:wrap}}
+.wizard-header-actions { display: contents; }
+.educator-teacher-flow:is([data-step="2"],[data-step="3"]) .wizard-header .strategy-timezone-pill { order: 0; margin: 0; }
+.educator-teacher-flow:is([data-step="2"],[data-step="3"]) .wizard-header-actions { order: 1; display: flex; gap: 8px; align-items: center; margin-left: auto; }
+.educator-teacher-flow:is([data-step="2"],[data-step="3"]) .wizard-header-actions :is(#viewTeacherStrategy,#viewFlowRequirements) {
+  order: 0; min-height: 32px; margin: 0; padding: 0 12px; border: 1px solid #c8d9f5; border-radius: 5px; background: #f5f9ff; color: #2d65b5; font-size: 12px; font-weight: 700; white-space: nowrap;
+}
+.educator-method-card .content-card-header { flex-wrap: wrap; gap: 10px 24px; }
+.educator-method-card .educator-method-switch { flex: none; margin-inline-start: auto; }
+@media (max-width: 620px) {
+  #modalBackdrop.flow-drawer-backdrop .educator-teacher-flow:is([data-step="2"],[data-step="3"]) .wizard-header { height: auto; min-height: 60px; flex-wrap: wrap; padding-block: 10px; row-gap: 8px; }
+}
+.educator-method-switch { display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 3px; border: 1px solid #e5e1f7; border-radius: 7px; background: #f4f1ff; }
+.educator-method-switch button { min-height: 30px; padding: 4px 11px; border: 0; border-radius: 5px; background: transparent; color: #51486f; white-space: nowrap; }
+.educator-method-switch button[aria-pressed="true"] { background: #fff; color: #5039ac; box-shadow: 0 1px 4px #43348023; font-weight: 700; }
+.educator-method-switch button:focus-visible { outline: 2px solid #7458e9; outline-offset: -2px; }
+.educator-strategy-modal .teacher-direct-strategy-footer:not([hidden]) { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.educator-strategy-modal .teacher-direct-strategy-footer .btn-primary { background: linear-gradient(110deg, #7458e9, #5140d2); border-color: #644bdc; color: #fff; }
+.educator-requirement-editor { display: grid; gap: 14px; }
+.educator-requirement-editor label { display: grid; gap: 6px; width: 100%; font-weight: 600; }
+.educator-requirement-editor :is(input, select, textarea) { min-width: 0; width: 100%; padding: 8px 10px; border: 1px solid #d8dbee; border-radius: 6px; background: #fff; color: #283858; font: inherit; }
+.educator-requirement-editor textarea { min-height: 104px; resize: vertical; }
+.educator-supplement-attachments { display: grid; gap: 7px; }
+.educator-supplement-attachments ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.educator-supplement-attachments li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 5px 9px; border-radius: 6px; background: #f6f3ff; }
+.educator-supplement-attachments li span { overflow-wrap: anywhere; }
+.order-list-name .order-list-name-link { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; padding: 0; }
+#modalBackdrop.flow-drawer-backdrop .educator-teacher-flow[data-step="1"] {
+  width: 100%; max-width: none;
+}
+#modalBackdrop.flow-drawer-backdrop .educator-teacher-flow[data-step="1"] .wizard-header {
+  flex: 0 0 61px; min-height: 61px; padding: 0 14px; gap: 15px;
+}
+.educator-teacher-flow[data-step="1"] .wizard-header #closeWizard { width: 28px; height: 29px; font-size: 22px; }
+#modalBackdrop.flow-drawer-backdrop .educator-teacher-flow[data-step="1"] .wizard-title strong { font-size: 14px; color: #18263d; }
+#modalBackdrop.flow-drawer-backdrop .educator-teacher-flow[data-step="1"] .educator-analysis-body { padding: 0; background: #f3f7fc; }
+.educator-analysis-layout { display: grid; height: 100%; grid-template-columns: minmax(0, 66fr) minmax(310px, 34fr); overflow: hidden; }
+.educator-analysis-layout .ai-precheck-left { padding: 18px 14px 24px; background: #f3f7fc; }
+.educator-analysis-layout .ai-precheck-readonly-card { margin-bottom: 18px; padding: 0 18px 18px; }
+.educator-analysis-layout .ai-precheck-readonly-card h2 {
+  min-height: 45px; margin: 0 -18px 18px; padding: 0 18px; gap: 8px; font-size: 13px;
+}
+.educator-analysis-layout .ai-precheck-readonly-card h2::before { width: 3px; height: 14px; }
+.educator-analysis-layout .ai-precheck-student-card { min-height: 119px; }
+.educator-analysis-layout .ai-precheck-student-summary { padding-bottom: 11px; font-size: 12px; }
+.educator-analysis-layout .ai-precheck-readonly-package { margin-bottom: 16px; }
+.educator-analysis-layout .ai-precheck-readonly-package:last-child { margin-bottom: 0; }
+.educator-analysis-layout .ai-precheck-readonly-package-name { min-height: 41px; padding: 11px 12px 9px; font-size: 12px; }
+.educator-analysis-layout .ai-precheck-readonly-package > p { padding: 7px 8px; font-size: 10px; }
+.educator-analysis-layout .ai-precheck-readonly-table-scroll table { min-width: 780px; table-layout: fixed; }
+.educator-analysis-layout .ai-precheck-readonly-table-scroll th,
+.educator-analysis-layout .ai-precheck-readonly-table-scroll td { height: 43px; padding: 6px 5px; overflow: hidden; text-overflow: ellipsis; }
+.educator-analysis-layout .ai-precheck-readonly-table-scroll th { font-size: 11px; white-space: normal; }
+.educator-analysis-layout .ai-precheck-readonly-table-scroll :is(th,td):is(:nth-child(1),:nth-child(2),:nth-child(3),:nth-child(7),:nth-child(8)) { width: 5.4%; }
+.educator-analysis-layout .ai-precheck-readonly-table-scroll th:nth-child(5) { width: 16%; }
+.educator-analysis-layout .ai-precheck-readonly-table-scroll th:nth-child(12) { width: 13%; }
+.educator-analysis-layout .ai-precheck-detail-row { font-size: 12px; }
+.educator-analysis-layout .ai-precheck-right { background: #fff; }
+.educator-analysis-layout .ai-precheck-right-scroll { padding: 0; background: #fff; }
+.educator-analysis-layout .ai-precheck-issues { min-height: 100%; margin: 0; padding: 0 20px 20px; border: 0; border-radius: 0; box-shadow: none; }
+.educator-analysis-layout .ai-precheck-result-heading { min-height: 50px; margin: 0 -20px 20px; padding: 0 20px; border-bottom: 1px solid #e7e9ee; }
+.educator-analysis-layout .ai-precheck-result-heading > span { padding: 0; background: none; color: #ff811b; }
+.educator-analysis-layout .ai-precheck-result-heading > span::before { content: "ⓘ "; }
+.educator-analysis-layout .ai-precheck-issue-text { padding: 16px 16px 16px 36px; background: #f1fbfa; border-color: #e0f4f0; }
+.educator-analysis-layout .ai-precheck-issue-text li + li { margin-top: 8px; }
+.educator-analysis-layout .educator-analysis-reply { margin: 16px 0 0; padding: 0; border: 0; }
+.educator-analysis-reply label { color: #333; font-weight: 400; }
+.educator-analysis-reply label small { margin-left: 6px; color: #68768b; }
+.educator-analysis-reply textarea { min-height: 100px; border-color: #d6d6d6; }
+.educator-analysis-upload { display: flex; width: 100%; min-height: 60px; align-items: center; gap: 12px; padding: 10px 14px; border: 0; border-radius: 5px; background: #f1f7ff; text-align: left; cursor: pointer; }
+.educator-analysis-upload strong { flex: none; color: #3488f6; font-size: 14px; font-weight: 500; }
+.educator-analysis-upload span { padding-left: 12px; border-left: 1px solid #d7d7d7; color: #666; font-size: 12px; }
+.educator-analysis-upload:is(:hover,:focus-visible,.is-dragging) { background: #e3f0ff; }
+@media (max-width: 780px) {
+  .educator-analysis-layout { display: block; height: auto; overflow: visible; }
+  .educator-analysis-layout .ai-precheck-left, .educator-analysis-layout .ai-precheck-right-scroll { overflow: visible; }
+  .educator-analysis-layout .ai-precheck-right { border-left: 0; border-top: 1px solid #e3eaf3; }
+}

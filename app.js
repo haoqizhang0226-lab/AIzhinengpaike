@@ -13,6 +13,10 @@ const orders = [
 Object.assign(orders[0],window.smartSchedulingV3DemoOrder);
 // 首页十条按设计稿录入；其余页使用同结构的演示记录，便于检验分页交互。
 const allOrders=orders.concat(Array.from({length:2014},(_,i)=>({...orders[(i+1)%orders.length],id:i+11})));
+const homeroomOrderEmbed=document.documentElement.classList.contains('embedded-homeroom-order');
+function notifyHomeroomOrder(kind,order){
+  window.parent.postMessage({kind,order},location.origin);
+}
 const demoOrderStorageKey='teacher-scheduling-v3-full-flow-orders';
 function loadDemoOrders(){
   try{
@@ -23,7 +27,18 @@ function loadDemoOrders(){
     return valid;
   }catch{return []}
 }
-allOrders.unshift(...loadDemoOrders());
+if(!homeroomOrderEmbed)allOrders.unshift(...loadDemoOrders());
+const combinedDemoSubmission={
+  ...orders[0].submission,
+  packages:[
+    {name:'英联邦学科-ALEVEL-1V1',system:'英联邦学科',item:'ALEVEL',courses:[orders[0].submission.courses[0]]},
+    {name:'英联邦学科-GCSE-1V1',system:'英联邦学科',item:'GCSE',courses:[{name:'数学',board:'CAIE',grade:'IG',mode:'线上',hours:'8'}]}
+  ]
+};
+combinedDemoSubmission.courses=combinedDemoSubmission.packages.flatMap(pack=>pack.courses);
+allOrders.splice(allOrders.indexOf(orders[0])+1,0,{
+  ...orders[0],id:-1,orderNumber:'PK202611020001-C',course:courseNameForSubmission(combinedDemoSubmission),submission:combinedDemoSubmission
+});
 try{
   const prefix='#flow-return=';
   if(location.hash.startsWith(prefix)){
@@ -35,24 +50,66 @@ let nextOrderId=Math.max(...allOrders.map(order=>order.id))+1;
 const pendingSubmissionStorageKey='teacher-scheduling-v3-pending-submissions';
 let pendingSubmissions=[];
 try{
-  const saved=JSON.parse(localStorage.getItem(pendingSubmissionStorageKey)||'[]');
+  const saved=homeroomOrderEmbed?[]:JSON.parse(localStorage.getItem(pendingSubmissionStorageKey)||'[]');
   if(Array.isArray(saved))pendingSubmissions=saved.filter(draft=>draft?.submission&&draft.precheckIssues?.length);
 }catch{}
 function savePendingSubmissions(){
+  if(homeroomOrderEmbed)return;
   try{localStorage.setItem(pendingSubmissionStorageKey,JSON.stringify(pendingSubmissions.filter(draft=>!draft.demoPreview)))}catch{}
 }
 function saveDemoOrders(){
-  try{localStorage.setItem(demoOrderStorageKey,JSON.stringify(allOrders.filter(order=>order.submission)))}catch{}
+  try{localStorage.setItem(demoOrderStorageKey,JSON.stringify(allOrders.filter(order=>order.id!==-1&&order.submission)))}catch{}
 }
-const state={tab:'mine',page:1,size:10,filters:{},currentOrderId:null};
+const state={tab:'mine',page:1,size:10,filters:{},currentOrderId:null,orderMode:'individual'};
 const $=id=>document.getElementById(id);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let toastTimer;
 function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2500)}
 function orderNumber(order){return order.orderNumber||order.orderNo||`PK${String(order.created||'').slice(0,10).replace(/\D/g,'')}${String(order.id).padStart(4,'0')}`}
+function packagesForList(order){return (order.submission?.packages||[]).filter(pack=>pack.courses?.length)}
+function suborderForPackage(order,pack,index){
+  return {
+    ...order,
+    packageIndex:index,
+    orderNumber:`${orderNumber(order)}-${index+1}`,
+    course:courseNameForSubmission({...order.submission,packages:[pack]})
+  };
+}
+function orderListEntries(){
+  return allOrders.flatMap(order=>{
+    const packages=packagesForList(order);
+    if(state.orderMode==='combined')return packages.length>1?[order]:[];
+    if(packages.length<2)return [order];
+    return packages.map((pack,index)=>suborderForPackage(order,pack,index));
+  });
+}
+function orderDetailHref(order){
+  const params=new URLSearchParams({order:order.id});
+  if(order.packageIndex!==undefined)params.set('package',order.packageIndex+1);
+  return `?${params}`;
+}
 function readFilters(){state.filters={number:$('orderNumberFilter').value.trim().toLowerCase(),name:$('orderNameFilter').value.trim().toLowerCase(),type:$('typeFilter').value,status:$('statusFilter').value,createdFrom:$('createdFrom').value,createdTo:$('createdTo').value,startFrom:$('startFrom').value,startTo:$('startTo').value}}
-function filtered(){const f=state.filters;return allOrders.filter(o=>{const created=o.created.slice(0,10);return (!f.number||orderNumber(o).toLowerCase().includes(f.number))&&(!f.name||String(o.course||o.name||'').toLowerCase().includes(f.name))&&(!f.type||o.type===f.type)&&(!f.status||o.status===f.status)&&(!f.createdFrom||created>=f.createdFrom)&&(!f.createdTo||created<=f.createdTo)&&(!f.startFrom||o.start>=f.startFrom)&&(!f.startTo||o.start<=f.startTo)})}
-function renderList(){const rows=filtered(),size=state.size,pageCount=Math.max(1,Math.ceil(rows.length/size));state.page=Math.min(Math.max(1,state.page),pageCount);const shown=rows.slice((state.page-1)*size,state.page*size);$('orderRows').innerHTML=shown.length?shown.map(o=>`<tr><td>${esc(orderNumber(o))}</td><td><a href="?order=${o.id}" data-order="${o.id}" title="${esc(o.course)}">${esc(o.course)}</a></td><td>${esc(o.created)}</td><td>${esc(o.type)}</td><td>${esc(o.attribute)}</td><td>${esc(o.handler)}</td><td>${esc(o.status)}</td><td>${esc(o.finished)}</td><td>${esc(o.applicant)}</td><td>${o.action?`<a href="#" data-action="${o.id}">${esc(o.action)}</a>`:''}</td><td></td></tr>`).join(''):`<tr><td colspan="11" style="height:90px;color:#8c98a9">暂无符合条件的排课单</td></tr>`;$('totalCount').textContent=Object.keys(state.filters).some(k=>state.filters[k])?`共 ${rows.length} 条`:`共 ${allOrders.length} 条`;$('prevPage').disabled=state.page===1;$('nextPage').disabled=state.page===pageCount;$('jumpPage').value=state.page;$('jumpPage').max=pageCount;const numbers=$('pageNumbers');if(!Object.keys(state.filters).some(k=>state.filters[k])&&size===10){numbers.innerHTML=[1,2,3,4,5,6,'…',pageCount].map(n=>n==='…'?'<span>…</span>':`<button class="${state.page===n?'active':''}" data-page="${n}">${n}</button>`).join('')}else{numbers.innerHTML=Array.from({length:pageCount},(_,i)=>`<button class="${state.page===i+1?'active':''}" data-page="${i+1}">${i+1}</button>`).join('')}}
+function filtered(){const f=state.filters;return orderListEntries().filter(o=>{const created=o.created.slice(0,10);return (!f.number||orderNumber(o).toLowerCase().includes(f.number))&&(!f.name||String(o.course||o.name||'').toLowerCase().includes(f.name))&&(!f.type||o.type===f.type)&&(!f.status||o.status===f.status)&&(!f.createdFrom||created>=f.createdFrom)&&(!f.createdTo||created<=f.createdTo)&&(!f.startFrom||o.start>=f.startFrom)&&(!f.startTo||o.start<=f.startTo)})}
+function renderList(){
+  const rows=filtered(),size=state.size,pageCount=Math.max(1,Math.ceil(rows.length/size));
+  const combined=state.orderMode==='combined';
+  const label=combined?'组合排课单':'排课单';
+  state.page=Math.min(Math.max(1,state.page),pageCount);
+  const shown=rows.slice((state.page-1)*size,state.page*size);
+  $('orderRows').innerHTML=shown.length?shown.map(o=>`<tr><td>${esc(orderNumber(o))}</td><td><a href="${esc(orderDetailHref(o))}" data-order="${o.id}" title="${esc(o.course)}">${o.packageIndex!==undefined?'<span class="order-origin-badge">组合</span>':''}${esc(o.course)}</a></td><td>${esc(o.created)}</td><td>${esc(o.type)}</td><td>${esc(o.attribute)}</td><td>${esc(o.handler)}</td><td>${esc(o.status)}</td><td>${esc(o.finished)}</td><td>${esc(o.applicant)}</td><td>${o.action?`<a href="#" data-action="${o.id}">${esc(o.action)}</a>`:''}</td><td></td></tr>`).join(''):`<tr><td colspan="11" style="height:90px;color:#8c98a9">暂无符合条件的${label}</td></tr>`;
+  $('totalCount').textContent=`共 ${rows.length} 条`;
+  $('prevPage').disabled=state.page===1;
+  $('nextPage').disabled=state.page===pageCount;
+  $('jumpPage').value=state.page;
+  $('jumpPage').max=pageCount;
+  const pageNumbers=Array.from({length:Math.min(6,pageCount)},(_,index)=>index+1);
+  if(pageCount>6){
+    if(state.page>6&&state.page<pageCount)pageNumbers.push(state.page);
+    if(pageCount>pageNumbers.at(-1)+1)pageNumbers.push('…');
+    pageNumbers.push(pageCount);
+  }
+  $('pageNumbers').innerHTML=pageNumbers.map(n=>n==='…'?'<span>…</span>':`<button class="${state.page===n?'active':''}" data-page="${n}">${n}</button>`).join('');
+}
 function studentInfo(order){
   if(order.submission){
     const student=order.submission.studentInfo||{};
@@ -97,7 +154,7 @@ function displayPackages(order){
     courses:[{subject:row[2],board:row[3],grade:row[4],module:row[5],studentLevel:row[12],mode:row[6],campus:row[7],hours:row[8],historicalTeacher:row[9]}]
   }));
 }
-function packageCourseTable(pack,index){
+function packageCourseTable(pack,index,suborder){
   const courses=pack.courses||[];
   const fields=[
     ['科目',course=>course.subject||course.name],['考试局',course=>course.board],
@@ -106,39 +163,25 @@ function packageCourseTable(pack,index){
     ['授课模式',course=>course.mode],['校区',course=>course.campus],
     ['课时',course=>course.hours],['历史授课老师',course=>course.historicalTeacher]
   ];
-  return `<section class="detail-package-block"><div class="detail-package-heading"><span class="detail-package-icon" aria-hidden="true">▣</span><span class="detail-package-label">${esc(pack.name||`课程包${index+1}`)}</span></div><div class="detail-package-table-scroll"><table><thead><tr>${fields.map(([label])=>`<th>${esc(label)}</th>`).join('')}</tr></thead><tbody>${courses.map(course=>`<tr>${fields.map(([,read])=>{const value=read(course)||'--';return `<td title="${esc(value)}">${esc(value)}</td>`}).join('')}</tr>`).join('')||'<tr><td colspan="9">暂无课程</td></tr>'}</tbody></table></div></section>`;
+  const heading=suborder
+    ? `<span class="detail-package-label">排课单名称：<a class="combined-suborder-link" href="${esc(orderDetailHref(suborder))}" data-suborder="${suborder.packageIndex+1}">${esc(suborder.course)}</a></span>`
+    : `<span class="detail-package-label">${esc(pack.name||`课程包${index+1}`)}</span>`;
+  return `<section class="detail-package-block"><div class="detail-package-heading"><span class="detail-package-icon" aria-hidden="true">▣</span>${heading}</div><div class="detail-package-table-scroll"><table><thead><tr>${fields.map(([label])=>`<th>${esc(label)}</th>`).join('')}</tr></thead><tbody>${courses.map(course=>`<tr>${fields.map(([,read])=>{const value=read(course)||'--';return `<td title="${esc(value)}">${esc(value)}</td>`}).join('')}</tr>`).join('')||'<tr><td colspan="9">暂无课程</td></tr>'}</tbody></table></div></section>`;
 }
-function detailFields(order){
-  if(order.submission){
-    const extra=order.submission.extra||{};
-    const attachments=[...new Set([...(order.submission.requirementAttachments||[]),...(extra.vouchers||[])])];
-    const specifiedEnd=order.submission.endMode==='SPECIFIED_DATE'||(!order.submission.endMode&&!!order.submission.end);
-    const precise=order.submission.preciseTime;
-    const preciseSummary=precise?[
-      precise.weekdays?.length?precise.weekdays.map(day=>['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][day]).join('、'):'每天',
-      [...(precise.slots||[]),...(precise.custom||[]).map(([start,end])=>`${start}-${end}`)].join('、')
-    ].join('；'):'';
-    return [
-    ['排课单状态',order.status],['开课日期',order.submission.start],
-    ['结课日期',specifiedEnd?order.submission.end||'--':'排完全部课程结束'],['时间要求',order.submission.time],...(precise?[['精准排课时段',preciseSummary]]:[]),
-    ['排课类型',order.submission.type],['要求备注',order.submission.requirement||'--'],
-    ['目前校内进度/需要听的知识点',extra.progress||'--'],['其他排课要求',extra.otherRequirement||'--'],['预计/已报名考试时间',extra.examDate||'--'],
-    ['课程备注',extra.courseNote||'--'],['学习目的',extra.studyPurposes?.join('、')||'--'],['家庭与学习关系',extra.familyRelation||'--'],
-    ['偏好上课风格',extra.teacherStyles?.join('、')||'--'],['性别偏好',extra.teacherGender||'--'],['学生学情介绍','--'],
-    ['附件',attachments.join('、')||'--']
-  ];
-  }
-  const isFirst=order.id===1;
-  return [
-    ['排课单状态',isFirst?'待分配':order.status],['开课日期',isFirst?'2026-11-02':order.start],
-    ['结课日期',isFirst?'2026-11-18':'--'],['时间要求',isFirst?'模糊排课':'--'],
-    ['排课类型',isFirst?'此科目新排':'--'],['要求备注',isFirst?'时间要求字段':'--'],
-    ['目前校内进度/需要听的知识点',isFirst?'校内进度字段':'--'],
-    ['预计/已报名考试时间',isFirst?'2026-11-02':'--'],
-    ['课程备注',isFirst?'课程备注字段':'--'],['学习目的','--'],['家庭与学习关系','--'],
-    ['偏好上课风格',isFirst?'<span class="blue-tag">风趣幽默</span>':'--',true],
-    ['性别偏好',isFirst?'都可以':'--'],['学生学情介绍','--'],['附件','--']
-  ];
+function renderOrderInfo(order){
+  const firstSample=!order.submission&&order.id===1;
+  const submission=order.submission||(firstSample?{
+    start:'2026-11-02',end:'2026-11-18',type:'此科目新排',time:'模糊排课',requirement:'时间要求字段',
+    extra:{progress:'校内进度字段',examDate:'2026-11-02',courseNote:'课程备注字段',teacherStyles:['风趣幽默'],teacherGender:'都可以'}
+  }:{start:order.start,endMode:'SPECIFIED_DATE'});
+  const field=([label,value,{compact,attachment}={}])=>{
+    const shown=attachment&&value&&value!=='--'? `<span class="order-info-attachment">♧ ${esc(value)}</span>`:esc(value||'--');
+    return `<div class="order-info-field${compact?'':' wide'}"><span class="order-info-label">${esc(label)}</span><span class="order-info-colon">:</span><span class="order-info-value">${shown}</span></div>`;
+  };
+  const groups=window.orderAnalysisSummary.fieldGroups({submission,supplements:order.supplements});
+  const overview={title:'排课单详情',fields:[['排课单状态',firstSample?'待分配':order.status]]};
+  $('detailOrderInfo').innerHTML=[overview,...groups].map(({title,fields})=>
+    `<section class="drawer-card order-info-card"><div class="drawer-card-title"><strong>${title}</strong></div><div class="order-info-grid">${fields.map(field).join('')}</div></section>`).join('');
 }
 let selectedOrderConsultId=null;
 function linkedOrderConsults(order){
@@ -204,45 +247,61 @@ function showList(push=true){
   $('orderDrawer').hidden=true;
   document.body.style.overflow='';
 }
-function showDetail(id,push=true){
+function showDetail(id,push=true,packageNumber=null){
   const order=allOrders.find(o=>o.id===Number(id));
   if(!order){showList(false);return}
+  const packages=packagesForList(order);
+  const packageIndex=packageNumber===null?undefined:Number(packageNumber)-1;
+  if(packageIndex!==undefined&&!packages[packageIndex]){showList(false);return}
   state.currentOrderId=order.id;
-  if(push)history.pushState({order:id},'',`?order=${id}`);
-  $('drawerTitle').textContent=order.type==='自组班排课单'?'自组班排课单详情':'1v1排课单详情';
+  if(push)history.pushState({},'',orderDetailHref({...order,packageIndex}));
+  $('drawerTitle').textContent=order.type==='自组班排课单'?'自组班排课单详情':packages.length>1&&packageIndex===undefined?'组合排课单详情':'1v1排课单详情';
   const student=new Map(studentInfo(order));
   const studentLabels=[['学生姓名','姓名'],['学生编号','学生编号'],['性别','性别'],['出生日期','出生日期'],['登记年龄','登记年龄'],['学生手机','学生手机'],['学生微信','学生微信'],['学生邮箱','学生邮箱'],['在读学校','在读学校'],['在读年级','在读年级']];
   $('studentFields').innerHTML=studentLabels.map(([label,key])=>`<div class="student-field"><div class="student-field-label">${esc(label)}</div><div class="student-field-value">${esc(student.get(key)||'--')}</div></div>`).join('');
   renderOrderConsultCard(order);
-  $('detailPackages').innerHTML=displayPackages(order).map(packageCourseTable).join('');
-  const supplements=order.supplements||[];
-  const values=new Map(detailFields(order).map(([label,value,raw])=>[label,{value,raw}]));
-  const labels=['排课单状态','排课类型','开课日期','结课日期','排课时间要求','排课时间要求补充','目前校内进度/需要听的知识点','预计/已报名考试时间','课程备注','学习目的','家庭与学习关系','偏好上课风格','性别偏好','学生学情介绍','凭证'];
-  $('detailOrderInfo').innerHTML=labels.map((label,index)=>{
-    let item=values.get(label==='凭证'?'附件':label);
-    if(label==='排课时间要求'){
-      const requirement=values.get('要求备注');
-      item=requirement?.value&&requirement.value!=='--'?requirement:values.get('时间要求');
-    }
-    if(label==='排课时间要求补充'){
-      const extra=values.get('其他排课要求')?.value;
-      const cards=supplements.map(entry=>`<div class="order-info-supplement-item"><div>${esc(entry.text)}</div></div>`).join('');
-      item={value:(extra&&extra!=='--'?`<div>${esc(extra)}</div>`:'')+cards||'--',raw:!!cards||!!(extra&&extra!=='--')};
-    }
-    const raw=item?.raw;
-    const value=item?.value||'--';
-    const shown=label==='凭证'&&value!=='--'?`<span class="order-info-attachment">♧ ${esc(value)}</span>`:raw?value:esc(value);
-    return `<div class="order-info-field ${index>=4?'wide':''}"><span class="order-info-label">${esc(label)}</span><span class="order-info-colon">:</span><span class="order-info-value">${shown}</span></div>`;
-  }).join('');
+  const detailPackages=displayPackages(order);
+  const shownPackages=packageIndex===undefined?detailPackages:[detailPackages[packageIndex]];
+  const combinedDetail=packages.length>1&&packageIndex===undefined;
+  $('detailPackages').innerHTML=shownPackages.map((pack,index)=>packageCourseTable(pack,index,
+    combinedDetail?suborderForPackage(order,packages[index],index):null)).join('');
+  renderOrderInfo(order);
   $('detailBackdrop').hidden=false;
   $('orderDrawer').hidden=false;
   document.body.style.overflow='hidden';
   $('closeOrderDrawer').focus();
 }
 document.querySelectorAll('.tab').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(tab=>{tab.classList.toggle('current',tab===button);tab.setAttribute('aria-selected',tab===button)});state.tab=button.dataset.tab;state.page=1;renderList()}));
-$('applyFilters').onclick=()=>{readFilters();state.page=1;renderList()};$('resetFilters').onclick=()=>{document.querySelectorAll('.filters input').forEach(input=>{input.value='';input.type='text'});document.querySelectorAll('.filters select').forEach(select=>select.value='');readFilters();state.page=1;renderList()};$('pageSize').onchange=()=>{state.size=Number($('pageSize').value);state.page=1;renderList()};$('prevPage').onclick=()=>{state.page--;renderList()};$('nextPage').onclick=()=>{state.page++;renderList()};$('jumpPage').onchange=()=>{state.page=Number($('jumpPage').value)||1;renderList()};$('pageNumbers').onclick=e=>{const button=e.target.closest('[data-page]');if(button){state.page=Number(button.dataset.page);renderList()}};$('orderRows').onclick=e=>{const order=e.target.closest('[data-order]');if(order){e.preventDefault();showDetail(order.dataset.order);return}const action=e.target.closest('[data-action]');if(action){e.preventDefault();toast('重新申请入口将在后续页面中补充')}};document.querySelector('.table-settings').onclick=()=>toast('表格设置入口示意');window.addEventListener('popstate',()=>{const id=new URLSearchParams(location.search).get('order');if(id)showDetail(id,false);else showList(false)});readFilters();const initialOrder=new URLSearchParams(location.search).get('order');renderList();if(initialOrder)showDetail(initialOrder,false);
+$('applyFilters').onclick=()=>{readFilters();state.page=1;renderList()};$('resetFilters').onclick=()=>{document.querySelectorAll('.filters input').forEach(input=>{input.value='';input.type='text'});document.querySelectorAll('.filters select').forEach(select=>select.value='');readFilters();state.page=1;renderList()};$('pageSize').onchange=()=>{state.size=Number($('pageSize').value);state.page=1;renderList()};$('prevPage').onclick=()=>{state.page--;renderList()};$('nextPage').onclick=()=>{state.page++;renderList()};$('jumpPage').onchange=()=>{state.page=Number($('jumpPage').value)||1;renderList()};$('pageNumbers').onclick=e=>{const button=e.target.closest('[data-page]');if(button){state.page=Number(button.dataset.page);renderList()}};$('orderRows').onclick=e=>{const order=e.target.closest('[data-order]');if(order){e.preventDefault();showDetail(order.dataset.order,true,new URL(order.href).searchParams.get("package"));return}const action=e.target.closest('[data-action]');if(action){e.preventDefault();toast('重新申请入口将在后续页面中补充')}};document.querySelector('.table-settings').onclick=()=>toast('表格设置入口示意');function readOrderRoute(){
+  const params=new URLSearchParams(location.search);
+  if(params.has('order'))showDetail(params.get('order'),false,params.get('package'));
+  else showList(false);
+}
+window.addEventListener('popstate',readOrderRoute);
+function setOrderListMode(mode){
+  state.orderMode=mode;
+  state.page=1;
+  for(const option of $('salesOrderListMode').querySelectorAll('button')){
+    option.setAttribute('aria-pressed',option.dataset.orderMode===mode);
+  }
+}
+$('salesOrderListMode').addEventListener('click',event=>{
+  const button=event.target.closest('[data-order-mode]');
+  if(!button||button.dataset.orderMode===state.orderMode)return;
+  setOrderListMode(button.dataset.orderMode);
+  renderList();
+});
+readFilters();
+renderList();
+if(new URLSearchParams(location.search).has('order'))readOrderRoute();
 
 $('closeOrderDrawer').onclick=()=>showList();
+$('detailPackages').addEventListener('click',event=>{
+  const link=event.target.closest('[data-suborder]');
+  if(!link||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+  event.preventDefault();
+  showDetail(state.currentOrderId,true,link.dataset.suborder);
+});
 $('orderConsultLinkButton').onclick=openOrderConsultLink;
 $('orderConsultBody').addEventListener('click',event=>{const button=event.target.closest('[data-order-consult]');if(button)openOrderConsultView(button.dataset.orderConsult)});
 $('orderConsultModalClose').onclick=closeOrderConsultModal;
@@ -272,8 +331,13 @@ function openCreateOrder(){
   $('createOrderPage').hidden=false;
   document.body.style.overflow='hidden';
   if(!window.createOrderDetails?.studentNumber()){
-    window.createOrderDetails?.setStudentName('刘大礼','VA100012345');
-    window.createOrderPackages?.seedReferenceDemo();
+    if(homeroomOrderEmbed){
+      window.createOrderDetails?.setStudentName('授课反馈产品验收','VA100078710');
+      $('createOrderForm').querySelector('.create-type-row select').value='此科目续排';
+    }else{
+      window.createOrderDetails?.setStudentName('刘大礼','VA100012345');
+      window.createOrderPackages?.seedReferenceDemo();
+    }
   }
   $('closeCreateOrder').focus();
 }
@@ -335,20 +399,85 @@ $('createEndMode').addEventListener('change',syncCreateEndMode);
 $('createStartDate').addEventListener('change',syncCreateEndMode);
 syncCreateEndMode();
 $('createOrder').onclick=openCreateOrder;
-$('closeCreateOrder').onclick=closeCreateOrder;
-$('cancelCreateOrder').onclick=closeCreateOrder;
+function cancelCreateOrder(){
+  closeCreateOrder();
+  if(homeroomOrderEmbed)notifyHomeroomOrder('homeroom-order-close');
+}
+$('closeCreateOrder').onclick=cancelCreateOrder;
+$('cancelCreateOrder').onclick=cancelCreateOrder;
 function validateCreateForm(){
   if($('createEndMode').value==='SPECIFIED_DATE'&&(!$('createEndDate').value||$('createEndDate').value<$('createStartDate').value)){
     toast('请选择不早于开课日期的结课日期');
     $('createEndDate').focus();
     return false;
   }
+  if(isHomeroomSelfScheduling()){
+    if(!window.createOrderDetails?.studentNumber()){
+      toast('请从搜索结果中选择学生');
+      $('createStudentSearch').focus();
+      return false;
+    }
+    return window.createOrderPackages.validate();
+  }
   return !!window.createOrderDetails?.validate()&&!!window.createOrderPackages?.validate()&&validateCreatePreciseTime();
+}
+function isHomeroomSelfScheduling(){return $('createOrderForm').dataset.handler==='self'}
+
+if(homeroomOrderEmbed){
+  const handler=$('createHandler');
+  function setOrderHandler(mode){
+    $('createOrderForm').dataset.handler=mode;
+    $('createHomeroomOwner').hidden=mode!=='self';
+    for(const button of handler.querySelectorAll('button')){
+      button.setAttribute('aria-pressed',button.dataset.orderHandler===mode);
+    }
+    window.createOrderPackages?.refreshHistory();
+  }
+  handler.hidden=false;
+  handler.addEventListener('click',event=>{
+    const button=event.target.closest('[data-order-handler]');
+    if(button)setOrderHandler(button.dataset.orderHandler);
+  });
+  setOrderHandler('self');
+}
+
+function openHomeroomSupplement(submission){
+  const drawer=document.createElement('dialog');
+  drawer.className='homeroom-supplement-frame';
+  drawer.setAttribute('aria-label','补充排课要求');
+  const frame=document.createElement('iframe');
+  frame.title='补充排课要求';
+  const order={id:Date.now(),submission,course:courseNameForSubmission(submission),source:'homeroom'};
+  frame.src=`教务端/index.html?embed-homeroom-supplement=1#flow-order=${encodeURIComponent(JSON.stringify(order))}`;
+  drawer.append(frame);
+  document.body.append(drawer);
+  let created=false;
+  function receiveSupplement(event){
+    if(event.source!==frame.contentWindow||event.origin!==location.origin)return;
+    if(event.data?.kind==='homeroom-supplement-ready'&&!created){
+      const {start,end,endMode,timezone,text,files,specifiedTeachers,selectedTeachers,lockedSlots}=event.data;
+      const supplements=text||files.length?[{time:currentTimestamp(),text,attachments:files}]:[];
+      createDemoOrder({...submission,start,end,endMode,timezone,specifiedTeachers,selectedTeachers,lockedSlots},supplements);
+      created=true;
+    }
+    if(event.data?.kind==='homeroom-supplement-close')drawer.close();
+  }
+  window.addEventListener('message',receiveSupplement);
+  drawer.addEventListener('close',()=>{
+    window.removeEventListener('message',receiveSupplement);
+    drawer.remove();
+    if(created)cancelCreateOrder();
+  },{once:true});
+  drawer.showModal();
 }
 $('createOrderForm').onsubmit=event=>{
   event.preventDefault();
   if(!validateCreateForm())return;
   const submitted=readCreateOrder();
+  if(isHomeroomSelfScheduling()){
+    openHomeroomSupplement(submitted);
+    return;
+  }
   submitted.consultId=window.getPendingConsultId?.()||null;
   const draft={id:-Date.now(),course:courseNameForSubmission(submitted),status:'待提交',submission:submitted,originalSubmission:JSON.parse(JSON.stringify(submitted)),supplements:[]};
   pendingSubmissions.push(draft);
@@ -392,7 +521,7 @@ $('createRequirement').oninput=event=>{
 window.addEventListener('keydown',event=>{
   if(event.key==='Escape'&&!$('createOrderPage').hidden&&$('aiPrecheckDrawer').hidden){
     event.stopPropagation();
-    closeCreateOrder();
+    cancelCreateOrder();
   }
 });
 
@@ -423,62 +552,41 @@ function hydrateCreateOrder(submission){
     inputs[0].value=start;inputs[1].value=end;
   }
 }
-function aiPrecheckDetail(label,value,options={}){
-  const valueHtml=options.link&&value&&value!=='--'
-    ?`<span class="ai-precheck-detail-link">${esc(value)}</span>`
-    :esc(value||'--');
-  return `<div class="ai-precheck-detail-row${options.half?' half':''}${label.length>12?' long-label':''}"><span class="ai-precheck-detail-label">${esc(label)}</span><span class="ai-precheck-detail-colon">：</span><span class="ai-precheck-detail-value${options.multiline?' multiline':''}">${valueHtml}</span></div>`;
-}
-function renderAiPrecheckReadOnly(draft){
-  const submission=draft?.submission||{};
-  const extra=submission.extra||{};
-  const student=submission.studentInfo||{};
-  const packages=(submission.packages||[]).filter(pack=>pack.name||pack.courses?.length);
-  const courseHeaders=['科目','考试局','年级','模块','学生水平','授课模式','校区','课时','历史授课老师','期望成绩','当前授课老师','老师时间是否已沟通'];
-  const readCourse=course=>[course.subject||course.name,course.board,course.grade,course.module,course.studentLevel,course.mode,course.campus,course.hours,course.historicalTeacher,course.expectedGrade,course.currentTeacher,course.teacherDiscussed];
-  const packageCards=packages.map(pack=>`<div class="ai-precheck-readonly-package"><div class="ai-precheck-readonly-package-name"><span aria-hidden="true">▣</span> ${esc(pack.name||'课时包')}</div>${pack.score&&/雅思/.test(pack.name)?`<p>目前(期望)成绩：${esc(pack.score)}</p>`:''}<div class="ai-precheck-readonly-table-scroll"><table><thead><tr>${courseHeaders.map(label=>`<th>${label}</th>`).join('')}</tr></thead><tbody>${(pack.courses||[]).map(course=>`<tr>${readCourse(course).map(value=>`<td>${esc(value||'--')}</td>`).join('')}</tr>`).join('')}</tbody></table></div></div>`).join('')||'<p>暂无课程</p>';
-  const end=submission.endMode==='SPECIFIED_DATE'?submission.end||'--':'排完全部课程结束';
-  const attachments=[...(submission.requirementAttachments||[]),...(extra.vouchers||[])].join('、');
-  const latestSupplement=draft?.replyText||draft?.supplements?.map(item=>item.text||item).filter(Boolean).join('；')||'';
-  const previousScroll=$('aiPrecheckLeft').scrollTop;
-  $('aiPrecheckLeft').innerHTML=`<section class="ai-precheck-readonly-card ai-precheck-student-card"><h2>学生信息</h2><div class="ai-precheck-student-summary">
-      <div><span>学生编号：</span><strong>${esc(student.number||submission.customerNo||'--')}</strong></div>
-      <div><span>学生姓名：</span><strong>${esc(student.name||submission.student||'--')}</strong></div>
-      <div><span>在读年级：</span><strong>${esc(student.grade?`${student.grade}年级`:'--')}</strong></div>
-    </div></section>
-    <section class="ai-precheck-readonly-card"><h2>课程信息</h2>${packageCards}</section>
-    <section class="ai-precheck-readonly-card ai-precheck-detail-card"><h2>排课单详情</h2><div class="ai-precheck-detail-list">
-      ${aiPrecheckDetail('排课类型',submission.type)}
-      <div class="ai-precheck-detail-pair">${aiPrecheckDetail('开课日期',submission.start,{half:true})}${aiPrecheckDetail('结课日期',end,{half:true})}</div>
-      ${aiPrecheckDetail('排课时间要求',submission.requirement,{multiline:true})}
-      ${latestSupplement?aiPrecheckDetail('排课时间要求补充',latestSupplement,{multiline:true}):''}
-      ${aiPrecheckDetail('目前校内进度/需要听的知识点',extra.progress,{multiline:true})}
-      ${aiPrecheckDetail('预计/已报名考试时间',extra.examDate)}
-      ${aiPrecheckDetail('课程备注',extra.courseNote,{multiline:true})}
-      ${aiPrecheckDetail('学习目的',(extra.studyPurposes||[]).join('、'))}
-      ${aiPrecheckDetail('家庭与学习关系',extra.familyRelation)}
-      ${aiPrecheckDetail('偏好上课风格',(extra.teacherStyles||[]).join('、'))}
-      ${aiPrecheckDetail('性别偏好',extra.teacherGender)}
-      ${aiPrecheckDetail('其他排课要求',extra.otherRequirement,{multiline:true})}
-      ${aiPrecheckDetail('附件',attachments,{link:true})}
-    </div></section>`;
-  $('aiPrecheckLeft').scrollTop=previousScroll;
-  $('createOrderPage').hidden=true;
+function renderAiPrecheckReadOnly(draft,hideCreate=true){
+  const summary=$('aiPrecheckLeft');
+  const previousScroll=summary.scrollTop;
+  summary.innerHTML=window.orderAnalysisSummary.render(draft);
+  summary.scrollTop=previousScroll;
+  if(hideCreate)$('createOrderPage').hidden=true;
 }
 function setAiPrecheckMode(mode){
-  $('aiPrecheckDrawer').dataset.mode=mode;
-  $('aiPrecheckLoading').hidden=mode!=='loading';
-  $('aiPrecheckBody').hidden=mode!=='issues';
+  const drawer=$('aiPrecheckDrawer');
+  const wasLoading=drawer.dataset.mode==='loading';
+  window.analysisMotion.cancelSuccessClose(drawer);
+  drawer.dataset.mode=mode;
+  $('aiPrecheckBody').hidden=mode==='success';
   $('aiPrecheckSuccess').hidden=mode!=='success';
   $('closeAiPrecheck').hidden=mode==='loading';
+  if(mode==='loading')window.analysisMotion.start(drawer,{
+    layer:$('aiPrecheckLoading'),header:drawer.firstElementChild,surface:[$('aiPrecheckBody'),$('aiPrecheckFooter')]
+  });
+  else if(mode==='success'){
+    window.analysisMotion.stop(drawer,false);
+    window.analysisMotion.closeAfterSuccess(drawer,closeAiPrecheck);
+  }
+  else if(wasLoading){
+    window.analysisMotion.stop(drawer);
+    requestAnimationFrame(()=>window.analysisMotion.reveal(drawer,'.ai-precheck-category:not([hidden])'));
+  }
 }
 function openAiPrecheckLoading(order){
   activeAnalysisOrderId=order.id;
   $('aiPrecheckLoadingText').textContent='正在分析排课策略';
   $('deferAiPrecheck').hidden=true;
-  setAiPrecheckMode('loading');
   $('aiPrecheckBackdrop').hidden=false;
   $('aiPrecheckDrawer').hidden=false;
+  renderAiPrecheckReadOnly(order,false);
+  setAiPrecheckMode('loading');
   document.body.style.overflow='hidden';
 }
 function currentTimestamp(){
@@ -500,7 +608,17 @@ function createDemoOrder(submission,supplements=[],precheckIssues='',originalSub
     status:'处理中',finished:'--',applicant:'李春玲',start:submission.start,submission,supplements,precheckIssues,originalSubmission,
     strategyAnalysis:{status:'SUCCESS',...(strategy?{strategy}:{})}
   };
+  if(homeroomOrderEmbed){
+    const suborders=packagesForList(order).map((pack,index)=>({
+      name:suborderForPackage(order,pack,index).course,
+      packageName:pack.name,
+      courses:pack.courses
+    }));
+    notifyHomeroomOrder('homeroom-order-created',{...order,suborders});
+    return order;
+  }
   allOrders.unshift(order);
+  setOrderListMode(packagesForList(order).length>1?'combined':'individual');
   saveDemoOrders();
   document.dispatchEvent(new CustomEvent('formal-order-created',{detail:{order}}));
   return order;
@@ -516,6 +634,7 @@ function readCreateOrder(){
       const cells=row.querySelectorAll('td');
       const base=row.createCourseData||row.consultCourse||{};
       const subject=cells[0].textContent.trim();
+      const historical=isHomeroomSelfScheduling()?window.createOrderPackages.getHistoricalCourse(name,base):null;
       return {...base,
         package:name,name:subject,subject,
         system:meta.system||base.system||'英联邦学科',item:meta.item||base.item||'ALEVEL',
@@ -524,10 +643,11 @@ function readCreateOrder(){
         module:cells[3].querySelector('select')?.value??cells[3].textContent.trim(),
         studentLevel:cells[4].querySelector('select')?.value??base.studentLevel??'',
         expectedGrade:cells[5].querySelector('select')?.value??base.expectedGrade??'',
-        mode:cells[6].textContent.trim(),historicalTeacher:cells[7].textContent.trim(),
+        mode:cells[6].textContent.trim(),historicalTeacher:historical?.historicalTeacher||cells[7].textContent.trim(),
+        ...(isHomeroomSelfScheduling()?{isHistoricalCourse:Boolean(historical)}:{}),
         campus:cells[8].querySelector('select')?.value??cells[8].textContent.trim(),
         hours:cells[9].querySelector('input')?.value||'0',
-        currentTeacher:cells[10].querySelector('input')?.value??cells[10].textContent.trim(),
+        currentTeacher:historical?.currentTeacher||(cells[10].querySelector('input')?.value??cells[10].textContent.trim()),
         teacherDiscussed:cells[11].querySelector('select')?.value??cells[11].textContent.trim()
       };
     });
@@ -548,7 +668,11 @@ function readCreateOrder(){
       custom:[...form.querySelectorAll('.create-custom-time-row')].map(row=>[...row.querySelectorAll('input')].map(input=>input.value))
     }:null,
     requirement:form.querySelector('input[name="timeRequirement"]:checked').value==='precise'?'':$('createRequirement').value.trim(),
-    courses:packages.flatMap(entry=>entry.courses)
+    courses:packages.flatMap(entry=>entry.courses),
+    ...(homeroomOrderEmbed?{schedulingHandler:isHomeroomSelfScheduling()?'self':'educator'}:{}),
+    ...(isHomeroomSelfScheduling()?{
+      classOwner:$('createClassOwner').value,time:'',preciseTime:null,requirement:'',requirementAttachments:[],extra:{}
+    }:{})
   };
 }
 // 原型在同一次提交分析中完成检查和策略输出，正式环境由 AI 服务返回策略。
@@ -699,11 +823,15 @@ function openAiPrecheck(preferredOrderId=null){
   $('closeAiPrecheck').focus();
 }
 function closeAiPrecheck(showCreate=false){
+  const completed=$('aiPrecheckDrawer').dataset.mode==='success';
+  window.analysisMotion.cancelSuccessClose($('aiPrecheckDrawer'));
+  window.analysisMotion.stop($('aiPrecheckDrawer'),false);
   activeAnalysisOrderId=null;
   if(showCreate)$('createOrderPage').hidden=false;
   $('aiPrecheckBackdrop').hidden=true;
   $('aiPrecheckDrawer').hidden=true;
   document.body.style.overflow=$('createOrderPage').hidden&&$('orderDrawer').hidden?'':'hidden';
+  if(homeroomOrderEmbed&&completed)notifyHomeroomOrder('homeroom-order-close');
 }
 function cancelAiPrecheck(){
   const editingForm=activeFormDraftId!==null;
@@ -727,7 +855,7 @@ $('deferAiPrecheck').onclick=()=>{
   if(activeFormDraftId!==null){closeCreateOrder();activeFormDraftId=null;window.clearPendingConsultId?.();showList(false)}
 };
 $('dismissAiPrecheck').onclick=cancelAiPrecheck;
-$('closeAiPrecheckSuccess').onclick=closeAiPrecheck;
+if(homeroomOrderEmbed)document.addEventListener('DOMContentLoaded',openCreateOrder);
 $('aiPrecheckReply').oninput=event=>{
   const draft=pendingSubmissions.find(item=>item.id===activePrecheckOrderId);
   if(draft){draft.replyText=event.target.value;savePendingSubmissions();refreshAiPrecheckStatuses(draft)}

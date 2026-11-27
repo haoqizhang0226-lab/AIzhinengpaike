@@ -1,0 +1,104 @@
+.analysis-motion-anchor { position: relative; }
+.smart-consult-drawer:not([hidden]), .self-class-ai-drawer:not([hidden]) {
+  animation: analysis-motion-drawer .30s cubic-bezier(.22,.8,.28,1) both;
+}
+.analysis-motion-layer {
+  position: absolute; inset: var(--analysis-motion-top, 0px) 0 0;
+  z-index: 30; overflow: hidden; display: grid; place-items: center;
+  background: linear-gradient(135deg, #f5f1ff9e, #fafaff85);
+  animation: analysis-motion-enter .22s ease-out both;
+}
+.analysis-motion-layer[hidden] { display: none !important; }
+.analysis-motion-layer.is-leaving { pointer-events: none; animation: analysis-motion-exit .24s ease-out both; }
+.analysis-motion-wave {
+  position: absolute; inset: 0 -12%;
+  background: radial-gradient(ellipse 52% 10% at 50% 48%, #b3a0ff67, transparent 95%),
+    radial-gradient(ellipse 46% 14% at 78% 53%, #9edcf75c, transparent 92%);
+  filter: blur(5px); animation: analysis-motion-sweep 3.2s linear infinite;
+}
+.analysis-motion-wave::after {
+  content: ""; position: absolute; left: 11%; right: 11%; top: 49%; height: 2px;
+  background: linear-gradient(90deg, transparent, #9d87ff80, #f9f9ff, #8bd3fb85, transparent);
+  box-shadow: 0 0 16px #9179ffbc; border-radius: 50%; transform: rotate(-4deg);
+}
+.analysis-motion-status {
+  z-index: 1; display: grid; justify-items: center; gap: 10px; max-width: 92%;
+  padding: 12px; text-align: center; color: #39296e; text-shadow: 0 1px 12px #fff, 0 0 6px #fff;
+}
+.analysis-motion-status strong { font-size: 16px; font-weight: 700; }
+.analysis-motion-status p { margin: 0; color: #5a547c; font-size: 13px; line-height: 1.6; }
+.analysis-motion-spinner, .requirement-chat-bubble .requirement-chat-dots {
+  width: 43px; height: 43px; border-radius: 50%;
+  background: conic-gradient(from 20deg, #ece5ff 15%, #bba4ff 48%, #6248d9 86%, #ece5ff);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+  animation: analysis-motion-spin .95s linear infinite;
+}
+.analysis-motion-status button {
+  padding: 7px 14px; border: 1px solid #d9cff7; border-radius: 7px;
+  background: #f6f2ff; color: #5039ac; font-weight: 700; cursor: pointer;
+}
+.ai-precheck-drawer .ai-precheck-result-heading h2,
+.homeroom-analysis-result h3,
+.smart-consult-issue-layout .smart-consult-detail h3,
+.wecom-ai-issue h3 { color: #5039ac; }
+.sales-workspace .ai-precheck-drawer[data-mode="issues"] .ai-precheck-footer .ai-precheck-submit,
+.wizard[data-step="1"] .wizard-footer [data-analyze],
+.smart-consult-drawer:has(.smart-consult-issue-layout) .smart-consult-drawer-foot .primary {
+  background: linear-gradient(110deg, #7458e9, #5140d2);
+  border-color: #644bdc;
+  color: #fff;
+}
+.requirement-chat-bubble .requirement-chat-dots {
+  display: inline-block; vertical-align: middle; width: 14px; height: 14px; margin-inline-start: 9px;
+}
+.requirement-chat-bubble .requirement-chat-dots i { display: none; }
+.analysis-motion-reading {
+  animation: analysis-motion-mark 3.2s ease-in-out infinite;
+  animation-delay: calc(var(--analysis-motion-order, 0) * 240ms);
+}
+.analysis-motion-revealed {
+  outline: 1px solid #e6e1f8; outline-offset: -1px;
+  animation: analysis-motion-draw .48s cubic-bezier(.2,.75,.3,1) backwards;
+  animation-delay: calc(var(--analysis-motion-order, 0) * 85ms);
+}
+.submission-success-view,
+.ai-precheck-drawer[data-mode="success"] .submission-success-view {
+  flex: 1; min-height: 100%; display: grid; place-items: center; padding: 24px;
+  background: radial-gradient(ellipse at center, #eeebff, #f8f6ff 56%, #fcfbff 88%);
+}
+.submission-success {
+  display: grid; justify-items: center; gap: 12px; text-align: center;
+  color: #39296e; animation: submission-success-enter .32s cubic-bezier(.2,.8,.3,1) both;
+}
+.submission-success h2 { font-size: clamp(20px, 2.5vw, 26px); margin: 0; }
+.submission-success p { margin: 0; font-size: 13px; color: #605982; }
+.submission-success-mark {
+  position: relative; display: grid; place-items: center; width: 64px; height: 64px;
+  margin-bottom: 7px; border: 1px solid #ddd3fa; border-radius: 50%;
+  background: linear-gradient(140deg, #fff, #eee7ff); color: #644bdc;
+  font-size: 31px; font-weight: 700;
+}
+.submission-success-mark::before {
+  content: ""; position: absolute; inset: -2px; border: 1px solid #b1a1f3;
+  border-radius: 50%; animation: submission-success-ring .72s ease-out both;
+}
+.ai-precheck-drawer[data-mode="loading"] .ai-precheck-right { visibility: hidden; }
+@keyframes analysis-motion-sweep { 0% { transform: translateY(-70%); opacity: 0; } 12%,80% { opacity: 1; } 100% { transform: translateY(70%); opacity: 0; } }
+@keyframes analysis-motion-spin { to { transform: rotate(360deg); } }
+@keyframes analysis-motion-mark { 0%,26%,45%,100% { box-shadow: 0 0 0 transparent; } 33% { box-shadow: 0 0 0 2px #8c6af879, 0 0 20px #a78aff55; } }
+@keyframes analysis-motion-enter { from { opacity: 0; } }
+@keyframes analysis-motion-drawer { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes analysis-motion-exit { to { opacity: 0; } }
+@keyframes analysis-motion-draw {
+  from { opacity: 0; clip-path: inset(0 68% 15% 0 round 8px); transform: translateY(5px); }
+  to { opacity: 1; clip-path: inset(0); transform: translateY(0); }
+}
+@keyframes submission-success-enter { from { opacity: 0; transform: translateY(6px) scale(.94); } }
+@keyframes submission-success-ring { from { opacity: .75; transform: scale(1); } to { opacity: 0; transform: scale(1.55); } }
+@media (prefers-reduced-motion: reduce) {
+  .analysis-motion-layer, .analysis-motion-layer.is-leaving, .analysis-motion-spinner, .requirement-chat-bubble .requirement-chat-dots, .analysis-motion-revealed, .analysis-motion-reading { animation: none; }
+  .smart-consult-drawer:not([hidden]), .self-class-ai-drawer:not([hidden]), .ai-precheck-drawer:not([hidden]), .flow-drawer-backdrop .wizard { animation: none; }
+  .analysis-motion-wave { display: none; }
+  .submission-success, .submission-success-mark::before { animation: none; }
+  .submission-success-mark::before { display: none; }
+}

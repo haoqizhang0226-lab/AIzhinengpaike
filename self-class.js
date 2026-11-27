@@ -73,15 +73,29 @@
   function renderCatalog(){const subject=get('selfClassSubjectFilter').value,board=get('selfClassBoardFilter').value;get('selfClassCatalogRows').innerHTML=catalog.map((course,index)=>({course,index})).filter(({course})=>(subject==='全部科目'||course.subject===subject)&&(board==='全部考试局'||course.board===board)).map(({course,index})=>`<tr><td><input type="checkbox" data-catalog-index="${index}" ${selectedCourseKeys.has(index)?'checked':''}></td><td>${safe(course.subject)}</td><td>${safe(course.board)}</td><td>${safe(course.grade)}</td><td>${safe(course.mode)}</td></tr>`).join('')||'<tr><td colspan="5">暂无课程</td></tr>';get('selfClassSelectedCount').textContent=selectedCourseKeys.size;get('selfClassSelectedNames').textContent=[...selectedCourseKeys].map(index=>catalog[index].subject).join('、')||'暂无已选课程';}
   function submission(){const courses=draft.courses.map(course=>({...course,name:course.subject,system:draft.system,item:draft.item,classType:draft.classType,studentLevel:'--',historicalTeacher:'--',currentTeacher:course.teacher,teacherDiscussed:course.discussed}));return {student:draft.students[0],studentInfo:{name:draft.students[0],number:'VA100078710',grade:'8年级'},package:`${draft.division}-${draft.system}-${draft.item}`,packages:[{name:`${draft.division}-${draft.system}-${draft.item}`,system:draft.system,item:draft.item,courses}],courses,start:draft.start,endMode:'SPECIFIED_DATE',end:draft.end,type:'此科目新排',time:draft.description,requirement:draft.description,extra:{courseNote:draft.notes,vouchers:uploaded.map(file=>file.name)},selfClass:{...draft,uploaded:uploaded.map(file=>file.name)}};}
   function setAiContent(markup){get('selfClassAiContent').innerHTML=markup;}
-  function closeAi(){get('selfClassAiDrawer').hidden=true;get('selfClassAiBackdrop').hidden=true;}
+  let selfClassAnalysis=null;
+  function closeAi(){
+    const drawer=get('selfClassAiDrawer');
+    clearTimeout(selfClassAnalysis);
+    window.analysisMotion.cancelSuccessClose(drawer);
+    window.analysisMotion.stop(drawer,false);
+    drawer.hidden=true;
+    get('selfClassAiBackdrop').hidden=true;
+  }
   function analyzeSelfClass(supplement=''){
-    setAiContent('<div class="self-class-ai-loading"><span>✦</span><strong>正在分析排课策略</strong><div class="self-class-ai-progress"><i></i></div></div>');
+    const drawer=get('selfClassAiDrawer'), content=get('selfClassAiContent');
     const data=submission();
-    setTimeout(()=>{
-      if(get('selfClassAiDrawer').hidden)return;
+    if(!supplement)setAiContent(`<div class="self-class-ai-columns"><section><h2>班级信息</h2><p>${safe(data.student)}</p><h2>课程信息</h2><p>${data.courses.map(course=>safe(course.subject)).join('、')}</p><h2>排课信息</h2><p>${safe(data.start)} 至 ${safe(data.end)}</p><p>${safe(data.requirement)}</p></section></div>`);
+    window.analysisMotion.start(drawer,{title:'正在分析排课策略',description:'核对班级课程和排课时间要求',
+      header:drawer.firstElementChild,surface:[content]});
+    selfClassAnalysis=setTimeout(()=>{
+      if(drawer.hidden)return;
       const {issues,strategy}=analyzeDemoOrderStrategy(data,supplement);
-      if(issues.length)showIssue(issues.map(issue=>issue.text).join('；'));
-      else completeSubmission(data,supplement,strategy);
+      window.analysisMotion.stop(drawer,Boolean(issues.length));
+      if(issues.length){
+        showIssue(issues.map(issue=>issue.text).join('；'));
+        window.analysisMotion.reveal(content,'.self-class-ai-columns section');
+      }else completeSubmission(data,supplement,strategy);
     },1600);
   }
   function openAi(){get('selfClassAiDrawer').hidden=false;get('selfClassAiBackdrop').hidden=false;analyzeSelfClass();}
@@ -99,7 +113,8 @@
     order.classTeacher=item.teacher;
     saveDemoOrders();
     rows.unshift(item);persist();renderList();renderListOrders();closeWizard();
-    setAiContent('<div class="self-class-ai-success"><span>✓</span><h2>申请排课成功</h2><p>AI分析通过，自组班排课单已正式提交。</p><button type="button" class="btn primary" id="selfClassAiDone">完成</button></div>');
+    setAiContent('<div class="submission-success-view"><div class="submission-success" role="status"><span class="submission-success-mark" aria-hidden="true">✓</span><h2>排课单提交成功</h2><p>自组班排课单已提交</p></div></div>');
+    window.analysisMotion.closeAfterSuccess(get('selfClassAiDrawer'),closeAi);
   }
   function renderListOrders(){try{window.renderList?.()}catch{}}
   get('selfClassCreate').onclick=openWizard;
@@ -117,7 +132,7 @@
   get('selfClassCourseConfirm').onclick=()=>{for(const index of selectedCourseKeys){const course=catalog[index];if(!draft.courses.some(item=>item.subject===course.subject&&item.board===course.board&&item.mode===course.mode))draft.courses.push({...course,currentGrade:'',expectedGrade:'',campus:course.mode==='线上'?'/':'雅仕校区',hours:10,teacher:'无',discussed:'是'});}courseModal(false);renderWizard();};
   get('selfClassAiClose').onclick=closeAi;get('selfClassAiBackdrop').onclick=closeAi;
   get('selfClassAiContent').addEventListener('click',event=>{
-    if(event.target.id==='selfClassAiCancel'||event.target.id==='selfClassAiDone'){closeAi();return;}
+    if(event.target.id==='selfClassAiCancel'){closeAi();return;}
     if(event.target.id==='selfClassAiSubmit'){
       const answer=get('selfClassAiReply').value.trim();
       if(!answer){toast('请填写补充说明');return;}

@@ -64,32 +64,13 @@
     {id:'ZD20261026007',customerNo:'',customerName:'',advisorName:'李春玲',created:'2026-10-26 09:25:31',initiator:'李春玲',status:'进行中',start:'2026-11-18',end:'2026-12-30',requirement:'待补充客户资料；优先周末。',linkedOrderIds:[],courses:[defaultCourse('商务',10)]},
     {id:'ZD20261110008',customerNo:'VA100092578',customerName:'刘同学',advisorName:'李春玲',consultType:'自组班',created:'2026-11-10 14:22:09',initiator:'李春玲',status:'教务已关闭',transferredToEducator:true,transferRequirement:'学生希望周六上午固定上课，顾问暂未确认两门课程的可用老师，请教务协助核实。',handlerName:'王若华',handledAt:'2026-11-10 15:08:36',closeReason:'周六上午固定时段未与授课老师确认，且两门课程课时分配未说明，请确认后重新提交。',start:'2026-11-16',end:'2026-12-28',requirement:'希望固定周六上午上课，其余时段待与学生确认。',linkedOrderIds:[],courses:[{...defaultCourse('商务',10,'线上'),classType:'自组班'},{...defaultCourse('会计',10),classType:'自组班'}]}
   ];
-  const catalogRows = [
-    ['计算机','AQA','AS','线上'],['物理','AQA','AS','线下'],['心理','AQA','AS','线下'],
-    ['物理','CAIE','AS','线下'],['物理','AQA','AS','线上'],['商务','OCR','AS','线上'],
-    ['计算机','OCR','AS','线上'],['经济','AQA','AS','线上'],['计算机','AQA','AS','线下'],
-    ['中文','EDX','AS','线下'],['会计','EDX','AS','线下'],['化学','CAIE','AS','线上'],
-    ['数学','EDX','IAL-AS','线下'],['英语','CAIE','AS','线上'],['写作','AQA','AS','线下'],
-    ['听力','AQA','AS','线上'],['口语','CAIE','AS','线下'],['阅读','CAIE','AS','线上'],
-    ['综合','AQA','AS','线下'],['物理','EDX','A2','线上'],['化学','EDX','A2','线下'],
-    ['数学','CAIE','A2','线上'],['商务','AQA','A2','线下'],['经济','OCR','A2','线上']
-  ];
-  const courseHierarchy = {
-    高端:{高端牛剑:['高阶笔试'],高端竞赛:['高端竞赛']},
-    全日制:{全日制学校:['上海远见']},
-    英联邦:{英联邦学科:['ALEVEL','GCSE','IGCSE'],英联邦语言:['托福','雅思']},
-    英研:{英研课程:['英国大学课程']},
-    橡沐:{橡沐学科:['美高同步']}
-  };
+  const {courseSystems, divisionForSystem, itemsFor, catalogFor} = window.prototypeCourseCatalog;
   const scheduleWeekdays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
   const scheduleSlots = ['08:20-10:20','10:30-12:30','13:30-15:30','16:00-18:00','18:30-20:30'];
   const teacherStyles = ['风趣幽默','可全英文','热情活泼','严格严肃','循序善诱','疑难专家','生动形象','温柔耐心','雷厉风行','其他'];
   const consultTypes = ['1V1','试听','诊断','自组班'];
   const consultEndMode = item => item.endMode || (item.end ? 'SPECIFIED_DATE' : 'FINISH_ALL');
-  const divisionForSystem = system => Object.keys(courseHierarchy).find(division =>
-    Object.hasOwn(courseHierarchy[division],system)) || '';
-  const itemsFor = (division,system) => courseHierarchy[division]?.[system] || [];
-  const courseSystems = Object.values(courseHierarchy).flatMap(group => Object.keys(group));
+
   let saved = [];
   try {
     const value = JSON.parse(localStorage.getItem(storageKey) || '[]');
@@ -571,18 +552,21 @@
     drawerMode='analyzing';
     byId('consultDrawer').classList.remove('teacher-mode','preplan-mode','orders-mode');
     byId('consultDrawerTitle').textContent='AI分析排课要求';
-    byId('consultDrawerBody').innerHTML='<div class="smart-consult-analysis-loading" role="status"><span class="smart-consult-analysis-symbol">✦</span><strong>AI正在分析排课要求</strong><div class="smart-consult-analysis-track"></div></div>';
-    byId('consultDrawerFoot').innerHTML='';
+    const drawer=byId('consultDrawer');
+    window.analysisMotion.start(drawer,{title:'AI正在分析排课要求',description:'核对课程信息和匹配要求',
+      header:drawer.firstElementChild,surface:[byId('consultDrawerBody'),byId('consultDrawerFoot')]});
     const token=Symbol('analysis');
     runConsultAnalysis.token=token;
     setTimeout(()=>{
       if (runConsultAnalysis.token!==token || byId('consultDrawer').hidden) return;
+      window.analysisMotion.stop(drawer);
       const issue=consultIssue(draft,reply);
       if (issue) {
         drawerMode='issue';
         byId('consultDrawerTitle').innerHTML='<span>新增咨单</span><span class="smart-consult-status pending">客户需求待确认</span>';
         byId('consultDrawerBody').innerHTML='<div class="smart-consult-issue-layout"><div>' + detailMarkup({...draft,customerNo:draft.customerNo||'',created:current()?.created||'待提交',status:'待确认'},{showPreplan:false}) + '</div><section class="smart-consult-detail"><h3>AI分析结果</h3><div class="smart-consult-issue-text">' + safe(issue) + '</div><label class="smart-consult-issue-reply">补充排课要求<textarea id="consultIssueReply" placeholder="请一次性补充以上待确认内容"></textarea></label></section></div>';
         byId('consultDrawerFoot').innerHTML='<button type="button" class="primary" data-consult-footer="submit-reply">提交咨单</button>';
+        window.analysisMotion.reveal(byId('consultDrawerBody'),'.smart-consult-detail');
         byId('consultIssueReply').focus();
         return;
       }
@@ -895,6 +879,7 @@
 
   function closeDrawer() {
     runConsultAnalysis.token=null;
+    window.analysisMotion.stop(byId('consultDrawer'),false);
     consultAnalysisDraft=null;
     byId('consultDrawer').classList.remove('teacher-mode','preplan-mode','create-mode','detail-mode','orders-mode');
     closeCourseModal();
@@ -933,25 +918,7 @@
     if (total) total.textContent = [...inputs].reduce((sum,input) => sum + (Number(input.value) || 0),0).toFixed(2);
   }
   const catalogKey = course => [course.subject,course.board,course.grade,course.mode].join('|');
-  function catalogFor(item) {
-    let source = catalogRows;
-    if (item === '托福' || item === '雅思') {
-      source = ['听力','口语','阅读','写作'].flatMap(subject => [[subject,'--','--','线上'],[subject,'--','--','线下']]);
-    } else if (item === '择校') {
-      source = ['综合','数学','英语','物理','化学'].flatMap(subject => [[subject,'--','8年级','线下'],[subject,'--','8年级','线上']]);
-    } else if (item === 'GCSE' || item === 'IGCSE') {
-      source = catalogRows.filter(row => ['物理','化学','数学','英语','商务','经济'].includes(row[0]))
-        .map(row => [row[0],row[1],item,row[3]]);
-    } else if (item === '高阶笔试' || item === '高端竞赛' || item === '上海远见' || item === '英国大学课程' || item === '美高同步') {
-      const subjects = {
-        高阶笔试:['数学','物理','化学','英语'],高端竞赛:['数学','物理','化学'],
-        上海远见:['数学','英语','综合'],英国大学课程:['商科','数学','英语'],
-        美高同步:['数学','英语','物理','化学']
-      }[item];
-      source = subjects.flatMap(subject => [[subject,'--','--','线上'],[subject,'--','--','线下']]);
-    }
-    return source.map(([subject,board,grade,mode]) => ({subject,board,grade,mode}));
-  }
+
   function closeCourseModal() {
     byId('consultCourseBackdrop').hidden = true;
     byId('consultCourseModal').hidden = true;

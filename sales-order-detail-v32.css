@@ -49,6 +49,7 @@
 .sales-workspace .detail-package-table-scroll th{background:#fafafa;color:#333;font-weight:500}
 .sales-workspace .detail-package-table-scroll tbody tr:nth-child(even){background:#fafafa}
 .sales-workspace .order-info-card{min-height:0}
+.sales-workspace .order-info-card + .order-info-card{margin-top:14px}
 .sales-workspace .order-info-grid{grid-template-columns:1fr 1fr;gap:0 20px;padding:18px 20px 25px}
 .sales-workspace .order-info-field{min-height:48px;align-items:flex-start;padding:11px 0;line-height:1.65}
 .sales-workspace .order-info-field.wide{grid-column:1/-1}
@@ -56,9 +57,6 @@
 .sales-workspace .order-info-field:nth-child(7) .order-info-label{flex-basis:205px;white-space:nowrap}
 .sales-workspace .order-info-colon{margin:0 8px 0 0;color:#777}
 .sales-workspace .order-info-value{color:#373737;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
-.sales-workspace .order-info-supplement-item{padding:0;border:0;border-radius:0;background:none}
-.sales-workspace .order-info-supplement-item small{display:inline;margin:0 8px 0 0;color:#777;font-size:12px}
-.sales-workspace .order-info-supplement-item div{display:inline;color:#373737;font-size:13px}
 .sales-workspace .order-info-attachment{color:#2682ed}
 
 @media(max-width:1650px){

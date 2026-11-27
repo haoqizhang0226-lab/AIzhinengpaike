@@ -1,4 +1,5 @@
 window.smartSchedulingV3DemoOrder = {
+  strategyAnalysis: { status: 'SUCCESS' },
   submission: {
     student: '授课反馈产品验收',
     customerNo: 'VA100078710',

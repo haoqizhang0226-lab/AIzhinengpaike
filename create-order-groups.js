@@ -51,6 +51,58 @@
   let selected = new Map();
   let consultCourses = [];
   let selectedStudentNumber = '';
+  const sampleHistory = {
+    '英联邦-英联邦学科-ALEVEL-1v1': [
+      ['会计','EDX','AS','/','线下',10],['高数','AQA','AS','/','线上',8],
+      ['高数','AQA','A2','/','线上',6],['高数','WJEC','AS','/','线上',4],
+      ['高数','AQA','IAL','A','OMO',8],['生物','OCR','AS','/','线下',6],
+      ['计算机','AQA','AS','/','线上',10],['商务','CAIE','AS','/','线下',6]
+    ],
+    '英联邦-英联邦学科-GCSE-1v1': [['数学','CAIE','GCSE','/','线上',8]]
+  };
+
+  function historyFor(packageName) {
+    const past = allOrders.filter(order => order.status === '已完成' && order.submission?.customerNo === selectedStudentNumber)
+      .flatMap(order => packagesForList(order).filter(pack => pack.name === packageName).flatMap(pack => pack.courses));
+    const examples = selectedStudentNumber === 'VA100078710' ? (sampleHistory[packageName] || []) : [];
+    const samples = examples.map(([subject,board,grade,module,mode,hours]) => ({
+      subject,board,grade,module,mode,hours,
+      historicalTeacher:subject === '计算机' ? '常竞文' : subject === '高数' && board === 'WJEC' ? '出师签约测试5' : '李春玲(VA100859)',
+      campus:mode === '线上' ? '' : '舜元中心',studentLevel:levelOptions[0]
+    }));
+    return [...new Map([...samples,...past].map(course => [keyFor(course),course])).values()];
+  }
+
+  function getHistoricalCourse(packageName, course) {
+    return historyFor(packageName).find(item => keyFor(item) === keyFor(course));
+  }
+
+  function renderHistory(group) {
+    let history = group.querySelector('[data-course-history]');
+    const packageName = group.dataset.selectedPackage;
+    if (form.dataset.handler !== 'self' || !packageName) {
+      history?.remove();
+      return;
+    }
+    if (!history) {
+      history = document.createElement('fieldset');
+      history.className = 'create-course-history';
+      history.dataset.courseHistory = '';
+      group.querySelector('.create-included-heading').before(history);
+    }
+    const existing = new Map([...group.querySelectorAll('tbody tr')].map(row => [keyFor(row.createCourseData || {}),row]));
+    const choices = historyFor(packageName).map((course,index) => {
+      const row = existing.get(keyFor(course));
+      const title = [packageMeta(packageName).item,course.subject || course.name,course.board,course.grade,course.module,course.mode]
+        .filter(value => value && !['--','/'].includes(value)).join('-');
+      return `<label><input type="checkbox" data-history-choice="${index}" ${row?'checked':''} ${row&&!row.hasAttribute('data-history-row')?'disabled':''}>${escapeHtml(title)}</label>`;
+    });
+    history.innerHTML = `<legend>历史已排课</legend><div>${choices.join('') || '<span>该课时包暂无历史课程</span>'}</div>`;
+  }
+
+  function refreshHistory() {
+    groups.querySelectorAll('[data-package-group]').forEach(renderHistory);
+  }
 
   function packageMeta(name) {
     return packages.find(entry => entry.name === name) || {name,system:'',item:'',stats:['0','0','0','0']};
@@ -101,6 +153,7 @@
       group.querySelector('.create-course-table-scroll').before(panel);
     }
     renderConsultChoices(group);
+    renderHistory(group);
   }
   function makeGroup(packageName = '') {
     const group = initialGroup.cloneNode(true);
@@ -333,7 +386,7 @@
     }
     if (event.target.closest('[data-add-package-course]')) { openPicker(group); return; }
     if (event.target.closest('[data-remove-package]')) { group.remove(); renderAllConsultChoices(); updateTotals(); return; }
-    if (event.target.closest('.remove-course')) { event.target.closest('tr').remove(); renderAllConsultChoices(); updateTotals(); return; }
+    if (event.target.closest('.remove-course')) { event.target.closest('tr').remove(); renderAllConsultChoices(); renderHistory(group); updateTotals(); return; }
     const step = event.target.closest('[data-hour-step]');
     if (step) {
       const input = step.parentElement.querySelector('input');
@@ -342,6 +395,22 @@
     }
   });
   groups.addEventListener('change',event => {
+    if (event.target.matches('[data-history-choice]')) {
+      const group = event.target.closest('[data-package-group]');
+      const packageName = group.dataset.selectedPackage;
+      const course = historyFor(packageName)[Number(event.target.dataset.historyChoice)];
+      const rows = group.querySelector('tbody');
+      const key = keyFor(course);
+      if (event.target.checked) {
+        const row = makeRow({...course,package:packageName});
+        row.dataset.historyRow = key;
+        rows.append(row);
+      } else {
+        [...rows.querySelectorAll('[data-history-row]')].find(row => row.dataset.historyRow === key)?.remove();
+      }
+      updateTotals();
+      return;
+    }
     if (event.target.matches('[data-consult-course-index]')) {
       const group = event.target.closest('[data-package-group]');
       const index = Number(event.target.dataset.consultCourseIndex);
@@ -403,7 +472,8 @@
     }));
     closePicker();
     renderAllConsultChoices();
+    renderHistory(group);
     updateTotals();
   });
-  window.createOrderPackages = {reset,setFromCourses,setFromPackages,setConsultIntent,setStudentSelected,seedReferenceDemo,validate,packageMeta};
+  window.createOrderPackages = {reset,setFromCourses,setFromPackages,setConsultIntent,setStudentSelected,seedReferenceDemo,validate,packageMeta,refreshHistory,getHistoricalCourse};
 })();

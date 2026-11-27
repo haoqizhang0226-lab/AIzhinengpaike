@@ -5,8 +5,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>班主任工作台｜智慧排课原型</title>
   <link rel="stylesheet" href="prototype-docs.css?v=20261116-tabs">
-  <link rel="stylesheet" href="homeroom-workspace.css?v=20261123-batch-ai">
-  <script src="homeroom-workspace.js?v=20261123-batch-ai" defer></script>
+  <link rel="stylesheet" href="homeroom-workspace.css?v=20261125-batch-operations">
+  <link rel="stylesheet" href="order-list-mode.css?v=20261124-homeroom-form">
+  <script src="course-catalog.js?v=20261124-renewal" defer></script>
+  <script src="student-slot-locks.js" defer></script>
+  <script src="homeroom-workspace.js?v=20261125-student-slot-locks" defer></script>
+  <script src="homeroom-renewal-form.js?v=20261124-renewal" defer></script>
+  <script src="homeroom-scheduling.js?v=20261124-renewal" defer></script>
 </head>
 <body class="prototype-doc-page homeroom-page">
   <header class="prototype-doc-topbar"><nav aria-label="原型导航"><a href="index.html">销售工作台</a><a href="教务端/index.html">教务工作台</a><a class="active" aria-current="page" href="homeroom-workspace.html">班主任工作台</a><a href="teaching-workspace.html">教学工作台</a><a href="dingtalk-workspace.html">钉钉工作台</a><a href="wecom-sidebar.html">企微侧边栏</a><a href="business-flow.html">业务流程</a><a href="scheduling-algorithm.html">排课算法</a></nav></header>
@@ -20,9 +25,14 @@
       <nav class="hr-side-menu">
         <span><i>◷</i>待办</span>
         <span><i>⌂</i>学员课表</span>
-        <a href="homeroom-workspace.html" aria-current="page"><i>♙</i>学员</a>
+        <a id="hrStudentMenu" href="homeroom-workspace.html" aria-current="page"><i>♙</i>学员</a>
         <span><i>▣</i>班级</span>
-        <span><i>▤</i>服务<b>⌄</b></span>
+        <button type="button" id="hrServiceToggle" aria-expanded="false" aria-controls="hrServiceMenu"><i>▤</i>服务<b aria-hidden="true">⌄</b></button>
+        <div id="hrServiceMenu" class="hr-service-menu" hidden>
+          <span>反馈</span><span>作业</span><span>模考试卷</span><span>模考报告</span><span>学情报告</span><span>访谈记录</span>
+          <a href="#my-scheduling">我的排课</a><a href="#renewal-plans">续排方案</a>
+          <span>课表查询</span><span>督学课</span><span>论文竞赛</span><span>学员积分</span>
+        </div>
         <span><i>♧</i>转介绍资源</span>
         <span><i>▣</i>课消记录</span>
         <span><i>♧</i>管理<b>⌄</b></span>
@@ -77,6 +87,8 @@
           </div>
         </section>
 
+        <section id="hrSchedulingPage" class="hr-panel hr-service-panel" hidden></section>
+
         <section id="hrDetailPage" class="hr-panel hr-detail" aria-label="学员详情" hidden>
           <a class="hr-back" href="homeroom-workspace.html">‹ 返回</a>
           <div class="hr-student-strip"><span>学员姓名: <span class="hr-tier">黑金</span> <strong>授课反馈产品验收(VA100078710)</strong></span><span>学员手机号: <strong>138****9993</strong></span><span class="hr-toolbox">✣ 工具栏</span></div>
@@ -86,6 +98,7 @@
               <nav class="hr-segments" aria-label="课表课程类型"><button type="button" data-lesson-type="all" aria-pressed="true">全部</button><button type="button" data-lesson-type="regular" aria-pressed="false">正式课</button><button type="button" data-lesson-type="supervised" aria-pressed="false">督学课</button></nav>
               <button type="button" class="hr-button hr-primary" id="hrBatchChange" aria-haspopup="dialog" aria-controls="hrBatchDialog">批量变更</button>
             </div>
+            <p class="hr-lesson-status" id="hrLessonChangeStatus" role="status" hidden></p>
             <div class="hr-table-scroll"><table class="hr-table hr-lesson-table" id="hrLessonTable">
               <colgroup><col style="width:9.2%"><col style="width:9%"><col style="width:13.5%"><col style="width:13.5%"><col style="width:8.9%"><col style="width:9%"><col style="width:9%"><col style="width:9%"><col style="width:9%"><col style="width:10%"></colgroup>
               <thead><tr><th>日期</th><th>时间</th><th>课程</th><th>教师</th><th>班级名称</th><th>班级编号</th><th>上课地点</th><th>班课班主任</th><th>状态</th><th>操作</th></tr></thead>
@@ -110,18 +123,21 @@
       <span id="hrBatchCount" aria-live="polite"></span>
       <div class="hr-batch-footer-actions">
         <button type="button" class="hr-button" data-close-batch>取消</button>
-        <button type="button" class="hr-button" data-batch-action="cancel" aria-haspopup="dialog" disabled>取消课节</button>
-        <button type="button" class="hr-button" id="hrBatchLocation" data-batch-action="location" aria-haspopup="dialog" aria-controls="hrBatchLocationDialog" disabled>修改授课模式、校区</button>
+        <div class="hr-batch-cancel-actions">
+          <button type="button" class="hr-button" data-batch-action="cancel" aria-haspopup="dialog" disabled>取消课节</button>
+          <button type="button" class="hr-button" data-batch-action="order" aria-haspopup="dialog" disabled>取消课节并锁定时段</button>
+        </div>
         <button type="button" class="hr-button hr-primary" data-batch-action="time" aria-haspopup="dialog" disabled>修改上课时间／时长</button>
-        <button type="button" class="hr-button" data-batch-action="subject" aria-haspopup="dialog" disabled>同体系换科目</button>
-        <button type="button" class="hr-button" data-batch-action="system" aria-haspopup="dialog" disabled>换课程体系</button>
-        <button type="button" class="hr-button" data-batch-action="order" aria-haspopup="dialog" disabled>换订单重排</button>
+        <button type="button" class="hr-button" data-batch-action="replan" aria-haspopup="dialog" disabled>重新排课</button>
+        <button type="button" class="hr-button" id="hrBatchLocation" data-batch-action="location" aria-haspopup="dialog" aria-controls="hrBatchLocationDialog" disabled>修改授课模式</button>
+        <button type="button" class="hr-button" data-batch-action="teacher" aria-haspopup="dialog" disabled>同课程换老师</button>
+        <button type="button" class="hr-button" data-batch-action="course" aria-haspopup="dialog" disabled>同体系换课程</button>
       </div>
     </footer>
   </dialog>
   <dialog class="hr-lesson-dialog" id="hrBatchLocationDialog" aria-labelledby="hrBatchLocationTitle">
     <form id="hrBatchLocationForm">
-      <header><h2 id="hrBatchLocationTitle">修改授课模式、校区</h2><button type="button" class="hr-dialog-close" data-close-batch-location aria-label="关闭">×</button></header>
+      <header><h2 id="hrBatchLocationTitle">修改授课模式</h2><button type="button" class="hr-dialog-close" data-close-batch-location aria-label="关闭">×</button></header>
       <div class="hr-lesson-dialog-fields">
         <label class="hr-lesson-field">授课模式<select name="mode" required autofocus>
           <option value="">请选择授课模式</option><option>线上</option><option>线下</option><option>OMO</option>
@@ -142,23 +158,22 @@
         <section class="hr-batch-ai-card">
           <div class="hr-batch-ai-heading"><h3>本次选中的原课节</h3><span id="hrBatchOperationTotal"></span></div>
           <div class="hr-table-scroll"><table class="hr-table" aria-label="本次选中的原课节">
-            <thead><tr><th>课程</th><th>上课日期</th><th>原时段</th><th>时长</th><th>老师</th></tr></thead>
+            <thead><tr id="hrBatchOperationHead"><th>课程</th><th>上课日期</th><th>原时段</th><th>时长</th><th>老师</th></tr></thead>
             <tbody id="hrBatchOperationRows"></tbody>
           </table></div>
         </section>
         <fieldset id="hrBatchAiFields" class="hr-batch-ai-card" hidden disabled>
-          <legend>补充排课要求</legend>
-          <label class="hr-sr-only" for="hrBatchRequirement">排课时间／时长变更要求</label>
-          <textarea id="hrBatchRequirement" name="requirement" rows="5" maxlength="2000" required placeholder="例如：保留每节课的原开始时间，前 1 小时照常上，拆出的课节安排在下周二或周四 18:30 以后。"></textarea>
+          <legend>排课要求</legend>
+          <label class="hr-sr-only" for="hrBatchRequirement">排课要求</label>
+          <textarea id="hrBatchRequirement" name="requirement" rows="5" maxlength="2000" required placeholder="要求应用到每节原课，例如：周二或周四 10:30–12:30"></textarea>
         </fieldset>
+        <label class="hr-lesson-field" id="hrBatchCourseTeacherField" hidden>授课老师<select name="courseTeacher" disabled><option value="same">沿用原老师</option><option value="new">更换老师</option></select></label>
         <fieldset id="hrBatchTargetFields" class="hr-batch-ai-card" hidden disabled>
           <legend>目标课程</legend>
-          <label class="hr-lesson-field" id="hrBatchTargetSystemField">课程体系<select name="targetSystem"></select></label>
-          <label class="hr-lesson-field">科目<select name="targetSubject" required></select></label>
+          <label class="hr-lesson-field">新课程<select name="targetCourse" required></select></label>
         </fieldset>
         <p id="hrBatchOperationNotice" class="hr-original-lesson" hidden></p>
         <div id="hrBatchOperationReasons"></div>
-        <section id="hrBatchAnalysisPreview" class="hr-change-preview" aria-live="polite" hidden></section>
       </div>
       <footer><button type="button" class="hr-button" data-close-batch-operation>返回批量变更</button><button type="submit" class="hr-button hr-primary" id="hrSubmitBatchOperation" disabled></button></footer>
     </form>
@@ -171,27 +186,28 @@
         <fieldset class="hr-change-types">
           <legend>选择变更类型</legend>
           <label><input name="changeType" type="radio" value="cancel"><span>取消课节</span></label>
+          <label><input name="changeType" type="radio" value="order"><span>取消课节并锁定时段</span></label>
           <label><input name="changeType" type="radio" value="time" checked><span>修改上课时间／时长</span></label>
-          <label><input name="changeType" type="radio" value="location"><span>修改授课模式／校区</span></label>
-          <label><input name="changeType" type="radio" value="subject"><span>同体系换科目</span></label>
-          <label><input name="changeType" type="radio" value="system"><span>换课程体系</span></label>
-          <label><input name="changeType" type="radio" value="order"><span>换订单重排</span></label>
+          <label><input name="changeType" type="radio" value="replan"><span>重新排课</span></label>
+          <label><input name="changeType" type="radio" value="location"><span>修改授课模式</span></label>
+          <label><input name="changeType" type="radio" value="teacher"><span>同课程换老师</span></label>
+          <label><input name="changeType" type="radio" value="course"><span>同体系换课程</span></label>
         </fieldset>
+        <label class="hr-lesson-field" id="hrCourseTeacherField" hidden>授课老师<select name="courseTeacher" disabled><option value="same">沿用原老师</option><option value="new">更换老师</option></select></label>
         <div id="hrTargetCourseFields" hidden>
-          <label class="hr-lesson-field" id="hrTargetSystemField">目标课程体系<select name="targetSystem"></select></label>
-          <label class="hr-lesson-field">目标科目<select name="targetSubject"></select></label>
+          <label class="hr-lesson-field">新课程<select name="targetCourse"></select></label>
           <p class="hr-room-status" id="hrTargetBalance"></p>
-          <label id="hrChangeTargetTime"><input type="checkbox" name="changeTargetTime"> 另选上课时段</label>
         </div>
-        <p id="hrCancelChangeSummary" class="hr-original-lesson" hidden></p>
-        <fieldset class="hr-change-time" id="hrChangeTimeFields">
-        <div class="hr-lesson-field">
-          <span id="hrLessonTimeLabel">上课时间</span>
-          <div class="hr-lesson-time" role="group" aria-labelledby="hrLessonTimeLabel">
-            <div class="hr-time-modes">
-              <label><input type="radio" name="timeMode" value="standard">标准时段</label>
-              <label><input type="radio" name="timeMode" value="custom" checked>自定义</label>
+        <p id="hrNewTeacherCourseNotice" class="hr-original-lesson" hidden>换老师需要填写排课信息。排课信息页待接入。</p>
+        <fieldset class="hr-change-time" id="hrChangeTimeFields" aria-labelledby="hrLessonTimeLabel">
+          <div class="hr-time-heading">
+            <span id="hrLessonTimeLabel">上课时间</span>
+            <div class="hr-time-modes" role="radiogroup" aria-label="上课时段类型">
+              <label><input class="hr-sr-only" type="radio" name="timeMode" value="standard"><span>标准时段</span></label>
+              <label><input class="hr-sr-only" type="radio" name="timeMode" value="custom" checked><span>自定义</span></label>
             </div>
+          </div>
+          <div class="hr-lesson-field hr-time-field">
             <div class="hr-time-controls">
               <input type="date" name="date" aria-label="上课日期" required>
               <select name="standardPeriod" aria-label="标准时段" required hidden disabled>
@@ -204,23 +220,19 @@
               </select>
               <div class="hr-custom-time" id="hrCustomLessonTime">
                 <input type="time" name="startTime" aria-label="开始时间" required>
-                <span>至</span>
-                <input type="time" name="endTime" aria-label="结束时间" required>
+                <span>至</span><input type="time" name="endTime" aria-label="结束时间" required>
               </div>
             </div>
           </div>
-        </div>
+          <div class="hr-duration-fields">
+            <div class="hr-lesson-field"><span>调整后时长</span><output id="hrAdjustedDuration"></output></div>
+            <div class="hr-lesson-field" id="hrRefundField" hidden><span>返还课时</span><output id="hrRefundDuration"></output></div>
+          </div>
         </fieldset>
-        <div id="hrSplitLessonOption" class="hr-split-option">
-          <label><input type="checkbox" name="splitLesson"> 拆出一节，另选上课时间</label>
-          <fieldset class="hr-change-time hr-split-fields" id="hrSplitLessonFields" hidden disabled>
-            <label class="hr-lesson-field">日期<input type="date" name="splitDate" required></label>
-            <div class="hr-lesson-field"><span>拆出课节时段</span><div class="hr-custom-time">
-              <input type="time" name="splitStart" aria-label="拆出课节开始时间" required><span>至</span>
-              <input type="time" name="splitEnd" aria-label="拆出课节结束时间" required>
-            </div></div>
-          </fieldset>
-        </div>
+        <fieldset class="hr-change-time hr-batch-ai-card" id="hrReplanFields" hidden disabled>
+          <legend>排课要求</legend>
+          <textarea name="replanRequirement" aria-label="排课要求" rows="4" maxlength="2000" required placeholder="例如：周二或周四 10:30–12:30；或拆成两节，各1小时，分两天排"></textarea>
+        </fieldset>
         <label class="hr-lesson-field" id="hrChangeModeField">授课模式<select name="mode"><option>线上</option><option>线下</option><option>OMO</option></select></label>
         <div class="hr-location-fields" id="hrLessonLocationFields" hidden>
           <label class="hr-lesson-field">授课校区<input name="campus" list="hrCampusOptions" placeholder="请选择或输入授课校区" autocomplete="off" disabled></label>
@@ -285,7 +297,6 @@
           </div></div>
         </fieldset>
         <p class="hr-reason-required" id="hrLessonReasonRequired" role="status" hidden>请至少选择一项变更原因</p>
-        <section class="hr-change-preview" id="hrChangePreview" aria-live="polite" hidden></section>
       </div>
       <footer><button type="button" class="hr-button" data-close-lesson-edit>取消</button><button type="submit" class="hr-button hr-primary" id="hrSubmitLessonEdit" disabled>提交</button></footer>
     </form>

@@ -25,7 +25,12 @@
     {...computing,date:'2026-11-27',time:'08:20-10:20'},
     {...computing,date:'2026-11-27',time:'13:30-15:30'},
     {...accounting,date:'2026-11-28',time:'16:00-18:00',classNo:'01077801261020-0004',campus:'雅仕校区',room,confirmed:false,change:true},
-  ].map((lesson,index) => ({...lesson,id:index+1,orderNo:lesson.change ? 'ORD-202611-' + lesson.classNo.slice(-4) : ''}));
+  ].map((lesson,index) => {
+    const id = index + 1;
+    const lock = window.studentSlotLocks.forLesson(student.customerNo, id);
+    return {...lesson,id,orderNo:lesson.change ? 'ORD-202611-' + lesson.classNo.slice(-4) : '',
+      cancelled:Boolean(lock),slotLocked:Boolean(lock && !lock.used && lock.expiresAt > Date.now())};
+  });
   const roomsByCampus = new Map([
     ['舜元中心',['舜元 101','舜元 102','舜元 103']],
     ['雅仕校区',[room,'数学2','雅仕 302']],
@@ -60,8 +65,9 @@
   const batchOperationDialog = byId('hrBatchOperationDialog');
   const batchOperationForm = byId('hrBatchOperationForm');
   const batchOperationFields = batchOperationForm.elements;
-  const batchAnalysisPreview = byId('hrBatchAnalysisPreview');
   const batchTargetFields = byId('hrBatchTargetFields');
+  const batchCourseTeacherField = byId('hrBatchCourseTeacherField');
+  const batchOperationRows = byId('hrBatchOperationRows');
   const batchAiFields = byId('hrBatchAiFields');
   const batchOperationNotice = byId('hrBatchOperationNotice');
   const submitBatchOperation = byId('hrSubmitBatchOperation');
@@ -72,24 +78,23 @@
   const lessonEditForm = byId('hrLessonEditForm');
   const lessonFields = lessonEditForm.elements;
   const originalLesson = byId('hrOriginalLesson');
-  const changePreview = byId('hrChangePreview');
   const changeTimeFields = byId('hrChangeTimeFields');
   const changeModeField = byId('hrChangeModeField');
   const targetCourseFields = byId('hrTargetCourseFields');
-  const targetSystemField = byId('hrTargetSystemField');
   const targetBalance = byId('hrTargetBalance');
-  const cancelChangeSummary = byId('hrCancelChangeSummary');
-  const splitOption = byId('hrSplitLessonOption');
-  const splitFields = byId('hrSplitLessonFields');
-  const demoTargetSystems = new Map([
-    ['IB', {subjects:['物理','数学'], minutes:480}],
-    ['IGCSE', {subjects:['物理','化学'], minutes:0}],
-    ['ALEVEL', {subjects:['数学','物理','化学','计算机','会计'], minutes:360}],
-  ]);
+  const courseTeacherField = byId('hrCourseTeacherField');
+  const replanFields = byId('hrReplanFields');
+  const lessonChangeStatus = byId('hrLessonChangeStatus');
+  const refundedMinutesByOrder = new Map();
+  const newTeacherCourseNotice = byId('hrNewTeacherCourseNotice');
   const minutesOf = time => Number(time.slice(0,2)) * 60 + Number(time.slice(3,5));
   const durationOf = (start, end) => minutesOf(end) - minutesOf(start);
+  function endAfter(start, duration) {
+    const end = minutesOf(start) + duration;
+    if (!start || !(duration > 0) || end > 1440) return '';
+    return `${String(Math.floor(end / 60)).padStart(2,'0')}:${String(end % 60).padStart(2,'0')}`;
+  }
   const hoursText = minutes => Number((minutes / 60).toFixed(2)) + ' 小时';
-  const holdExpiry = lesson => new Date(lesson.holdUntil).toLocaleString('zh-CN', {hour12:false});
   const customTimeFields = byId('hrCustomLessonTime');
   const standardPeriods = [...lessonFields.standardPeriod.options].slice(1).map(option => option.value);
   const locationFields = byId('hrLessonLocationFields');
@@ -108,7 +113,10 @@
   let editingLesson = null;
   let initialLessonValues = null;
   let roomCampus = '';
-  let changePlan = null;
+  const aiChangeDialog = document.createElement('dialog');
+  aiChangeDialog.className = 'hr-order-form-dialog';
+  aiChangeDialog.setAttribute('aria-label', '变更排课');
+  document.body.append(aiChangeDialog);
   let nextLessonId = lessons.length + 1;
   const escape = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   let appliedFilters = new FormData(filters);
@@ -131,12 +139,18 @@
 
   function showPage() {
     const detail = window.location.hash === studentHash;
-    byId('hrListPage').hidden = detail;
+    if (detail) renderLessons();
+    const scheduling = ['#my-scheduling', '#renewal-plans'].includes(window.location.hash);
+    byId('hrListPage').hidden = detail || scheduling;
     byId('hrDetailPage').hidden = !detail;
+    byId('hrSchedulingPage').hidden = !scheduling;
+    if (scheduling) byId('hrStudentMenu').removeAttribute('aria-current');
+    else byId('hrStudentMenu').setAttribute('aria-current', 'page');
     if (!detail && lessonDialog.open) lessonDialog.close();
     if (!detail && batchLocationDialog.open) batchLocationDialog.close();
     if (!detail && batchOperationDialog.open) batchOperationDialog.close();
     if (!detail && batchDialog.open) batchDialog.close();
+    if (!detail && aiChangeDialog.open) aiChangeDialog.close();
     window.scrollTo(0,0);
   }
   function latestLessonFirst(a,b) {
@@ -153,7 +167,11 @@
     byId('hrBatchCount').textContent = `当前列表 ${total} 节，累计已选 ${selected} 节`;
   }
   function renderLessons() {
-    const rows = lessons.filter(lesson => (!lesson.cancelled || lesson.holdUntil > Date.now()) &&
+    for (const lesson of lessons.filter(item => item.slotLocked)) {
+      const lock = window.studentSlotLocks.forLesson(student.customerNo, lesson.id);
+      lesson.slotLocked = Boolean(lock && !lock.used && lock.expiresAt > Date.now());
+    }
+    const rows = lessons.filter(lesson => (!lesson.cancelled || lesson.slotLocked) &&
       (lessonType === 'all' || lesson.type === lessonType)).sort(latestLessonFirst);
     lessonRows.innerHTML = rows.map(lesson => `<tr>
       <td>${escape(lesson.date)}</td><td>${escape(lesson.time)}</td>
@@ -161,7 +179,7 @@
       <td>${lesson.medal?`<span class="hr-teacher-medal"><i aria-hidden="true">🏅</i>${escape(lesson.teacher)}</span>`:escape(lesson.teacher)}</td>
       <td>${lesson.type==='diagnostic'?escape(lesson.className):`<span class="hr-lesson-class">${escape(lesson.className)}</span>`}</td>
       <td>${escape(lesson.classNo)}</td><td>${[lesson.campus,lesson.room].filter(Boolean).map(escape).join(' · ')}</td><td>李春玲</td>
-      <td>${lesson.cancelled ? `<span class="hr-hold-label">时段保留中<br>${escape(holdExpiry(lesson))} 到期</span>` : lesson.confirmed?'已确认':'未确认'}</td>
+      <td>${lesson.slotLocked ? '<span class="hr-hold-label">课节已取消<br>原老师时段已锁定</span>' : lesson.confirmed?'已确认':'未确认'}</td>
       <td><div class="hr-row-actions">${lesson.change && !lesson.cancelled?`<button type="button" class="hr-button hr-primary" data-edit-lesson="${lesson.id}" aria-haspopup="dialog">变更</button>`:''}${lesson.cancelled ? '' : '<span class="hr-homework">作业</span>'}</div></td>
     </tr>`).join('') || '<tr><td class="hr-empty" colspan="10">暂无课节</td></tr>';
     byId('hrLessonCount').textContent = String(rows.length);
@@ -207,32 +225,49 @@
 
   const totalLessonMinutes = selected => selected.reduce((total, lesson) => total + durationOf(...lesson.time.split('-')), 0);
 
-  function updateBatchSubjects(selected) {
-    const system = batchOperation === 'subject' ? selected[0]?.course.split('-')[0] : batchOperationFields.targetSystem.value;
-    const sourceSubjects = new Set(selected.map(lesson => lesson.course.split('-')[1]));
-    const subjects = demoTargetSystems.get(system)?.subjects || [];
-    batchOperationFields.targetSubject.replaceChildren(new Option('请选择科目',''),
-      ...subjects.filter(subject => batchOperation !== 'subject' || !sourceSubjects.has(subject)).map(subject => new Option(subject, subject)));
+  function listTargetCourses(select, selected) {
+    const system = selected[0]?.course.split('-')[0];
+    const sources = selected.map(lesson => lesson.course.split('-'));
+    const options = system && sources.every(parts => parts[0] === system)
+      ? window.prototypeCourseCatalog.catalogFor(system).filter(course => !sources.some(parts =>
+        parts[1] === course.subject && parts[2] === course.board &&
+        (parts.length === 4 || parts.slice(3,-1).join('-') === course.grade) && parts.at(-1) === course.mode))
+        .map(course => [system, course.subject, course.board, course.grade, course.mode].filter(part => part && part !== '--').join('-'))
+      : [];
+    select.replaceChildren(new Option('请选择新课程',''), ...[...new Set(options)].map(name => new Option(name,name)));
   }
 
   function syncBatchOperation() {
     const selected = selectedBatchLessons();
-    const target = demoTargetSystems.get(batchOperationFields.targetSystem.value);
-    const mixedSystems = batchOperation === 'subject' && new Set(selected.map(lesson => lesson.course.split('-')[0])).size > 1;
-    const hold = batchOperation === 'order' || (batchOperation === 'system' && target && target.minutes < totalLessonMinutes(selected));
-    const notice = mixedSystems ? '同体系换科目请先选择同一课程体系下的课节。'
+    const courseChange = batchOperation === 'course';
+    const sameTeacher = courseChange && batchOperationFields.courseTeacher.value === 'same';
+    const needsNewTeacher = courseChange && !sameTeacher;
+    const mixedSystems = courseChange && new Set(selected.map(lesson => lesson.course.split('-')[0])).size > 1;
+    batchTargetFields.hidden = batchTargetFields.disabled = !sameTeacher;
+    const notice = mixedSystems ? '请选择同一课程体系下的课节。'
       : batchOperation === 'cancel' ? '确认后取消所选课节并释放原上课时段。'
-      : batchOperation === 'order' ? '取消所选课节后，为学员保留原老师时段 6 小时。'
-      : batchOperation === 'system' && target
-        ? `目标体系可用 ${hoursText(target.minutes)}，本次需要 ${hoursText(totalLessonMinutes(selected))}。${hold ? ' 课时不足，取消后保留原老师时段 6 小时。' : ''}`
-        : batchOperation === 'subject' ? '使用原订单返还的课时，按原时段安排新科目。' : '';
+      : batchOperation === 'order' ? '取消所选课节，锁定各课节的原授课老师时段。适用于换课程体系或换订单。'
+        : sameTeacher ? '新课程沿用各课节的原授课老师、时段和课时。'
+        : needsNewTeacher ? '换老师需要填写排课信息。排课信息页待接入。' : '';
     batchOperationNotice.textContent = notice;
     batchOperationNotice.hidden = !notice;
-    submitBatchOperation.textContent = batchOperation === 'time' ? '提交 AI 分析'
-      : hold ? '确认取消并保留时段' : batchOperation === 'cancel' ? '确认取消课节' : '确认重排';
-    submitBatchOperation.disabled = !selected.length || !checkedReasons(batchOperationForm).length || mixedSystems ||
+    submitBatchOperation.textContent = batchOperation === 'time' ? '保存修改'
+      : batchOperation === 'replan' ? '提交 AI 分析'
+      : batchOperation === 'order' ? '确认取消课节并锁定时段'
+      : batchOperation === 'cancel' ? '确认取消课节' : sameTeacher ? '确认换课程'
+      : needsNewTeacher ? '填写排课信息' : '补充排课要求';
+    submitBatchOperation.disabled = needsNewTeacher || !selected.length || !checkedReasons(batchOperationForm).length || mixedSystems ||
       (!batchAiFields.hidden && !batchOperationFields.requirement.value.trim()) ||
-      (!batchTargetFields.hidden && (!batchOperationFields.targetSubject.value || (batchOperation === 'system' && !target)));
+      (!batchTargetFields.hidden && !batchOperationFields.targetCourse.value);
+  }
+
+  function readBatchTimeChanges() {
+    const selected = new Map(selectedBatchLessons().map(lesson => [lesson.id,lesson]));
+    return [...batchOperationRows.querySelectorAll('tr')].map(row => {
+      const lesson = selected.get(Number(row.dataset.lessonId));
+      const read = field => row.querySelector(`[data-time-field="${field}"]`).value;
+      return {lesson,date:read('date'),startTime:read('start'),endTime:read('end')};
+    }).filter(({lesson,date,startTime,endTime}) => date !== lesson.date || `${startTime}-${endTime}` !== lesson.time);
   }
 
   function openBatchOperation(button) {
@@ -240,23 +275,26 @@
     if (!selected.length) return;
     batchOperation = button.dataset.batchAction;
     batchOperationForm.reset();
-    batchAnalysisPreview.hidden = true;
-    const showAi = batchOperation === 'time';
-    const showTarget = batchOperation === 'subject' || batchOperation === 'system';
-    byId('hrBatchOperationTitle').textContent = showAi ? 'AI 补充排课要求' : button.textContent;
+    const showAi = batchOperation === 'replan';
+    const courseChange = batchOperation === 'course';
+    const editTimes = batchOperation === 'time';
+    byId('hrBatchOperationTitle').textContent = button.textContent;
     batchAiFields.hidden = batchAiFields.disabled = !showAi;
-    batchTargetFields.hidden = batchTargetFields.disabled = !showTarget;
-    byId('hrBatchTargetSystemField').hidden = batchOperation !== 'system';
-    batchOperationFields.targetSystem.disabled = batchOperation !== 'system';
-    batchOperationFields.targetSystem.required = batchOperation === 'system';
-    const sourceSystems = new Set(selected.map(lesson => lesson.course.split('-')[0]));
-    batchOperationFields.targetSystem.replaceChildren(new Option('请选择目标体系',''),
-      ...[...demoTargetSystems.keys()].filter(system => !sourceSystems.has(system)).map(system => new Option(system, system)));
-    updateBatchSubjects(selected);
+    batchCourseTeacherField.hidden = batchOperationFields.courseTeacher.disabled = !courseChange;
+    if (courseChange) listTargetCourses(batchOperationFields.targetCourse, selected);
     byId('hrBatchOperationTotal').textContent = `${selected.length} 节 · ${hoursText(totalLessonMinutes(selected))}`;
-    byId('hrBatchOperationRows').innerHTML = selected.map(lesson => `<tr>
+    const timeColumns = ['调整后日期','开始时间','结束时间'];
+    const columns = ['课程','上课日期','原时段','时长','老师',...(editTimes?timeColumns:[])];
+    byId('hrBatchOperationHead').innerHTML = columns.map(label => `<th scope="col">${label}</th>`).join('');
+    batchOperationRows.closest('table').classList.toggle('hr-batch-time-editor',editTimes);
+    batchOperationRows.innerHTML = selected.map((lesson,index) => {
+      const [start,end] = lesson.time.split('-');
+      const timeInputs = editTimes ? [['date',lesson.date],['start',start],['end',end]].map(([key,value],i) =>
+        `<td><input type="${i?'time':'date'}" aria-label="第${index+1}节${timeColumns[i]}" data-time-field="${key}" value="${escape(value)}" required></td>`).join('') : '';
+      return `<tr data-lesson-id="${lesson.id}">
       <td>${escape(lesson.course)}</td><td>${escape(lesson.date)}</td><td>${escape(lesson.time)}</td>
-      <td>${hoursText(durationOf(...lesson.time.split('-')))}</td><td>${escape(lesson.teacher)}</td></tr>`).join('');
+      <td>${hoursText(durationOf(start,end))}</td><td>${escape(lesson.teacher)}</td>${timeInputs}</tr>`;
+    }).join('');
     mountBatchReasons(byId('hrBatchOperationReasons'), batchOperation === 'cancel' ? cancelReasons : changeReasons);
     syncBatchOperation();
     batchOperationDialog.showModal();
@@ -270,37 +308,126 @@
     const selected = selectedBatchLessons();
     const reasons = checkedReasons(batchOperationForm);
     if (batchOperation === 'time') {
-      batchAnalysisPreview.innerHTML = `<strong>AI 分析输入预览</strong>
-        <p>${selected.length} 节原课节及变更原因已带入。本次重排最多 ${hoursText(totalLessonMinutes(selected))}。</p>
-        <p>${escape(batchOperationFields.requirement.value.trim())}</p>`;
-      batchAnalysisPreview.hidden = false;
-      batchAnalysisPreview.scrollIntoView({block:'nearest'});
+      const changes = readBatchTimeChanges();
+      const error = changes.length?saveDirectTimeChanges(changes,reasons):'请至少修改一节课的日期或起止时间。';
+      if (error) {
+        batchOperationNotice.hidden = false;
+        batchOperationNotice.textContent = error;
+        return;
+      }
+    }
+    if (batchOperation === 'replan' || batchOperation === 'teacher') {
+      const requirement = batchOperation === 'replan' ? batchOperationFields.requirement.value.trim() : '';
+      openChangeAnalysis(batchOperation === 'replan'?'duration-replan':'teacher', selected, selected, reasons, {requirement});
       return;
     }
-    const target = demoTargetSystems.get(batchOperationFields.targetSystem.value);
-    const total = totalLessonMinutes(selected);
-    const hold = batchOperation === 'order' || (batchOperation === 'system' && target.minutes < total);
-    const cancel = batchOperation === 'cancel' || hold;
-    const holdUntil = hold ? Date.now() + 6 * 60 * 60 * 1000 : undefined;
-    for (const lesson of selected) {
-      if (cancel) {
-        Object.assign(lesson, {cancelled:true, holdUntil, changeReasons:reasons});
-        continue;
-      }
-      const parts = lesson.course.split('-');
-      const [system, , board] = parts;
-      const newSystem = batchOperation === 'system' ? batchOperationFields.targetSystem.value : system;
-      const subject = batchOperationFields.targetSubject.value;
-      lesson.course = [newSystem, subject, batchOperation === 'subject' && parts.length > 3 ? board : '', parts.at(-1)].filter(Boolean).join('-');
-      lesson.className = `${student.student}-${newSystem}-${subject}`;
-      lesson.classNo = '待关联';
-      if (batchOperation === 'system') lesson.orderNo = `ORD-DEMO-${newSystem}`;
-      lesson.changeReasons = reasons;
+    if (batchOperation === 'course') {
+      const error = changeCourseWithSameTeacher(selected, batchOperationFields.targetCourse.value, reasons);
+      if (error) { batchOperationNotice.textContent = error; return; }
     }
-    if (!cancel && batchOperation === 'system') target.minutes -= total;
+    const slotLocked = batchOperation === 'order';
+    const cancel = batchOperation === 'cancel' || slotLocked;
+    for (const lesson of selected) {
+      if (slotLocked) window.studentSlotLocks.lock(student.customerNo, lesson);
+      if (cancel) Object.assign(lesson, {cancelled:true, slotLocked, changeReasons:reasons});
+    }
     renderLessons();
     batchOperationDialog.close();
     batchDialog.close();
+  }
+
+  function changeCourseWithSameTeacher(selected, course, reasons) {
+    const [system,subject] = course.split('-');
+    const inPerson = !course.endsWith('-线上');
+    const selectedIds = new Set(selected.map(lesson => lesson.id));
+    const remaining = lessons.filter(lesson => !selectedIds.has(lesson.id));
+    const replacements = [];
+    for (const lesson of selected) {
+      const [startTime,endTime] = lesson.time.split('-');
+      const bookings = overlappingBookings({date:lesson.date,startTime,endTime}, [...remaining,...otherBookings,...replacements]);
+      if (bookings.some(item => item.id && !item.cancelled || item.teacher === lesson.teacher)) {
+        return `${lesson.date} ${lesson.time} 有师生排课冲突，请先调整原课时段。`;
+      }
+      const campus = inPerson ? lesson.campus || lesson.roomCampus || '舜元中心' : '';
+      const available = inPerson ? getAvailableRooms({campus},bookings) : [];
+      if (inPerson && !available.length) return `${lesson.date} ${lesson.time} 在${campus}没有可用教室。`;
+      replacements.push({...lesson,course,campus,room:available.includes(lesson.room)?lesson.room:available[0]||'',
+        roomCampus:'',className:`${student.student}-${system}-${subject}`,classNo:'待关联',changeReasons:reasons});
+    }
+    selected.forEach((lesson,index) => Object.assign(lesson,replacements[index]));
+    return '';
+  }
+
+  function openChangeAnalysis(type, original, revised, reasons, {requirement = ''} = {}) {
+    const selectedIds = new Set(original.map(lesson => lesson.id));
+    const untouched = () => lessons.filter(lesson => !selectedIds.has(lesson.id) && (!lesson.cancelled || lesson.slotLocked));
+    const groups = new Map();
+    for (const lesson of revised) {
+      const key = [lesson.course, lesson.classNo, lesson.teacher].join('|');
+      if (!groups.has(key)) groups.set(key, { base: lesson, slots: [] });
+      groups.get(key).slots.push([lesson.date, lesson.time]);
+    }
+    const changeGroups = [...groups.values()];
+    const courses = changeGroups.map(({base,slots}) => {
+      const [item,subject,...rest] = base.course.split('-');
+      return { item, name:subject, board:rest.length>1?rest[0]:'--', mode:rest.at(-1),
+        campus:base.campus||base.roomCampus||'', hours:slots.reduce((sum,[,time]) => sum+durationOf(...time.split('-')),0)/60 };
+    });
+    const dates = revised.map(lesson => lesson.date).sort();
+    const order = {
+      id:Date.now(), source:'homeroom-change', course:`${student.student}-变更排课`,
+      submission:{student:student.student,start:dates[0],end:dates.at(-1),endMode:'SPECIFIED_DATE',courses},
+      supplements:requirement?[{text:requirement}]:[],
+      change:{
+        type,reasons,original:original.map(({course,date,time,teacher}) => ({course,date,time,teacher})),
+        autoAnalyze:Boolean(requirement),
+        groups:changeGroups.map(({base,slots}) => ({teacher:base.teacher,slots})),
+        busy:[...untouched().filter(lesson => !lesson.cancelled).map(({date,time,teacher}) => ({date,time,teacher,student:true})),
+          ...otherBookings.filter(booking => booking.teacher)]
+      }
+    };
+    const frame = document.createElement('iframe');
+    frame.title = '变更排课';
+    frame.src = `教务端/index.html?embed-homeroom-supplement=1#flow-order=${encodeURIComponent(JSON.stringify(order))}`;
+    aiChangeDialog.replaceChildren(frame);
+    function receive(event) {
+      if (event.source !== frame.contentWindow || event.origin !== location.origin) return;
+      if (event.data?.kind === 'homeroom-supplement-close') aiChangeDialog.close();
+      if (event.data?.kind !== 'homeroom-change-submit') return;
+      const replacements = event.data.lessons.map(([date,time,courseId]) => {
+        const {base} = changeGroups[Number(courseId.slice(7))-1];
+        return { ...base, date,time,teacher:event.data.teachers[courseId], changeReasons:reasons };
+      });
+      const originalMinutes = totalLessonMinutes(original);
+      const replacementMinutes = totalLessonMinutes(replacements);
+      const incorrectDuration = type === 'duration-replan' ? replacementMinutes !== originalMinutes : replacementMinutes > originalMinutes;
+      const conflicting = replacements.some((lesson,index) => {
+        const [startTime,endTime] = lesson.time.split('-');
+        const target = {date:lesson.date,startTime,endTime};
+        if (durationOf(startTime,endTime)<=0||!lesson.teacher) return true;
+        return overlappingBookings(target,[...untouched().filter(item => !item.cancelled),...replacements.slice(0,index)])
+          .some(item => !item.cancelled) || overlappingBookings(target,otherBookings).some(item => item.teacher===lesson.teacher);
+      });
+      if (!replacements.length || incorrectDuration || conflicting) {
+        const durationMessage = type === 'duration-replan' ? '重排总时长须等于原课节时长。' : '变更后的课时不能超过原课时。';
+        frame.contentWindow.postMessage({kind:'homeroom-change-rejected',message:incorrectDuration
+          ? durationMessage : '请检查待提交课节和师生日程冲突。'},location.origin);
+        return;
+      }
+      for (let index=lessons.length-1;index>=0;index--) {
+        if (selectedIds.has(lessons[index].id)) lessons.splice(index,1);
+      }
+      replacements.forEach(lesson => lessons.push({...lesson,id:nextLessonId++}));
+      renderLessons();
+      aiChangeDialog.close();
+      for (const dialog of [lessonDialog,batchOperationDialog,batchDialog]) if (dialog.open) dialog.close();
+    }
+    window.addEventListener('message',receive);
+    aiChangeDialog.addEventListener('close',()=>{
+      window.removeEventListener('message',receive);
+      frame.remove();
+    },{once:true});
+    aiChangeDialog.showModal();
   }
 
   function syncBatchLocation() {
@@ -371,7 +498,7 @@
   function overlappingBookings({date,startTime,endTime}, bookings = [...lessons, ...otherBookings]) {
     return bookings.filter(booking => {
       const [start,end] = booking.time.split('-');
-      return booking !== editingLesson && (!booking.cancelled || booking.holdUntil > Date.now()) &&
+      return booking !== editingLesson && (!booking.cancelled || booking.slotLocked) &&
         booking.date === date && start < endTime && startTime < end;
     });
   }
@@ -413,69 +540,51 @@
   }
   function readLessonEdit() {
     const {date,startTime,endTime,timeMode,standardPeriod,mode,campus,room} = lessonFields;
-    const [start,end] = timeMode.value === 'standard'
-      ? standardPeriod.value.split('-')
-      : [startTime.value,endTime.value];
+    const [originalStart,originalEnd] = editingLesson.time.split('-');
     const online = mode.value === '线上';
-    const values = {
-      date: date.value,
-      startTime: start,
-      endTime: end || '',
-      mode: mode.value,
-      campus: online ? '' : campus.value.trim(),
-      room: online ? '' : room.value.trim(),
-    };
-    if (!initialLessonValues) return values;
-    if (lessonFields.changeType.value === 'location') {
-      return {...initialLessonValues, mode:values.mode, campus:values.campus, room:values.room};
-    }
-    if (changeTimeFields.hidden) return {...initialLessonValues};
-    return {...initialLessonValues, date:values.date, startTime:values.startTime, endTime:values.endTime};
+    const original = {date:editingLesson.date,startTime:originalStart,endTime:originalEnd};
+    const location = {mode:mode.value,campus:online?'':campus.value.trim(),room:online?'':room.value.trim()};
+    if (!initialLessonValues || lessonFields.changeType.value === 'location') return {...original,...location};
+    if (lessonFields.changeType.value !== 'time') return {...initialLessonValues};
+    const standard = timeMode.value === 'standard';
+    const start = standard ? standardPeriod.value.split('-')[0] : startTime.value;
+    const end = standard ? endAfter(start,durationOf(originalStart,originalEnd)) : endTime.value;
+    return {...initialLessonValues,date:date.value,startTime:start,endTime:end};
   }
 
-  function pickTargetSubjects() {
-    const [sourceSystem, sourceSubject] = editingLesson.course.split('-');
-    const system = lessonFields.changeType.value === 'subject' ? sourceSystem : lessonFields.targetSystem.value;
-    const subjects = (demoTargetSystems.get(system)?.subjects || []).filter(subject =>
-      system !== sourceSystem || subject !== sourceSubject);
-    lessonFields.targetSubject.replaceChildren(new Option('请选择目标科目', ''),
-      ...subjects.map(subject => new Option(subject, subject)));
+  function syncDuration() {
+    const {startTime,endTime} = readLessonEdit();
+    const adjusted = startTime && endTime ? durationOf(startTime,endTime) : 0;
+    const remaining = durationOf(...editingLesson.time.split('-')) - adjusted;
+    byId('hrAdjustedDuration').textContent = adjusted > 0 ? hoursText(adjusted) : '—';
+    byId('hrRefundField').hidden = !(adjusted > 0 && remaining > 0);
+    byId('hrRefundDuration').textContent = remaining > 0 ? hoursText(remaining) : '';
   }
 
   function syncChangeType() {
     const type = lessonFields.changeType.value;
-    const isSwap = type === 'subject' || type === 'system';
+    const isCourseChange = type === 'course';
+    const isSwap = isCourseChange && lessonFields.courseTeacher.value === 'same';
+    courseTeacherField.hidden = lessonFields.courseTeacher.disabled = !isCourseChange;
     changeModeField.hidden = type !== 'location';
     targetCourseFields.hidden = !isSwap;
-    targetSystemField.hidden = type !== 'system';
-    lessonFields.targetSystem.disabled = type !== 'system';
-    lessonFields.targetSubject.disabled = !isSwap;
-    lessonFields.targetSystem.required = type === 'system';
-    lessonFields.targetSubject.required = isSwap;
-    cancelChangeSummary.hidden = type !== 'cancel' && type !== 'order';
+    newTeacherCourseNotice.hidden = !isCourseChange || isSwap;
+    lessonFields.targetCourse.disabled = !isSwap;
+    lessonFields.targetCourse.required = isSwap;
     const duration = hoursText(durationOf(...editingLesson.time.split('-')));
-    cancelChangeSummary.textContent = type === 'order'
-      ? `原订单 ${editingLesson.orderNo}。将取消原课并返还 ${duration}，为该学员保留原老师时段 6 小时。新订单生效后可恢复排课。`
-      : `将取消当前课节、返还 ${duration}，并释放原师生时段。`;
-    const target = demoTargetSystems.get(lessonFields.targetSystem.value);
-    const hold = type === 'system' && target && target.minutes < durationOf(...editingLesson.time.split('-'));
-    targetBalance.textContent = type === 'subject'
-      ? `沿用原订单。本节取消后返还 ${duration} 用于新科目。`
-      : target ? `目标体系可用 ${hoursText(target.minutes)}，本次需 ${duration}。${hold ? ' 课时不足，取消后可保留原老师时段 6 小时。' : ''}` : '';
-    byId('hrChangeTargetTime').hidden = Boolean(hold);
-    changeTimeFields.hidden = type !== 'time' && (!isSwap || !lessonFields.changeTargetTime.checked || Boolean(hold));
+    targetBalance.textContent = isSwap ? `沿用原授课老师 ${editingLesson.teacher}、原上课时段及 ${duration} 时长。` : '';
+    changeTimeFields.hidden = type !== 'time';
     changeTimeFields.disabled = changeTimeFields.hidden;
-    splitOption.hidden = type !== 'time';
-    splitFields.hidden = splitOption.hidden || !lessonFields.splitLesson.checked;
-    splitFields.disabled = splitFields.hidden;
+    replanFields.hidden = replanFields.disabled = type !== 'replan';
+    if (type === 'time') syncDuration();
     syncLessonLocation();
   }
   function refreshLessonReasons(values = readLessonEdit()) {
     const type = lessonFields.changeType.value;
+    const isReplan = type === 'replan';
     const editExisting = type === 'time' || type === 'location';
     const changed = editExisting && initialLessonValues !== null &&
-      (Object.keys(values).some(key => values[key] !== initialLessonValues[key]) ||
-        (type === 'time' && lessonFields.splitLesson.checked));
+      Object.keys(values).some(key => values[key] !== initialLessonValues[key]);
     const activeGroup = type === 'cancel' ? cancelReasons : changeReasons;
     const showReasons = !editExisting || changed;
     for (const group of [changeReasons, cancelReasons]) {
@@ -485,35 +594,38 @@
     }
     const reasons = [...activeGroup.querySelectorAll('input:checked')].map(option => option.value);
     reasonRequired.hidden = !showReasons || reasons.length > 0;
-    const target = demoTargetSystems.get(lessonFields.targetSystem.value);
-    const hold = type === 'order' || (type === 'system' && target && target.minutes < durationOf(...editingLesson.time.split('-')));
-    submitLessonEdit.textContent = hold ? '确认取消并保留时段'
-      : type === 'cancel' ? '确认取消' : type === 'location' ? '保存修改' : changePlan ? '确认重排' : '预览新安排';
-    const missingTarget = (type === 'subject' || type === 'system') &&
-      (!lessonFields.targetSubject.value || (type === 'system' && !target));
-    submitLessonEdit.disabled = !showReasons || reasons.length === 0 || missingTarget;
+    submitLessonEdit.textContent = type === 'order' ? '确认取消课节并锁定时段'
+      : type === 'cancel' ? '确认取消' : type === 'location' ? '保存修改'
+      : isReplan ? '提交 AI 分析' : type === 'time' ? '保存修改'
+      : type === 'course' ? lessonFields.courseTeacher.value === 'same' ? '确认换课程' : '填写排课信息' : '补充排课要求';
+    const blockedCourse = type === 'course' && (lessonFields.courseTeacher.value === 'new' || !lessonFields.targetCourse.value);
+    submitLessonEdit.disabled = blockedCourse || !showReasons || reasons.length === 0 ||
+      (isReplan && !lessonFields.replanRequirement.value.trim());
     return reasons;
   }
   function openLessonEdit(lesson) {
     editingLesson = lesson;
     lessonEditForm.reset();
-    changePlan = null;
-    changePreview.hidden = true;
+    lessonChangeStatus.hidden = true;
     initialLessonValues = null;
     changeTimeFields.hidden = false;
-    const [sourceSystem] = lesson.course.split('-');
     originalLesson.innerHTML = `<strong>${escape(lesson.course)} · ${escape(lesson.teacher)}</strong><span>${escape(lesson.date)} ${escape(lesson.time)} · ${hoursText(durationOf(...lesson.time.split('-')))} · ${escape(lesson.campus || lesson.roomCampus || '线上')}</span>`;
-    lessonFields.targetSystem.replaceChildren(new Option('请选择目标课程体系', ''),
-      ...[...demoTargetSystems.keys()].filter(system => system !== sourceSystem).map(system => new Option(system, system)));
     const [start,end] = lesson.time.split('-');
     lessonFields.date.value = lesson.date;
     lessonFields.startTime.value = start;
-    lessonFields.endTime.value = end;
+    const duration = durationOf(start,end);
+    lessonFields.endTime.value = end === '24:00' ? '' : end;
+    for (const option of lessonFields.standardPeriod.options) {
+      if (option.value) {
+        const from = option.value.split('-')[0];
+        option.textContent = `${from}-${endAfter(from,duration)}`;
+      }
+    }
     const standard = standardPeriods.includes(lesson.time);
     lessonFields.standardPeriod.value = standard ? lesson.time : '';
     lessonFields.timeMode.value = standard ? 'standard' : 'custom';
     syncLessonTime();
-    lessonFields.endTime.setCustomValidity('');
+    listTargetCourses(lessonFields.targetCourse,[lesson]);
     lessonFields.mode.value = lesson.course.match(/-(线上|线下|OMO)$/)?.[1] || '线上';
     lessonFields.campus.value = lesson.campus || lesson.roomCampus || '';
     lessonFields.room.value = lesson.room || '';
@@ -540,13 +652,9 @@
     const button = lessonRows.querySelector(`[data-edit-lesson="${editingLesson?.id}"]`);
     editingLesson = null;
     initialLessonValues = null;
-    changePlan = null;
     if (!byId('hrDetailPage').hidden) button?.focus();
   });
   lessonFields.mode.addEventListener('input', syncLessonLocation);
-  for (const field of [lessonFields.startTime,lessonFields.endTime]) {
-    field.addEventListener('input', () => lessonFields.endTime.setCustomValidity(''));
-  }
   lessonFields.campus.addEventListener('input', () => {
     const campus = lessonFields.campus.value.trim();
     if (campus === roomCampus) return;
@@ -557,10 +665,12 @@
   lessonEditForm.addEventListener('input', event => {
     if (event.target === manualRoom) return;
     if (event.target.name === 'timeMode') syncLessonTime();
-    if (['changeType','targetSystem'].includes(event.target.name)) pickTargetSubjects();
+    if (event.target === lessonFields.standardPeriod && event.target.value) {
+      const {startTime,endTime} = readLessonEdit();
+      lessonFields.startTime.value = startTime;
+      lessonFields.endTime.value = endTime === '24:00' ? '' : endTime;
+    }
     if (event.target.name !== 'changeReason') {
-      changePlan = null;
-      changePreview.hidden = true;
       syncChangeType();
       clearLessonConflict();
     }
@@ -583,53 +693,43 @@
     if (manualRoom.value) useAvailableRoom(manualRoom.value, '已选择教室', chooseRoomButton);
   });
 
-  function previewReplacement(values, reasons, type, target) {
-    const {date,startTime,endTime,mode,campus,room} = values;
-    const slots = [{date,startTime,endTime}];
-    if (type === 'time' && lessonFields.splitLesson.checked) {
-      slots.push({date:lessonFields.splitDate.value, startTime:lessonFields.splitStart.value, endTime:lessonFields.splitEnd.value});
-    }
-    if (slots.some(slot => slot.endTime <= slot.startTime)) {
-      showLessonConflict('每节课的结束时间须晚于开始时间。');
-      return null;
-    }
-    const originalMinutes = durationOf(...editingLesson.time.split('-'));
-    const totalMinutes = slots.reduce((total, slot) => total + durationOf(slot.startTime, slot.endTime), 0);
-    if (totalMinutes > originalMinutes || (type !== 'time' && totalMinutes !== originalMinutes)) {
-      showLessonConflict(type === 'time' ? `重排总时长不能超过原课的 ${hoursText(originalMinutes)}。`
-        : '换科目或换体系时，此处沿用原课时长。');
-      return null;
-    }
-    const [sourceSystem, , board] = editingLesson.course.split('-');
-    const targetSystem = type === 'system' ? lessonFields.targetSystem.value : sourceSystem;
-    const targetSubject = lessonFields.targetSubject.value;
-    const course = type === 'time' ? editingLesson.course
-      : [targetSystem, targetSubject, type === 'subject' ? board : '', mode].filter(Boolean).join('-');
-    const proposed = [];
-    for (const slot of slots) {
-      const bookings = overlappingBookings(slot, [...lessons, ...otherBookings, ...proposed]);
-      const teacherBusy = bookings.find(booking => booking.teacher === editingLesson.teacher);
+  function saveDirectTimeChanges(changes,reasons) {
+    const changing = new Set(changes.map(({lesson}) => lesson.id));
+    const remaining = lessons.filter(lesson => !changing.has(lesson.id));
+    const revised = [];
+    const refunds = [];
+    for (const {lesson,date,startTime,endTime} of changes) {
+      if (!date || !startTime || !endTime || endTime <= startTime) return '请选择有效的时段，课节须在当天结束。';
+      const originalMinutes = durationOf(...lesson.time.split('-'));
+      const refund = originalMinutes - durationOf(startTime,endTime);
+      if (refund < 0) return `${lesson.date} ${lesson.time} 的调整后时长不能超过原课的 ${hoursText(originalMinutes)}。`;
+      const bookings = overlappingBookings({date,startTime,endTime},[...remaining,...otherBookings,...revised]);
+      const teacherBusy = bookings.find(booking => booking.teacher === lesson.teacher);
       const studentBusy = bookings.find(booking => booking.id && !booking.cancelled);
       if (teacherBusy || studentBusy) {
         const conflict = teacherBusy || studentBusy;
-        showLessonConflict(`${slot.date} ${conflict.time} ${teacherBusy ? '授课老师' : '学员'}已有排课，请另选时段。`);
-        return null;
+        return `${date} ${conflict.time} ${teacherBusy ? '授课老师' : '学员'}已有排课，请另选时段。`;
       }
+      const campus = lesson.campus || lesson.roomCampus || '';
       const availableRooms = campus ? getAvailableRooms({campus}, bookings) : [];
-      if (mode !== '线上' && !availableRooms.length) {
-        showLessonConflict(`${slot.date} 所选时段在${campus}没有可用教室。`);
-        return null;
-      }
-      const replacement = {...editingLesson, date:slot.date, time:`${slot.startTime}-${slot.endTime}`, course, campus,
-        room:availableRooms.includes(room) ? room : availableRooms[0] || '', roomCampus:'', changeReasons:reasons};
-      if (type !== 'time') {
-        replacement.className = `${student.student}-${targetSystem}-${targetSubject}`;
-        replacement.classNo = '待关联';
-        if (type === 'system') replacement.orderNo = `ORD-DEMO-${targetSystem}`;
-      }
-      proposed.push(replacement);
+      if (!lesson.course.endsWith('-线上') && !availableRooms.length)
+        return `${date} 所选时段在${campus}没有可用教室。`;
+      revised.push({...lesson, date, time:`${startTime}-${endTime}`, campus,
+        room:availableRooms.includes(lesson.room)?lesson.room:availableRooms[0]||'', roomCampus:'',changeReasons:reasons});
+      refunds.push({order:lesson.orderNo||lesson.classNo,minutes:refund});
     }
-    return {proposed, target, totalMinutes};
+    for (const [index,{lesson}] of changes.entries()) Object.assign(lesson,revised[index]);
+    let totalRefund = 0;
+    for (const {order,minutes} of refunds) {
+      if (!minutes) continue;
+      refundedMinutesByOrder.set(order,(refundedMinutesByOrder.get(order)||0)+minutes);
+      totalRefund += minutes;
+    }
+    const order = refunds[0]?.order;
+    const aggregate = changes.length===1&&order&&totalRefund?`原订单累计返还 ${hoursText(refundedMinutesByOrder.get(order))}。`:'';
+    lessonChangeStatus.textContent = `已更新 ${changes.length} 节课。${totalRefund?`已返还 ${hoursText(totalRefund)}。${aggregate}`:''}`;
+    lessonChangeStatus.hidden = false;
+    return '';
   }
 
   lessonEditForm.addEventListener('submit', event => {
@@ -639,36 +739,37 @@
     const reasons = refreshLessonReasons(values);
     if (submitLessonEdit.disabled) return;
     const type = lessonFields.changeType.value;
-    const target = type === 'system' ? demoTargetSystems.get(lessonFields.targetSystem.value) : null;
-    const originalMinutes = durationOf(...editingLesson.time.split('-'));
     clearLessonConflict();
-    if (type === 'cancel' || type === 'order' || (target && target.minutes < originalMinutes)) {
+    if (type === 'cancel' || type === 'order') {
+      if (type === 'order') window.studentSlotLocks.lock(student.customerNo, editingLesson);
       editingLesson.cancelled = true;
       editingLesson.changeReasons = reasons;
-      if (type !== 'cancel') editingLesson.holdUntil = Date.now() + 6 * 60 * 60 * 1000;
+      editingLesson.slotLocked = type === 'order';
       renderLessons();
       lessonDialog.close();
       return;
     }
-    if (type !== 'location') {
-      const plan = previewReplacement(values, reasons, type, target);
-      if (!plan) return;
-      if (!changePlan) {
-        changePlan = plan;
-        changePreview.innerHTML = '<strong>重排预览</strong>' +
-          `<p>原安排 · ${escape(editingLesson.date)} ${escape(editingLesson.time)} · ${escape(editingLesson.course)}</p>` +
-          plan.proposed.map(lesson => `<p>新安排 · ${escape(lesson.date)} ${escape(lesson.time)} · ${escape(lesson.course)}</p>`).join('') +
-          `<p>重排总时长 ${hoursText(plan.totalMinutes)}。确认后替换原课节。</p>`;
-        changePreview.hidden = false;
-        refreshLessonReasons(values);
-        return;
-      }
-      const [first, ...additional] = plan.proposed;
-      Object.assign(editingLesson, first);
-      additional.forEach(lesson => lessons.push({...lesson, id:nextLessonId++}));
-      if (target) target.minutes -= plan.totalMinutes;
+    if (type === 'course') {
+      const error = changeCourseWithSameTeacher([editingLesson], lessonFields.targetCourse.value, reasons);
+      if (error) { showLessonConflict(error); return; }
       renderLessons();
       lessonDialog.close();
+      return;
+    }
+    if (type === 'replan') {
+      openChangeAnalysis('duration-replan',[editingLesson],[editingLesson],reasons,
+        {requirement:lessonFields.replanRequirement.value.trim()});
+      return;
+    }
+    if (type === 'time') {
+      const error = saveDirectTimeChanges([{lesson:editingLesson,...values}],reasons);
+      if (error) { showLessonConflict(error); return; }
+      renderLessons();
+      lessonDialog.close();
+      return;
+    }
+    if (type === 'teacher') {
+      openChangeAnalysis(type, [editingLesson], [editingLesson], reasons);
       return;
     }
     const {date,startTime,endTime,mode,campus,room} = values;
@@ -728,8 +829,6 @@
     if (button !== batchLocationButton) button.addEventListener('click', () => openBatchOperation(button));
   }
   batchOperationForm.addEventListener('input', event => {
-    if (event.target === batchOperationFields.targetSystem) updateBatchSubjects(selectedBatchLessons());
-    batchAnalysisPreview.hidden = true;
     syncBatchOperation();
   });
   batchOperationForm.addEventListener('submit', submitBatchChange);
@@ -770,6 +869,9 @@
   });
   batchRows.addEventListener('change', updateSelection);
   window.addEventListener('hashchange', showPage);
+  window.addEventListener('storage', () => {
+    if (window.location.hash === studentHash) renderLessons();
+  });
   renderStudents();
   renderLessons();
   showPage();

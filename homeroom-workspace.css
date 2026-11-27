@@ -108,9 +108,11 @@ button.hr-header-icon { padding: 0; border: 0; background: none; }
 .hr-detail-navigation nav .active { border-bottom-color: var(--hr-link); color: var(--hr-link); }
 .hr-timetable { padding: 0 17px; }
 .hr-timetable-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 25px; }
+.hr-lesson-status { padding: 8px 12px; margin: 8px 0; background: #edf8f3; color: #175b46; border-radius: 4px; }
 .hr-batch-dialog.hr-lesson-dialog {
-  width: min(1050px, calc(100% - 32px));
-  height: min(560px, calc(100dvh - 32px));
+  position: fixed; inset: 0 0 0 auto; margin: 0;
+  width: min(1050px, 100vw); max-width: none;
+  height: 100dvh; max-height: none; border-radius: 0;
 }
 .hr-batch-dialog[open] {
   display: grid;
@@ -126,7 +128,11 @@ button.hr-header-icon { padding: 0; border: 0; background: none; }
 .hr-batch-dialog footer span { margin-right: auto; color: #536783; }
 .hr-batch-dialog footer, .hr-batch-footer-actions { flex-wrap: wrap; }
 .hr-batch-footer-actions { display: flex; justify-content: flex-end; gap: 9px; }
+.hr-batch-cancel-actions { display: flex; flex-wrap: wrap; gap: 9px; }
 .hr-batch-operation.hr-lesson-dialog { width: min(760px, calc(100vw - 28px)); }
+.hr-batch-operation.hr-lesson-dialog:has(.hr-batch-time-editor) { width: min(1050px, calc(100vw - 28px)); }
+.hr-batch-operation .hr-batch-time-editor { min-width: 860px; }
+.hr-batch-time-editor input { width: 100%; min-width: 100px; padding: 4px 6px; border: 1px solid #d6dfef; border-radius: 3px; background: white; color: inherit; font: inherit; }
 .hr-batch-operation form { max-height: min(88vh, 810px); display: grid; grid-template-rows: auto minmax(0,1fr) auto; }
 .hr-batch-operation-body { min-height: 0; overflow: auto; padding: 16px 18px; }
 .hr-batch-ai-card { min-width: 0; padding: 12px; margin: 0 0 14px; border: 1px solid var(--hr-border); border-radius: 5px; background: #f7faff; }
@@ -179,7 +185,6 @@ button.hr-header-icon { padding: 0; border: 0; background: none; }
 .hr-change-types legend { padding: 0 0 8px; font-weight: 600; }
 .hr-change-types label { display: flex; align-items: center; gap: 5px; padding: 8px; border: 1px solid var(--hr-border); border-radius: 4px; cursor: pointer; }
 .hr-change-types label:has(input:checked) { border-color: #3282ef; background: #eef6ff; color: #215eae; }
-.hr-split-option, .hr-split-fields, #hrChangeTargetTime { display: block; margin-top: 12px; }
 .hr-change-preview { margin-top: 14px; padding: 12px; border: 1px solid #dce8f8; border-radius: 4px; background: #f3f8ff; line-height: 1.65; }
 .hr-change-preview p { margin: 3px 0; }
 .hr-hold-label { color: #ac650e; }
@@ -195,12 +200,19 @@ button.hr-header-icon { padding: 0; border: 0; background: none; }
   background: #fff;
   color: inherit;
 }
-.hr-lesson-time { display: grid; gap: 9px; }
-.hr-time-modes { display: flex; flex-wrap: wrap; gap: 8px 20px; }
-.hr-time-modes label { display: inline-flex; align-items: center; gap: 6px; }
-.hr-time-modes input[type="radio"] { width: 14px; min-height: 0; height: 14px; margin: 0; padding: 0; accent-color: var(--hr-blue); }
+.hr-time-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 9px; }
+.hr-time-modes { display: inline-flex; border: 1px solid var(--hr-input); border-radius: 4px; }
+.hr-time-modes label { position: relative; cursor: pointer; }
+.hr-time-modes label + label { border-left: 1px solid var(--hr-input); }
+.hr-time-modes span { display: block; padding: 5px 12px; white-space: nowrap; }
+.hr-time-modes :checked + span { background: var(--hr-blue); color: #fff; }
+.hr-time-modes :focus-visible + span { outline: 2px solid var(--hr-blue); outline-offset: 2px; }
+.hr-lesson-field.hr-time-field { grid-template-columns: minmax(0,1fr); }
 .hr-time-controls { display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,2fr); align-items: center; gap: 7px; }
 .hr-custom-time { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); align-items: center; gap: 7px; }
+.hr-custom-time input { width: 100%; }
+.hr-duration-fields { display: grid; gap: 8px; margin-top: 10px; }
+.hr-duration-fields .hr-lesson-field + .hr-lesson-field { margin-top: 0; }
 .hr-lesson-dialog footer { justify-content: flex-end; gap: 9px; border-top: 1px solid var(--hr-border); }
 .hr-lesson-dialog footer .hr-button:disabled { color: #a0aec1; background: #f1f4f8; border-color: #e3e9f1; cursor: not-allowed; }
 .hr-lesson-conflict { margin-top: 16px; padding: 12px; border: 1px solid #f3d6a3; border-radius: 4px; background: #fff8ea; color: #7b4a10; }
@@ -245,4 +257,82 @@ button.hr-header-icon { padding: 0; border: 0; background: none; }
   .hr-first-lesson { padding-inline: 6px; font-size: 10px; }
   .hr-first-lesson i { display: none; }
   .hr-scope-tabs button, .hr-segments button { padding-inline: 8px; }
+}
+
+#hrServiceToggle { width: 100%; border: 0; background: none; color: inherit; }
+#hrServiceToggle[aria-expanded=true] { color: white; font-weight: 700; }
+#hrServiceToggle[aria-expanded=true] b { transform: rotate(180deg); }
+.hr-side-menu > .hr-service-menu { display: grid; gap: 8px; margin: 0; padding: 9px 11px; background: #111d39; }
+.hr-service-menu > * { display: flex; align-items: center; min-height: 38px; padding: 0 28px; border-radius: 5px; }
+.hr-service-menu a { color: inherit; }
+.hr-service-menu a:hover { color: white; background-color: #263758; }
+.hr-service-panel { padding-bottom: 3px; }
+.hr-service-panel .hr-role:has([aria-checked=false]) > span:first-child { color: var(--hr-link); }
+.hr-service-filters { display: flex; flex-wrap: wrap; column-gap: 22px; row-gap: 10px; padding-bottom: 16px; border-bottom: 1px solid #ebedf0; }
+.hr-service-filters > label { grid-template-columns: max-content minmax(110px, 164px); gap: 20px; }
+.hr-service-range, .hr-service-range > div { display: flex; align-items: center; }
+.hr-service-range { gap: 20px; color: #485263; }
+.hr-service-range > div { gap: 6px; padding-inline: 5px; border: 1px solid var(--hr-input); border-radius: 3px; }
+.hr-service-range input { max-width: 116px; height: 27px; padding: 0 4px; border: 0; }
+.hr-service-filters .hr-filter-actions { margin-left: auto; }
+.hr-service-actions { margin: 18px 0; }
+.hr-service-table th, .hr-service-table td { padding: 5px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hr-service-table th { height: 41px; }
+.hr-service-table th:last-child { width: 46px; }
+.hr-service-table td { height: 36px; }
+.hr-service-table tbody tr:nth-child(even) { background: #f7f7f7; }
+.hr-service-table tbody tr:hover { background: #edf4fc; }
+.hr-order-list th:first-child { width: 10%; }
+.hr-order-list th:nth-last-child(2) { width: 8%; }
+.hr-renewal-list th:first-child { width: 21%; }
+.hr-renewal-list th:nth-child(2), .hr-renewal-list th:nth-child(3) { width: 18%; }
+.hr-renewal-list th:nth-child(4), .hr-renewal-list th:nth-child(5) { width: 7.5%; }
+.hr-renewal-list th:nth-last-child(2) { width: 12%; }
+.hr-service-link { padding: 0; border: 0; background: none; color: var(--hr-link); }
+.hr-service-link:hover { text-decoration: underline; }
+.hr-service-link + .hr-service-link { margin-left: 10px; }
+.hr-order-list td:first-child button { display: block; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hr-service-panel .hr-pagination { margin-top: 32px; }
+.hr-service-panel .hr-page-current { color: white; border-color: var(--hr-blue); background: var(--hr-blue); }
+.hr-service-dialog { width: min(520px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 0; color: inherit; border: 1px solid var(--hr-border); border-radius: 5px; }
+.hr-service-dialog::backdrop { background: #13244065; }
+.hr-service-dialog header, .hr-service-dialog footer { display: flex; align-items: center; gap: 8px; padding: 14px 18px; }
+.hr-service-dialog header { justify-content: space-between; border-bottom: 1px solid var(--hr-border); }
+.hr-service-dialog h2 { margin: 0; font-size: 15px; }
+.hr-service-dialog footer { justify-content: flex-end; border-top: 1px solid var(--hr-border); }
+.hr-service-dialog-body { display: grid; gap: 12px; padding: 18px; }
+.hr-service-dialog-body dl { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 12px; margin: 0; }
+.hr-service-dialog-body dd { margin: 0; overflow-wrap: anywhere; }
+.hr-service-dialog-body label { display: grid; grid-template-columns: 100px minmax(0, 1fr); align-items: center; gap: 12px; }
+.hr-service-dialog-body input { width: 100%; min-height: 30px; padding: 4px 8px; border: 1px solid var(--hr-input); border-radius: 3px; }
+.hr-service-dialog:has(.hr-renewal-form) { width: min(960px, calc(100vw - 32px)); }
+.hr-renewal-form { display: flex; flex-direction: column; max-height: calc(100dvh - 34px); }
+.hr-renewal-form > header, .hr-renewal-form > footer { flex: none; }
+.hr-renewal-body { min-height: 0; overflow: auto; }
+.hr-renewal-body .hr-renewal-student { display: flex; gap: 12px; }
+.hr-renewal-student input { width: min(230px, 65%); }
+.hr-renewal-body section { margin-top: 15px; border-top: 1px solid var(--hr-border); padding-top: 12px; }
+.hr-renewal-body h3 { margin: 0 0 10px; font-size: 13px; }
+.hr-renewal-group { margin-bottom: 8px; }
+.hr-renewal-group-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; margin-bottom: 8px; }
+.hr-renewal-group-toolbar label { display: flex; gap: 8px; }
+.hr-renewal-balance { color: #59677d; }
+.hr-renewal-balance strong { color: #236bc4; font-weight: 600; }
+.hr-renewal-table { min-width: 485px; }
+[data-renewal-expansion] .hr-renewal-table { min-width: 760px; }
+.hr-renewal-table th, .hr-renewal-table td { padding: 6px; }
+.hr-renewal-table th { background: #f3f7fc; }
+.hr-renewal-table .hr-empty { height: 42px; }
+.hr-renewal-form select { min-width: 0; max-width: 100%; min-height: 29px; padding: 0 6px; border: 1px solid var(--hr-input); border-radius: 3px; background: #fff; color: #47546b; }
+.hr-renewal-table select { width: 100%; }
+.hr-renewal-form button:disabled { color: #8b98a9; cursor: default; text-decoration: none; }
+.hr-renewal-error { margin: 0; color: #b33c34; }
+.hr-service-dialog:has(.hr-renewal-schedule-frame) {
+  position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none;
+  margin: 0; border: 0; background: transparent;
+}
+.hr-renewal-schedule-frame { display: block; width: 100%; height: 100%; border: 0; }
+@media (max-width: 810px) {
+  .hr-side-menu > .hr-service-menu { gap: 3px; padding-inline: 2px; font-size: 10px; }
+  .hr-service-menu > * { min-height: 34px; justify-content: center; padding-inline: 1px; white-space: nowrap; }
 }

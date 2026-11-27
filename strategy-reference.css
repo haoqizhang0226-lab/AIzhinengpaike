@@ -20,7 +20,8 @@
   line-height: 1;
   font-weight: 300;
 }
-.wizard[data-step="2"] .strategy-timezone-pill {
+.wizard[data-step="2"] .strategy-timezone-pill,
+.flow-requirements-dialog > header .strategy-timezone-pill {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -33,7 +34,14 @@
   font-weight: 600;
   white-space: nowrap;
 }
-.wizard[data-step="2"] .strategy-timezone-pill span { color: #546afb; }
+.wizard[data-step="2"] .strategy-timezone-pill span,
+.flow-requirements-dialog > header .strategy-timezone-pill span { color: #546afb; }
+.flow-requirements-dialog > header:has(> .strategy-timezone-pill) {
+  justify-content: flex-start;
+  gap: 12px;
+}
+.flow-requirements-dialog > header > .strategy-timezone-pill { margin: 0; }
+.flow-requirements-dialog > header:has(> .strategy-timezone-pill) > #closeFlowRequirements { margin-inline-start: auto; }
 #modalBackdrop.flow-drawer-backdrop .wizard[data-step="2"] .wizard-body {
   padding: 16px 20px 28px;
   background: #f5faff;
@@ -333,20 +341,20 @@
   font-weight: 700;
 }
 .wizard[data-step="2"] .course-add-strategy:hover { background: linear-gradient(90deg,#d9f3ff,#e4ddff); }
-.wizard[data-step="2"] .strategy-teacher-assignment {
+:is(.wizard[data-step="2"], .wizard .homeroom-specified-teachers) .strategy-teacher-assignment {
   margin: 12px 0 14px;
   padding: 12px 15px;
   border: 1px solid #e3ecf8;
   border-radius: 6px;
   background: #f8fbff;
 }
-.wizard[data-step="2"] .strategy-teacher-heading {
+:is(.wizard[data-step="2"], .wizard .homeroom-specified-teachers) .strategy-teacher-heading {
   display: block;
   margin-bottom: 8px;
   color: #344d70;
   font-size: 12px;
 }
-.wizard[data-step="2"] .strategy-teacher-assignment .teacher-line {
+:is(.wizard[data-step="2"], .wizard .homeroom-specified-teachers) .strategy-teacher-assignment .teacher-line {
   display: grid;
   grid-template-columns: 98px minmax(0,1fr);
   gap: 9px;
@@ -354,26 +362,26 @@
   min-height: 30px;
   margin: 5px 0;
 }
-.wizard[data-step="2"] .strategy-teacher-assignment .teacher-line > span {
+:is(.wizard[data-step="2"], .wizard .homeroom-specified-teachers) .strategy-teacher-assignment .teacher-line > span {
   width: auto;
   color: #687b94;
   font-size: 12px;
 }
-.wizard[data-step="2"] .strategy-teacher-assignment .teacher-list,
-.wizard[data-step="2"] .strategy-teacher-assignment .specified-teacher-control {
+:is(.wizard[data-step="2"], .wizard .homeroom-specified-teachers) .strategy-teacher-assignment .teacher-list,
+:is(.wizard[data-step="2"], .wizard .homeroom-specified-teachers) .strategy-teacher-assignment .specified-teacher-control {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 7px;
   min-width: 0;
 }
-.wizard[data-step="2"] .strategy-teacher-assignment .teacher-choice { min-height: 28px; padding: 4px 9px; }
-.wizard[data-step="2"] .strategy-teacher-assignment .teacher-input {
+:is(.wizard[data-step="2"], .wizard .homeroom-specified-teachers) .strategy-teacher-assignment .teacher-choice { min-height: 28px; padding: 4px 9px; }
+:is(.wizard[data-step="2"], .wizard .homeroom-specified-teachers) .strategy-teacher-assignment .teacher-input {
   width: min(260px,100%);
   height: 30px;
   min-width: 180px;
 }
-.wizard[data-step="2"] .strategy-teacher-assignment .supplement-specify-button {
+:is(.wizard[data-step="2"], .wizard .homeroom-specified-teachers) .strategy-teacher-assignment .supplement-specify-button {
   min-height: 30px;
   padding: 0 14px;
   border: 0;
@@ -383,7 +391,7 @@
   font-size: 12px;
   font-weight: 700;
 }
-.wizard[data-step="2"] .strategy-teacher-assignment .specified-teacher-tag {
+:is(.wizard[data-step="2"], .wizard .homeroom-specified-teachers) .strategy-teacher-assignment .specified-teacher-tag {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -395,7 +403,7 @@
   color: #245e9f;
   font-size: 12px;
 }
-.wizard[data-step="2"] .strategy-teacher-assignment .specified-teacher-tag button {
+:is(.wizard[data-step="2"], .wizard .homeroom-specified-teachers) .strategy-teacher-assignment .specified-teacher-tag button {
   width: 17px;
   height: 17px;
   padding: 0;
@@ -405,13 +413,13 @@
   color: #fff;
   line-height: 17px;
 }
-.wizard[data-step="2"] .strategy-teacher-assignment .supplement-specified-state {
+:is(.wizard[data-step="2"], .wizard .homeroom-specified-teachers) .strategy-teacher-assignment .supplement-specified-state {
   color: #2574bd;
   font-size: 12px;
   font-weight: 700;
 }
 @media (max-width: 780px) {
-  .wizard[data-step="2"] .strategy-teacher-assignment .teacher-line { grid-template-columns: 1fr; gap: 5px; }
+  :is(.wizard[data-step="2"], .wizard .homeroom-specified-teachers) .strategy-teacher-assignment .teacher-line { grid-template-columns: 1fr; gap: 5px; }
   .wizard[data-step="2"] .requirement-strategy-pair .rule-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .wizard[data-step="2"] .date-range-field { grid-column: 1/-1; }
   .wizard[data-step="2"] .requirement-strategy-pair .rule-grid > label:nth-child(2) { grid-column: 1/-1; }
@@ -422,3 +430,9 @@
   .wizard[data-step="2"] .date-range-field,
   .wizard[data-step="2"] .completion-specific-fields { grid-column: 1; }
 }
+.teacher-held-badge { margin-inline-start: 6px; padding: 2px 6px; border-radius: 4px; background: #fff2d6; color: #895500; font-size: 11px; white-space: nowrap; }
+.teacher-held-options { min-width: 0; margin: 10px 0 0; padding: 8px 12px 10px; border: 1px solid #d9e4f6; border-radius: 6px; }
+.teacher-held-options legend { padding: 0 4px; font-weight: 600; }
+.teacher-held-modes, .teacher-held-slots { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.teacher-held-options label { display: inline-flex; align-items: center; gap: 4px; }
+.teacher-held-options p { margin: 8px 0 6px; color: #566581; }

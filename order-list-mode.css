@@ -1,0 +1,142 @@
+.order-list-mode {
+  display: inline-flex;
+  margin-right: auto;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.order-list-mode button {
+  min-height: 29px;
+  padding: 0 12px;
+  background: #fff;
+  color: #46546a;
+  border: 1px solid #d4dbe8;
+  font: inherit;
+  cursor: pointer;
+}
+
+.order-list-mode button:first-child { border-radius: 3px 0 0 3px; }
+.order-list-mode button:last-child { border-radius: 0 3px 3px 0; margin-left: -1px; }
+.order-list-mode button[aria-pressed="true"] {
+  position: relative;
+  border-color: #3383f1;
+  background: #3383f1;
+  color: #fff;
+}
+
+#listPanel .list-toolbar, .hr-service-actions {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+#listPanel .list-toolbar { height: auto; min-height: 65px; padding-block: 8px; }
+
+.order-origin-badge {
+  display: inline-block;
+  margin-right: 5px;
+  padding: 0 5px;
+  border: 1px solid #cfe2ff;
+  border-radius: 3px;
+  background: #edf5ff;
+  color: #2165be;
+  font-size: 10px;
+  line-height: 16px;
+  vertical-align: middle;
+}
+
+.combined-suborder-link { color: #2165be; text-decoration: none; }
+.combined-suborder-link:hover { text-decoration: underline; }
+.hr-combined-suborders { display: grid; gap: 6px; justify-items: start; }
+.hr-combined-suborders section + section { margin-top: 8px; }
+.hr-suborder-courses { margin: 4px 0 0; padding-left: 18px; color: #48576e; }
+
+.hr-order-form-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+.hr-order-form-dialog iframe { display: block; width: 100%; height: 100%; border: 0; }
+.embedded-homeroom-order .workspace,
+.embedded-homeroom-order .sidebar,
+.embedded-homeroom-order #aiPrecheckFab,
+.embedded-homeroom-order #deferAiPrecheck { display: none !important; }
+
+.create-handler { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-top: 1px solid #e7ebf0; }
+.create-homeroom-owner { padding-block: 8px 20px; }
+.create-homeroom-owner span { color: #657184; }
+.create-homeroom-owner select {
+  display: block;
+  margin-top: 8px;
+  min-width: 230px;
+  height: 30px;
+  border: 1px solid #d4dbe8;
+  border-radius: 3px;
+  padding-inline: 8px;
+  background: #fff;
+  color: #46546a;
+}
+#createOrderForm[data-handler="self"] :is(.create-time-row, .create-precise-options, .create-requirement, .create-requirement-attachment, .create-scheduling-extra, .create-other-section),
+#createOrderForm[data-handler="self"] .create-order-footer button[type="submit"]:not(.create-submit-primary),
+#createOrderForm[data-handler="self"] .create-course-table :is(th, td):nth-child(11),
+#createOrderForm[data-handler="self"] .create-course-table :is(th, td):nth-child(12),
+#createOrderForm[data-handler="self"] .create-course-table col:nth-child(11),
+#createOrderForm[data-handler="self"] .create-course-table col:nth-child(12) { display: none !important; }
+.create-course-history { margin: 14px 0 8px; padding: 0; border: 0; }
+.create-course-history legend { margin-bottom: 8px; }
+.create-course-history > div { display: flex; flex-wrap: wrap; gap: 8px 14px; }
+.create-course-history label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid #e0e6ef;
+  border-radius: 3px;
+  padding: 5px 8px;
+  background: #fff;
+}
+.create-course-history label:has(:checked) { color: #236bd0; border-color: #9ebffc; background: #f2f7ff; }
+.homeroom-supplement-frame {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+.homeroom-supplement-frame::backdrop { background: transparent; }
+.homeroom-supplement-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+.embedded-homeroom-supplement,
+.embedded-homeroom-supplement body { background: transparent !important; }
+.embedded-homeroom-supplement :is(.legacy-sidebar,.legacy-main) { visibility: hidden; }
+.embedded-homeroom-supplement body.formal-page-active { background: #f7f9fc !important; }
+.embedded-homeroom-supplement body.formal-page-active .legacy-app { display: block; }
+.embedded-homeroom-supplement body.formal-page-active .legacy-main { visibility: visible; }
+.embedded-homeroom-supplement body.formal-page-active :is(.legacy-sidebar,.legacy-topbar) { display: none; }
+.homeroom-specified-teachers { margin-top: 16px; }
+.homeroom-specified-teachers .supplement-panel-header { align-items: baseline; justify-content: flex-start; flex-wrap: wrap; gap: 6px 12px; }
+.homeroom-teacher-note { margin: 0; color: #657184; font-size: 12px; }
+.homeroom-specified-teachers h4 { margin: 0; color: #263e62; font-size: 13px; }
+.homeroom-specified-teachers .specified-teacher-control { flex-wrap: wrap; }
+.homeroom-analysis-result { margin-bottom: 16px; }
+.homeroom-analysis-result .supplement-panel-header { justify-content: space-between; }
+.homeroom-analysis-result .supplement-panel-header > span { color: #ff811b; font-size: 13px; }
+.homeroom-analysis-result .supplement-panel-header > span::before { content: "ⓘ "; }
+.homeroom-analysis-result ol {
+  margin: 0;
+  padding: 9px 12px 9px 28px;
+  border-left: 3px solid #d7e3f2;
+  background: #f7f9fc;
+  color: #60738a;
+  font-size: 12px;
+  line-height: 1.75;
+}
+.homeroom-analysis-result li + li { margin-top: 5px; }
