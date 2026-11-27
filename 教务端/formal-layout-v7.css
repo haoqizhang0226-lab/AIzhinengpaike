@@ -246,3 +246,5 @@ body.formal-page-active .legacy-topbar h1 { font-size: 16px; }
 @media (max-width: 900px) {
   .formal-schedule-page .formal-toolbar-left .formal-toolbar-title { max-width: 220px; font-size: 13px; }
 }
+
+.formal-generated-summary { margin: 8px 18px; color: #4a607a; font-size: 12px; }

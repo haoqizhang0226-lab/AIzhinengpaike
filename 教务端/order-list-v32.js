@@ -26,7 +26,8 @@
     submission.courses = [{...submission.courses[0],name:subject,hours:String(hours)}];
     submission.requirement = `${subject}课程按学生和老师可排时段安排，优先匹配每周固定课次。`;
     const attribute = course.includes('-变更') ? '变更排课单' : '新增排课单';
-    return {id:`educator-sample-${index+1}`,course,created,type:'1V1排课单',attribute,status,handler,applicant,start:submission.start,finished:status==='已完成'?created.slice(0,10)+' 13:14:06':'--',method:status==='已完成'?'人工':'--',hours,submission,supplements:[]};
+    const strategyAnalysis=index===0?{status:'NOT_STARTED'}:index===2?{status:'BUSINESS_FAILED',questions:['请确认学生可上课的星期和具体时段。','请补充每周或每两周需要安排的课节数。']}:{status:'SUCCESS'};
+    return {id:`educator-sample-${index+1}`,course,created,type:'1V1排课单',attribute,status,handler,applicant,start:submission.start,finished:status==='已完成'?created.slice(0,10)+' 13:14:06':'--',method:status==='已完成'?'人工':'--',hours,submission,supplements:[],strategyAnalysis};
   });
   const readSaved = () => {
     try { const value=JSON.parse(localStorage.getItem(storageKey)||'[]'); return Array.isArray(value)?value.filter(order=>order?.submission&&Array.isArray(order.submission.courses)):[]; }
@@ -79,7 +80,7 @@
     const current=orders.slice((page-1)*pageSize,page*pageSize);
     $('#orderListRows').innerHTML=current.length?current.map(order=>{
       const key=String(order.id);
-      return `<tr><td><input type="checkbox" data-order-select="${esc(key)}" aria-label="选择${esc(order.course)}" ${selected.has(key)?'checked':''}></td><td class="order-list-name" title="${esc(order.course)}">${esc(order.course)}</td><td>${esc(order.type||'1V1排课单')}</td><td>${esc(order.attribute||'新增排课单')}</td><td>${esc(order.method||'--')}</td><td>${esc(order.status||'处理中')}</td><td>${esc(hoursOf(order))}</td><td>${esc(order.created||'--')}</td><td>${esc(order.finished||'--')}</td><td>${esc(order.applicant||'--')}</td><td>${esc(order.handler||'--')}</td><td>${esc(order.classTeacher||'--')}</td><td><button type="button" class="order-list-view" data-order-view="${esc(key)}">查看</button></td></tr>`;
+      return `<tr><td><input type="checkbox" data-order-select="${esc(key)}" aria-label="选择${esc(order.course)}" ${selected.has(key)?'checked':''}></td><td class="order-list-name"><button type="button" class="order-list-view order-list-name-link" data-order-view="${esc(key)}" title="${esc(order.course)}">${esc(order.course)}</button></td><td>${esc(order.type||'1V1排课单')}</td><td>${esc(order.attribute||'新增排课单')}</td><td>${esc(order.method||'--')}</td><td>${esc(order.status||'处理中')}</td><td>${esc(hoursOf(order))}</td><td>${esc(order.created||'--')}</td><td>${esc(order.finished||'--')}</td><td>${esc(order.applicant||'--')}</td><td>${esc(order.handler||'--')}</td><td>${esc(order.classTeacher||'--')}</td><td><button type="button" class="order-list-view" data-order-view="${esc(key)}">查看</button></td></tr>`;
     }).join(''):'<tr><td colspan="13" class="order-list-empty">暂无符合条件的排课单</td></tr>';
     $('#orderListSelectAll').checked=!!current.length&&current.every(order=>selected.has(String(order.id)));
     $('#orderListSelectAll').indeterminate=current.some(order=>selected.has(String(order.id)))&&!$('#orderListSelectAll').checked;

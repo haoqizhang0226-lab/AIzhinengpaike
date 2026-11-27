@@ -33,18 +33,16 @@
 #orderPage .flow-course-group th{background:#fafafa}
 #orderPage .flow-course-group tbody tr:nth-child(even){background:#fafafa}
 #orderPage .flow-course-group th:nth-child(8),#orderPage .flow-course-group th:nth-child(9){min-width:116px}
-#orderPage .educator-detail-facts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 20px;padding:52px 20px 30px}
-#orderPage .educator-detail-dates{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
-#orderPage .educator-detail-facts>.educator-detail-fact{grid-column:1/-1}
+#orderPage .educator-detail-facts{padding:10px 20px 25px}
+#orderPage .educator-detail-section + .educator-detail-section{margin-top:14px}
+#orderPage .educator-detail-section h2{display:flex;align-items:center;margin:0;padding-inline:0}
+#orderPage .educator-detail-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:20px;padding:8px 0 14px}
+#orderPage .educator-detail-fields>.educator-detail-fact:not(.is-compact){grid-column:1/-1}
 #orderPage .educator-detail-fact{display:flex;align-items:flex-start;min-width:0;min-height:48px;padding:11px 0;color:#777;font-size:13px;line-height:1.65}
 #orderPage .educator-detail-label{flex:0 0 145px;color:#777}
 #orderPage .educator-detail-long-label .educator-detail-label{flex-basis:205px}
 #orderPage .educator-detail-colon{flex:none;margin-right:9px;color:#777}
 #orderPage .educator-detail-value{min-width:0;color:#373737;white-space:pre-wrap;overflow-wrap:anywhere}
-#orderPage .educator-detail-supplement{margin-top:8px}
-#orderPage .educator-detail-supplement:first-child{margin-top:0}
-#orderPage .educator-detail-supplement small{display:inline;margin-right:8px;color:#777;font-size:12px}
-#orderPage .educator-detail-supplement div{display:inline;color:#373737}
 #orderPage .educator-detail-attachment{color:#3181ed}
 #orderPage .flow-supplements[hidden]{display:none!important}
 #orderPage .legacy-fixed-actions{min-height:70px;padding:10px 30px;background:#fff;border-top:1px solid #e8e8e8}
@@ -54,7 +52,7 @@
 #orderPage .legacy-fixed-actions .reject-button{width:88px}
 #orderPage .legacy-fixed-actions .legacy-primary{width:100px}
 #orderPage .legacy-fixed-actions .legacy-manual{width:88px}
-@media(max-width:1100px){#orderPage .legacy-layout{grid-template-columns:185px minmax(0,1fr);gap:12px}#orderPage .legacy-page{padding-inline:12px}#orderPage .legacy-status-grid{grid-template-columns:repeat(3,minmax(0,1fr))}#orderPage .educator-detail-facts{padding-top:42px;grid-template-columns:1fr}#orderPage .educator-detail-dates{grid-template-columns:1fr}#orderPage .educator-detail-fact{grid-column:1/-1}}
+@media(max-width:1100px){#orderPage .legacy-layout{grid-template-columns:185px minmax(0,1fr);gap:12px}#orderPage .legacy-page{padding-inline:12px}#orderPage .legacy-status-grid{grid-template-columns:repeat(3,minmax(0,1fr))}#orderPage .educator-detail-fields{grid-template-columns:1fr}}
 @media(max-width:700px){#orderPage .legacy-layout{grid-template-columns:1fr}#orderPage .educator-detail-side{min-height:0}#orderPage .educator-detail-main{min-height:0}#orderPage .legacy-fixed-actions{padding-inline:10px}#orderPage .educator-detail-label{flex-basis:125px}#orderPage .educator-detail-long-label .educator-detail-label{flex-basis:165px}}
 
 /* 自组班排课单使用独立的班级信息、课程信息和学生列表布局。 */

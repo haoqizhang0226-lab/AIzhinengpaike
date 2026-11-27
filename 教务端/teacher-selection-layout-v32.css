@@ -7,6 +7,43 @@ body.educator-workspace:not(.consult-preview-mode) #modalBackdrop.flow-drawer-ba
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.wizard[data-step="3"] .teacher-strategy-review-button {
+  margin-left: auto;
+  flex: none;
+  white-space: nowrap;
+}
+
+.wizard[data-step="3"] .teacher-planning-status {
+  display: grid;
+  min-height: 100%;
+  place-items: center;
+}
+
+.wizard[data-step="3"] .teacher-planning-status .loading-card {
+  width: min(420px, 100%);
+  border: 1px solid #dce7f5;
+  box-shadow: 0 8px 24px #26466a15;
+}
+
+.wizard[data-step="3"] .teacher-candidate-group + .teacher-candidate-group {
+  margin-top: 16px;
+  border-top: 1px solid #e5edf6;
+  padding-top: 12px;
+}
+
+.wizard[data-step="3"] .teacher-candidate-group h3 {
+  margin: 0 0 8px;
+  color: #344d6b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.wizard[data-step="3"] .teacher-group-empty {
+  margin: 0;
+  color: #748297;
+  font-size: 12px;
+}
+
 /* 查看要求、查看策略、补充要求和指定老师均相对于整个页面居中。 */
 body.educator-workspace:not(.consult-preview-mode) #flowRequirementsOverlay {
   position: fixed;

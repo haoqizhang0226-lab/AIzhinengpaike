@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="formal-schedule.css?v=20261110g">
   <link rel="stylesheet" href="legacy-pages.css?v=20261110g">
   <link rel="stylesheet" href="strategy-layer.css?v=20261110g">
-  <link rel="stylesheet" href="formal-layout-v7.css?v=20261110g">
+  <link rel="stylesheet" href="formal-layout-v7.css?v=20261125-strategy-schedule">
   <link rel="stylesheet" href="end-mode-demo.css?v=20261110g">
   <link rel="stylesheet" href="formal-lesson-card.css?v=20261110g">
   <link rel="stylesheet" href="drawer-flow.css?v=20261113a">
@@ -18,26 +18,30 @@
   <link rel="stylesheet" href="teacher-management.css?v=20261114a">
   <link rel="stylesheet" href="educator-consult.css?v=20261115c">
   <link rel="stylesheet" href="supplement-reference.css?v=20261110g">
+  <link rel="stylesheet" href="../order-list-mode.css?v=20261124-homeroom-analysis">
   <link rel="stylesheet" href="order-home-actions.css?v=20261110g">
-  <link rel="stylesheet" href="strategy-reference.css?v=20261110g">
+  <link rel="stylesheet" href="strategy-reference.css?v=20261126-review-timezone">
   <link rel="stylesheet" href="teacher-selection-reference.css?v=20261110g">
   <link rel="stylesheet" href="formal-lesson-reference.css?v=20261110g">
   <link rel="stylesheet" href="requirement-conversation.css?v=20261110g">
   <link rel="stylesheet" href="flow-integration.css?v=20261110g">
-  <link rel="stylesheet" href="teacher-direct-v32.css?v=20261110g">
+  <link rel="stylesheet" href="../precheck.css?v=20261116a">
+  <link rel="stylesheet" href="../precheck-four-categories.css?v=20261115d">
+  <link rel="stylesheet" href="teacher-direct-v32.css?v=20261126-optional-requirements">
   <link rel="stylesheet" href="../workspace-tabs.css?v=20261110g">
   <link rel="stylesheet" href="../workspace-unified.css?v=20261110g">
   <link rel="stylesheet" href="consult-preview.css?v=20261114b">
-  <link rel="stylesheet" href="teacher-selection-layout-v32.css?v=20261110g">
+  <link rel="stylesheet" href="teacher-selection-layout-v32.css?v=20261120-planning">
   <link rel="stylesheet" href="package-order.css?v=20261110g">
   <link rel="stylesheet" href="educator-consult-link.css?v=20261114b">
   <link rel="stylesheet" href="formal-workbench-v33.css?v=20261117a">
   <link rel="stylesheet" href="smart-config.css?v=20261111a">
   <link rel="stylesheet" href="order-list-v32.css?v=20261113b">
   <link rel="stylesheet" href="class-management.css?v=20261114b">
-  <link rel="stylesheet" href="educator-order-detail.css?v=20261114c">
+  <link rel="stylesheet" href="educator-order-detail.css?v=20261126-order-sections">
   <link rel="stylesheet" href="schedule-log-drawer.css?v=20261114a">
   <link rel="stylesheet" href="../prototype-notes.css?v=20261116-full-tabs">
+  <link rel="stylesheet" href="../analysis-motion.css?v=20261126">
 </head>
 <body class="educator-workspace">
   <div class="legacy-app">
@@ -150,9 +154,8 @@
 
   <div class="modal-backdrop" id="modalBackdrop" hidden>
     <section class="wizard" role="dialog" aria-modal="true" aria-labelledby="wizardTitle">
-      <header class="wizard-header"><div class="wizard-title"><span class="wizard-icon">✦</span><strong id="wizardTitle">补充排课要求</strong></div><button type="button" id="viewFlowRequirements" class="flow-view-requirements" hidden>查看排课要求</button><button class="icon-button" id="closeWizard" aria-label="关闭">×</button></header>
+      <header class="wizard-header"><div class="wizard-title"><span class="wizard-icon">✦</span><strong id="wizardTitle">补充排课要求</strong></div><div class="wizard-header-actions"><button type="button" id="viewTeacherStrategy" class="btn teacher-strategy-review-button" aria-haspopup="dialog" hidden>查看排课策略</button><button type="button" id="viewFlowRequirements" class="flow-view-requirements" hidden>查看排课要求</button></div><button class="icon-button" id="closeWizard" aria-label="关闭">×</button></header>
       <div class="wizard-body" id="wizardBody"></div>
-      <div class="loading-backdrop" id="loadingBackdrop" hidden><div class="loading-card" role="status" aria-live="polite"><span class="loading-orbit">✦</span><strong id="loadingTitle">正在处理</strong><p id="loadingDescription"></p><div class="loading-progress"><i></i></div></div></div>
       <footer class="wizard-footer" id="wizardFooter"></footer>
     </section>
     <div class="flow-requirements-overlay" id="flowRequirementsOverlay" hidden><section class="flow-requirements-dialog" role="dialog" aria-modal="true" aria-labelledby="flowRequirementsTitle"><header><strong id="flowRequirementsTitle">完整排课要求</strong><button type="button" id="closeFlowRequirements" aria-label="关闭排课要求">×</button></header><div class="flow-requirements-content" id="flowRequirementsContent"></div><footer class="teacher-direct-strategy-footer"><button type="button" class="btn btn-primary" data-edit-strategy-from-teachers>编辑排课策略</button></footer></section></div>
@@ -162,9 +165,12 @@
   <script src="teacher-schedule-export.js?v=20261110g"></script>
   <script src="teacher-priority-recommendation.js?v=20261110g"></script>
   <script src="teacher-management.js?v=20261114c"></script>
-  <script src="../flow-demo-order.js?v=20261110g"></script>
-  <script src="app.js?v=20261117a"></script>
-  <script src="order-list-v32.js?v=20261116a"></script>
+  <script src="../flow-demo-order.js?v=20261126-analysis-states"></script>
+  <script src="../student-slot-locks.js"></script>
+  <script src="../analysis-motion.js?v=20261126"></script>
+  <script src="../order-analysis-summary.js?v=20261126-order-sections"></script>
+  <script src="app.js?v=20261127-educator-selection"></script>
+  <script src="order-list-v32.js?v=20261126-educator-analysis-states"></script>
   <script src="../class-remarks.js?v=20261114b"></script>
   <script src="class-management.js?v=20261114b"></script>
   <script src="schedule-log-drawer.js?v=20261114b"></script>
